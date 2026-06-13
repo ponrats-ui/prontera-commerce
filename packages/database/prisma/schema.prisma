@@ -7,10 +7,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  CUSTOMER
-  SHOP_OWNER
-  ADMIN
+enum UserStatus {
+  ACTIVE
+  INVITED
+  SUSPENDED
+  DELETED
+}
+
+enum StaffStatus {
+  ACTIVE
+  INVITED
+  SUSPENDED
+  REMOVED
+}
+
+enum BillingInterval {
+  MONTHLY
+  YEARLY
+}
+
+enum PlanStatus {
+  ACTIVE
+  ARCHIVED
 }
 
 enum SubscriptionStatus {
@@ -21,46 +39,248 @@ enum SubscriptionStatus {
   EXPIRED
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  role      UserRole @default(CUSTOMER)
-  shops     Shop[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum InvoiceStatus {
+  DRAFT
+  OPEN
+  PAID
+  VOID
+  UNCOLLECTIBLE
+}
 
-  @@index([role])
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+model User {
+  id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email      String      @db.VarChar(320)
+  name       String?     @db.VarChar(160)
+  status     UserStatus  @default(ACTIVE)
+  roles      UserRole[]
+  ownedShops Shop[]      @relation("ShopOwner")
+  shopStaff  ShopStaff[]
+  createdAt  DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime    @updatedAt @db.Timestamptz(6)
+  deletedAt  DateTime?   @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([deletedAt])
   @@map("users")
 }
 
-model Shop {
-  id             String         @id @default(cuid())
-  ownerId        String
-  name           String
-  slug           String         @unique
-  owner          User           @relation(fields: [ownerId], references: [id], onDelete: Restrict)
-  subscriptions  Subscription[]
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+model Role {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String     @db.VarChar(64)
+  name        String     @db.VarChar(120)
+  description String?    @db.Text
+  users       UserRole[]
+  createdAt   DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime   @updatedAt @db.Timestamptz(6)
+  deletedAt   DateTime?  @db.Timestamptz(6)
 
-  @@index([ownerId])
-  @@map("shops")
+  @@index([deletedAt])
+  @@map("roles")
+}
+
+model UserRole {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String    @db.Uuid
+  roleId    String    @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role      @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(6)
+  deletedAt DateTime? @db.Timestamptz(6)
+
+  @@index([roleId])
+  @@index([deletedAt])
+  @@map("user_roles")
+}
+
+model Plan {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code          String          @db.VarChar(80)
+  name          String          @db.VarChar(160)
+  description   String?         @db.Text
+  priceCents    Int
+  currency      String          @default("USD") @db.Char(3)
+  interval      BillingInterval
+  status        PlanStatus      @default(ACTIVE)
+  subscriptions Subscription[]
+  createdAt     DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime        @updatedAt @db.Timestamptz(6)
+  deletedAt     DateTime?       @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([interval])
+  @@index([deletedAt])
+  @@map("plans")
 }
 
 model Subscription {
-  id                 String             @id @default(cuid())
-  shopId             String
-  planCode           String
+  id                 String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId             String             @db.Uuid
+  planId             String             @db.Uuid
   status             SubscriptionStatus @default(TRIALING)
-  currentPeriodStart DateTime
-  currentPeriodEnd   DateTime
-  canceledAt         DateTime?
+  currentPeriodStart DateTime           @db.Timestamptz(6)
+  currentPeriodEnd   DateTime           @db.Timestamptz(6)
+  trialEndsAt        DateTime?          @db.Timestamptz(6)
+  canceledAt         DateTime?          @db.Timestamptz(6)
   shop               Shop               @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+  plan               Plan               @relation(fields: [planId], references: [id], onDelete: Restrict)
+  invoices           Invoice[]
+  createdAt          DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime           @updatedAt @db.Timestamptz(6)
+  deletedAt          DateTime?          @db.Timestamptz(6)
 
-  @@index([shopId])
-  @@index([status])
+  @@index([shopId, status])
+  @@index([planId])
+  @@index([currentPeriodEnd])
+  @@index([deletedAt])
   @@map("subscriptions")
+}
+
+model Invoice {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId         String        @db.Uuid
+  subscriptionId String?       @db.Uuid
+  invoiceNumber  String        @db.VarChar(80)
+  status         InvoiceStatus @default(DRAFT)
+  subtotalCents  Int
+  taxCents       Int           @default(0)
+  totalCents     Int
+  currency       String        @default("USD") @db.Char(3)
+  dueAt          DateTime?     @db.Timestamptz(6)
+  paidAt         DateTime?     @db.Timestamptz(6)
+  shop           Shop          @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  createdAt      DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime      @updatedAt @db.Timestamptz(6)
+  deletedAt      DateTime?     @db.Timestamptz(6)
+
+  @@unique([shopId, invoiceNumber])
+  @@index([shopId, status])
+  @@index([subscriptionId])
+  @@index([dueAt])
+  @@index([deletedAt])
+  @@map("invoices")
+}
+
+model Shop {
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ownerId       String         @db.Uuid
+  name          String         @db.VarChar(160)
+  slug          String         @db.VarChar(120)
+  owner         User           @relation("ShopOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  staff         ShopStaff[]
+  subscriptions Subscription[]
+  invoices      Invoice[]
+  categories    Category[]
+  products      Product[]
+  createdAt     DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime       @updatedAt @db.Timestamptz(6)
+  deletedAt     DateTime?      @db.Timestamptz(6)
+
+  @@index([ownerId])
+  @@index([deletedAt])
+  @@map("shops")
+}
+
+model ShopStaff {
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId    String      @db.Uuid
+  userId    String      @db.Uuid
+  status    StaffStatus @default(INVITED)
+  title     String?     @db.VarChar(120)
+  shop      Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime    @updatedAt @db.Timestamptz(6)
+  deletedAt DateTime?   @db.Timestamptz(6)
+
+  @@index([userId])
+  @@index([shopId, status])
+  @@index([deletedAt])
+  @@map("shop_staff")
+}
+
+model Category {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId      String     @db.Uuid
+  parentId    String?    @db.Uuid
+  name        String     @db.VarChar(160)
+  slug        String     @db.VarChar(160)
+  description String?    @db.Text
+  sortOrder   Int        @default(0)
+  shop        Shop       @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  parent      Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children    Category[] @relation("CategoryTree")
+  products    Product[]
+  createdAt   DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime   @updatedAt @db.Timestamptz(6)
+  deletedAt   DateTime?  @db.Timestamptz(6)
+
+  @@index([shopId, parentId])
+  @@index([shopId, sortOrder])
+  @@index([deletedAt])
+  @@map("categories")
+}
+
+model Product {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId      String           @db.Uuid
+  categoryId  String?          @db.Uuid
+  name        String           @db.VarChar(200)
+  slug        String           @db.VarChar(200)
+  description String?          @db.Text
+  status      ProductStatus    @default(DRAFT)
+  shop        Shop             @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  category    Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  variants    ProductVariant[]
+  images      ProductImage[]
+  createdAt   DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime         @updatedAt @db.Timestamptz(6)
+  deletedAt   DateTime?        @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([categoryId])
+  @@index([deletedAt])
+  @@map("products")
+}
+
+model ProductVariant {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId      String    @db.Uuid
+  sku            String    @db.VarChar(120)
+  title          String    @db.VarChar(200)
+  priceCents     Int
+  currency       String    @default("USD") @db.Char(3)
+  inventoryCount Int       @default(0)
+  isDefault      Boolean   @default(false)
+  product        Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt      DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime  @updatedAt @db.Timestamptz(6)
+  deletedAt      DateTime? @db.Timestamptz(6)
+
+  @@index([productId, isDefault])
+  @@index([deletedAt])
+  @@map("product_variants")
+}
+
+model ProductImage {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId String    @db.Uuid
+  url       String    @db.Text
+  altText   String?   @db.VarChar(200)
+  sortOrder Int       @default(0)
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(6)
+  deletedAt DateTime? @db.Timestamptz(6)
+
+  @@index([productId, sortOrder])
+  @@index([deletedAt])
+  @@map("product_images")
 }
