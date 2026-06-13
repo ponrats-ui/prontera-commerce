@@ -1,0 +1,12 @@
+{
+  "name": "@prontera/admin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo \"Admin app placeholder for Sprint 1\"",
+    "build": "echo \"Admin app placeholder for Sprint 1\"",
+    "lint": "echo \"No admin lint yet\"",
+    "typecheck": "echo \"No admin typecheck yet\"",
+    "test": "echo \"No admin tests yet\""
+  }
+}

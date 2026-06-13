@@ -1,0 +1,23 @@
+{
+  "name": "@prontera/database",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "generate": "prisma generate --schema prisma/schema.prisma",
+    "migrate:dev": "prisma migrate dev --schema prisma/schema.prisma",
+    "studio": "prisma studio --schema prisma/schema.prisma",
+    "lint": "echo \"No database lint yet\"",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"No database tests yet\""
+  },
+  "dependencies": {
+    "@prisma/client": "^5.16.1"
+  },
+  "devDependencies": {
+    "prisma": "^5.16.1",
+    "typescript": "^5.5.3"
+  }
+}
