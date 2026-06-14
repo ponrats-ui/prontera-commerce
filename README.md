@@ -1,6 +1,6 @@
 # Prontera Commerce
 
-Prontera Commerce is a production-oriented commerce platform monorepo. Sprint 0 establishes the workspace, runtime boundaries, database foundation, and Docker services needed for feature delivery in Sprint 1.
+Prontera Commerce is a global AI-assisted virtual marketplace inspired by the social and community experience of MMORPG towns. Its mission is to enable merchants worldwide to open virtual shops, manage real businesses, and engage with customers in an immersive digital marketplace.
 
 ## Architecture
 
@@ -19,6 +19,15 @@ packages/
 ```
 
 The monorepo uses Turborepo with npm workspaces. Shared code is intentionally split by responsibility so domain contracts, persistence, UI, and API client concerns can evolve independently.
+
+## Documentation
+
+- [Vision Asset Library](docs/vision/README.md)
+- [Vision History](docs/vision/vision-history.md)
+- [Master Roadmap](docs/roadmap/master-roadmap.md)
+- [Prontera Commerce Vision](docs/vision/prontera-commerce-vision.md)
+- [Founder Principles](docs/architecture/founder-principles.md)
+- [Legal and Ownership Documents](docs/legal/README.md)
 
 ## Technical Decisions
 
