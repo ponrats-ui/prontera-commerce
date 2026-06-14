@@ -21,6 +21,27 @@ enum StaffStatus {
   REMOVED
 }
 
+enum ShopStatus {
+  DRAFT
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum ShopStaffRole {
+  OWNER
+  MANAGER
+  CASHIER
+  STAFF
+}
+
+enum ShopInvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  CANCELED
+}
+
 enum BillingInterval {
   MONTHLY
   YEARLY
@@ -168,6 +189,7 @@ model Locale {
   users                User[]
   preferredUsers       User[]                @relation("UserPreferredLocale")
   shops                Shop[]
+  preferredShops       Shop[]                @relation("ShopPreferredLocale")
   shopTranslations     ShopTranslation[]
   productTranslations  ProductTranslation[]
   categoryTranslations CategoryTranslation[]
@@ -215,6 +237,7 @@ model Currency {
   defaultCountries     Country[]
   preferredUsers       User[]
   shops                Shop[]
+  preferredShops       Shop[]                 @relation("ShopPreferredCurrency")
   plans                Plan[]
   invoices             Invoice[]
   exchangeRatesFrom    CurrencyExchangeRate[] @relation("ExchangeRateFromCurrency")
@@ -358,16 +381,28 @@ model Shop {
   ownerId                 String                        @db.Uuid
   name                    String                        @db.VarChar(160)
   slug                    String                        @db.VarChar(120)
+  description             String?                       @db.Text
+  logoUrl                 String?                       @db.Text
+  bannerUrl               String?                       @db.Text
+  contactEmail            String?                       @db.VarChar(320)
+  contactPhone            String?                       @db.VarChar(40)
+  status                  ShopStatus                    @default(ACTIVE)
+  isPublic                Boolean                       @default(true)
   countryCode             String                        @default("US") @db.Char(2)
   localeCode              String                        @default("en-US") @db.VarChar(35)
   currencyCode            String                        @default("USD") @db.Char(3)
+  preferredLocale         String?                       @db.VarChar(35)
+  preferredCurrency       String?                       @db.Char(3)
   timeZone                String                        @default("UTC") @db.VarChar(64)
   owner                   User                          @relation("ShopOwner", fields: [ownerId], references: [id], onDelete: Restrict)
   country                 Country                       @relation(fields: [countryCode], references: [code], onDelete: Restrict)
   locale                  Locale                        @relation(fields: [localeCode], references: [code], onDelete: Restrict)
   currency                Currency                      @relation(fields: [currencyCode], references: [code], onDelete: Restrict)
+  preferredLocaleRef      Locale?                       @relation("ShopPreferredLocale", fields: [preferredLocale], references: [code], onDelete: SetNull)
+  preferredCurrencyRef    Currency?                     @relation("ShopPreferredCurrency", fields: [preferredCurrency], references: [code], onDelete: SetNull)
   translations            ShopTranslation[]
   staff                   ShopStaff[]
+  invitations             ShopInvitation[]
   subscriptions           Subscription[]
   invoices                Invoice[]
   categories              Category[]
@@ -381,9 +416,13 @@ model Shop {
   deletedAt               DateTime?                     @db.Timestamptz(6)
 
   @@index([ownerId])
+  @@index([status])
+  @@index([isPublic])
   @@index([countryCode])
   @@index([localeCode])
   @@index([currencyCode])
+  @@index([preferredLocale])
+  @@index([preferredCurrency])
   @@index([deletedAt])
   @@map("shops")
 }
@@ -535,21 +574,42 @@ model ShopTranslation {
 }
 
 model ShopStaff {
-  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  shopId    String      @db.Uuid
-  userId    String      @db.Uuid
-  status    StaffStatus @default(INVITED)
-  title     String?     @db.VarChar(120)
-  shop      Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime    @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime    @updatedAt @db.Timestamptz(6)
-  deletedAt DateTime?   @db.Timestamptz(6)
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId    String        @db.Uuid
+  userId    String        @db.Uuid
+  status    StaffStatus   @default(INVITED)
+  role      ShopStaffRole @default(STAFF)
+  title     String?       @db.VarChar(120)
+  shop      Shop          @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime      @updatedAt @db.Timestamptz(6)
+  deletedAt DateTime?     @db.Timestamptz(6)
 
   @@index([userId])
   @@index([shopId, status])
+  @@index([shopId, role])
   @@index([deletedAt])
   @@map("shop_staff")
+}
+
+model ShopInvitation {
+  id        String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId    String               @db.Uuid
+  email     String               @db.VarChar(320)
+  role      ShopStaffRole
+  status    ShopInvitationStatus @default(PENDING)
+  expiresAt DateTime             @db.Timestamptz(6)
+  shop      Shop                 @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  createdAt DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime             @updatedAt @db.Timestamptz(6)
+  deletedAt DateTime?            @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([email])
+  @@index([expiresAt])
+  @@index([deletedAt])
+  @@map("shop_invitations")
 }
 
 model Category {
