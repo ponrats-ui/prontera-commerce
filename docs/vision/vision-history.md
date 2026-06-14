@@ -1,25 +1,16 @@
-# Vision History
+﻿# Vision History
 
-## Version 1.0
+## v1.0
+Initial MMORPG Marketplace concept.
 
-Initial MMORPG Marketplace Concept.
+## v1.1
+Merchant OS and real-world seller support.
 
-Prontera Commerce begins as a virtual marketplace inspired by the social and community experience of MMORPG towns, where merchants can operate immersive virtual shops and customers can discover products through a shared digital market world.
+## v1.2
+Global commerce support.
 
-## Version 1.1
+## v1.3
+Human-in-the-Loop governance.
 
-Global Commerce Support.
-
-The vision expands to support merchants and customers across countries, languages, currencies, tax systems, shipping zones, and payment methods from the beginning.
-
-## Version 1.2
-
-Human-in-the-Loop Governance.
-
-The platform establishes a governance model where AI agents may assist, analyze, recommend, and automate low-risk operations, while high-impact strategic, financial, legal, compliance, moderation, policy, pricing, and irreversible actions require human approval.
-
-## Version 1.3
-
-AI Agent Governance.
-
-The vision expands to include CTO AI, CEO AI, CFO AI, CMO AI, support agents, and future marketplace agents operating under Founder authority, explicit permissions, action logs, and approval workflows.
+## v1.4
+AI Agent framework: Mr.P, AI Merchant, future CEO AI.

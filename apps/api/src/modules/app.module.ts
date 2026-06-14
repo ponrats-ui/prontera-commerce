@@ -1,4 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
+import { GlobalCommerceModule } from "./global-commerce/global-commerce.module";
 
-@Module({})
+@Module({
+  imports: [GlobalCommerceModule],
+})
 export class AppModule {}

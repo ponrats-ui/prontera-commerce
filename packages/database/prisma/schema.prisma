@@ -53,21 +53,171 @@ enum ProductStatus {
   ARCHIVED
 }
 
+enum PaymentGatewayProvider {
+  STRIPE
+  OMISE
+  XENDIT
+  PAYPAL
+  MANUAL
+  LOCAL_BANK_TRANSFER
+  PROMPTPAY
+  PAYNOW
+}
+
+enum PaymentGatewayStatus {
+  DRAFT
+  ACTIVE
+  DISABLED
+}
+
+enum ShippingZoneStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum TaxProfileStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum GovernanceActionCategory {
+  ROUTINE_OPERATION
+  STRATEGIC
+  FINANCIAL
+  LEGAL
+  COMPLIANCE
+  MODERATION
+  POLICY
+}
+
+enum GovernanceRiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum GovernanceApprovalStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  CANCELED
+  EXECUTED
+}
+
 model User {
-  id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email      String      @db.VarChar(320)
-  name       String?     @db.VarChar(160)
-  status     UserStatus  @default(ACTIVE)
-  roles      UserRole[]
-  ownedShops Shop[]      @relation("ShopOwner")
-  shopStaff  ShopStaff[]
-  createdAt  DateTime    @default(now()) @db.Timestamptz(6)
-  updatedAt  DateTime    @updatedAt @db.Timestamptz(6)
-  deletedAt  DateTime?   @db.Timestamptz(6)
+  id                         String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                      String                   @db.VarChar(320)
+  name                       String?                  @db.VarChar(160)
+  status                     UserStatus               @default(ACTIVE)
+  countryCode                String?                  @db.Char(2)
+  localeCode                 String?                  @db.VarChar(35)
+  timeZone                   String                   @default("UTC") @db.VarChar(64)
+  country                    Country?                 @relation(fields: [countryCode], references: [code], onDelete: SetNull)
+  locale                     Locale?                  @relation(fields: [localeCode], references: [code], onDelete: SetNull)
+  roles                      UserRole[]
+  ownedShops                 Shop[]                   @relation("ShopOwner")
+  shopStaff                  ShopStaff[]
+  requestedGovernanceActions GovernanceActionReview[] @relation("GovernanceActionRequester")
+  reviewedGovernanceActions  GovernanceActionReview[] @relation("GovernanceActionReviewer")
+  createdAt                  DateTime                 @default(now()) @db.Timestamptz(6)
+  updatedAt                  DateTime                 @updatedAt @db.Timestamptz(6)
+  deletedAt                  DateTime?                @db.Timestamptz(6)
 
   @@index([status])
+  @@index([countryCode])
+  @@index([localeCode])
   @@index([deletedAt])
   @@map("users")
+}
+
+model Language {
+  code       String    @id @db.VarChar(12)
+  name       String    @db.VarChar(120)
+  nativeName String?   @db.VarChar(120)
+  direction  String    @default("ltr") @db.VarChar(3)
+  isActive   Boolean   @default(true)
+  locales    Locale[]
+  createdAt  DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime  @updatedAt @db.Timestamptz(6)
+  deletedAt  DateTime? @db.Timestamptz(6)
+
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("languages")
+}
+
+model Locale {
+  code                 String                @id @db.VarChar(35)
+  languageCode         String                @db.VarChar(12)
+  regionCode           String?               @db.Char(2)
+  name                 String                @db.VarChar(120)
+  nativeName           String?               @db.VarChar(120)
+  isDefault            Boolean               @default(false)
+  language             Language              @relation(fields: [languageCode], references: [code], onDelete: Restrict)
+  defaultCountries     Country[]             @relation("CountryDefaultLocale")
+  users                User[]
+  shops                Shop[]
+  shopTranslations     ShopTranslation[]
+  productTranslations  ProductTranslation[]
+  categoryTranslations CategoryTranslation[]
+  createdAt            DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt            DateTime              @updatedAt @db.Timestamptz(6)
+  deletedAt            DateTime?             @db.Timestamptz(6)
+
+  @@index([languageCode])
+  @@index([regionCode])
+  @@index([deletedAt])
+  @@map("locales")
+}
+
+model Country {
+  code                  String                @id @db.Char(2)
+  name                  String                @db.VarChar(120)
+  defaultCurrencyCode   String                @db.Char(3)
+  defaultLocaleCode     String?               @db.VarChar(35)
+  defaultTimeZone       String                @default("UTC") @db.VarChar(64)
+  isActive              Boolean               @default(true)
+  defaultCurrency       Currency              @relation(fields: [defaultCurrencyCode], references: [code], onDelete: Restrict)
+  defaultLocale         Locale?               @relation("CountryDefaultLocale", fields: [defaultLocaleCode], references: [code], onDelete: SetNull)
+  users                 User[]
+  shops                 Shop[]
+  taxProfiles           TaxProfile[]
+  shippingZoneCountries ShippingZoneCountry[]
+  createdAt             DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt             DateTime              @updatedAt @db.Timestamptz(6)
+  deletedAt             DateTime?             @db.Timestamptz(6)
+
+  @@index([defaultCurrencyCode])
+  @@index([defaultLocaleCode])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("countries")
+}
+
+model Currency {
+  code                 String                 @id @db.Char(3)
+  numericCode          String?                @db.Char(3)
+  name                 String                 @db.VarChar(120)
+  symbol               String?                @db.VarChar(16)
+  decimalDigits        Int                    @default(2)
+  isActive             Boolean                @default(true)
+  defaultCountries     Country[]
+  shops                Shop[]
+  plans                Plan[]
+  invoices             Invoice[]
+  exchangeRatesFrom    CurrencyExchangeRate[] @relation("ExchangeRateFromCurrency")
+  exchangeRatesTo      CurrencyExchangeRate[] @relation("ExchangeRateToCurrency")
+  productVariants      ProductVariant[]
+  productVariantPrices ProductVariantPrice[]
+  createdAt            DateTime               @default(now()) @db.Timestamptz(6)
+  updatedAt            DateTime               @updatedAt @db.Timestamptz(6)
+  deletedAt            DateTime?              @db.Timestamptz(6)
+
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("currencies")
 }
 
 model Role {
@@ -106,6 +256,7 @@ model Plan {
   description   String?         @db.Text
   priceCents    Int
   currency      String          @default("USD") @db.Char(3)
+  currencyRef   Currency        @relation(fields: [currency], references: [code], onDelete: Restrict)
   interval      BillingInterval
   status        PlanStatus      @default(ACTIVE)
   subscriptions Subscription[]
@@ -114,6 +265,7 @@ model Plan {
   deletedAt     DateTime?       @db.Timestamptz(6)
 
   @@index([status])
+  @@index([currency])
   @@index([interval])
   @@index([deletedAt])
   @@map("plans")
@@ -152,6 +304,7 @@ model Invoice {
   taxCents       Int           @default(0)
   totalCents     Int
   currency       String        @default("USD") @db.Char(3)
+  currencyRef    Currency      @relation(fields: [currency], references: [code], onDelete: Restrict)
   dueAt          DateTime?     @db.Timestamptz(6)
   paidAt         DateTime?     @db.Timestamptz(6)
   shop           Shop          @relation(fields: [shopId], references: [id], onDelete: Cascade)
@@ -162,6 +315,7 @@ model Invoice {
 
   @@unique([shopId, invoiceNumber])
   @@index([shopId, status])
+  @@index([currency])
   @@index([subscriptionId])
   @@index([dueAt])
   @@index([deletedAt])
@@ -169,23 +323,184 @@ model Invoice {
 }
 
 model Shop {
-  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  ownerId       String         @db.Uuid
-  name          String         @db.VarChar(160)
-  slug          String         @db.VarChar(120)
-  owner         User           @relation("ShopOwner", fields: [ownerId], references: [id], onDelete: Restrict)
-  staff         ShopStaff[]
-  subscriptions Subscription[]
-  invoices      Invoice[]
-  categories    Category[]
-  products      Product[]
-  createdAt     DateTime       @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime       @updatedAt @db.Timestamptz(6)
-  deletedAt     DateTime?      @db.Timestamptz(6)
+  id                      String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ownerId                 String                        @db.Uuid
+  name                    String                        @db.VarChar(160)
+  slug                    String                        @db.VarChar(120)
+  countryCode             String                        @default("US") @db.Char(2)
+  localeCode              String                        @default("en-US") @db.VarChar(35)
+  currencyCode            String                        @default("USD") @db.Char(3)
+  timeZone                String                        @default("UTC") @db.VarChar(64)
+  owner                   User                          @relation("ShopOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  country                 Country                       @relation(fields: [countryCode], references: [code], onDelete: Restrict)
+  locale                  Locale                        @relation(fields: [localeCode], references: [code], onDelete: Restrict)
+  currency                Currency                      @relation(fields: [currencyCode], references: [code], onDelete: Restrict)
+  translations            ShopTranslation[]
+  staff                   ShopStaff[]
+  subscriptions           Subscription[]
+  invoices                Invoice[]
+  categories              Category[]
+  products                Product[]
+  paymentGateways         PaymentGatewayConfiguration[]
+  shippingZones           ShippingZone[]
+  taxProfiles             TaxProfile[]
+  governanceActionReviews GovernanceActionReview[]
+  createdAt               DateTime                      @default(now()) @db.Timestamptz(6)
+  updatedAt               DateTime                      @updatedAt @db.Timestamptz(6)
+  deletedAt               DateTime?                     @db.Timestamptz(6)
 
   @@index([ownerId])
+  @@index([countryCode])
+  @@index([localeCode])
+  @@index([currencyCode])
   @@index([deletedAt])
   @@map("shops")
+}
+
+model GovernanceActionReview {
+  id                String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId            String?                  @db.Uuid
+  requestedByUserId String?                  @db.Uuid
+  reviewedByUserId  String?                  @db.Uuid
+  agentName         String                   @db.VarChar(120)
+  category          GovernanceActionCategory
+  riskLevel         GovernanceRiskLevel      @default(MEDIUM)
+  status            GovernanceApprovalStatus @default(DRAFT)
+  title             String                   @db.VarChar(200)
+  recommendation    String                   @db.Text
+  explanation       String                   @db.Text
+  confidence        Int
+  approvalReason    String?                  @db.Text
+  rejectionReason   String?                  @db.Text
+  metadata          Json?
+  requestedAt       DateTime                 @default(now()) @db.Timestamptz(6)
+  reviewedAt        DateTime?                @db.Timestamptz(6)
+  executedAt        DateTime?                @db.Timestamptz(6)
+  shop              Shop?                    @relation(fields: [shopId], references: [id], onDelete: SetNull)
+  requestedByUser   User?                    @relation("GovernanceActionRequester", fields: [requestedByUserId], references: [id], onDelete: SetNull)
+  reviewedByUser    User?                    @relation("GovernanceActionReviewer", fields: [reviewedByUserId], references: [id], onDelete: SetNull)
+  createdAt         DateTime                 @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime                 @updatedAt @db.Timestamptz(6)
+  deletedAt         DateTime?                @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([category, riskLevel])
+  @@index([agentName])
+  @@index([requestedByUserId])
+  @@index([reviewedByUserId])
+  @@index([deletedAt])
+  @@map("governance_action_reviews")
+}
+
+model CurrencyExchangeRate {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  baseCurrencyCode  String    @db.Char(3)
+  quoteCurrencyCode String    @db.Char(3)
+  rate              Decimal   @db.Decimal(20, 10)
+  provider          String    @db.VarChar(80)
+  effectiveAt       DateTime  @db.Timestamptz(6)
+  expiresAt         DateTime? @db.Timestamptz(6)
+  baseCurrency      Currency  @relation("ExchangeRateFromCurrency", fields: [baseCurrencyCode], references: [code], onDelete: Restrict)
+  quoteCurrency     Currency  @relation("ExchangeRateToCurrency", fields: [quoteCurrencyCode], references: [code], onDelete: Restrict)
+  createdAt         DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime  @updatedAt @db.Timestamptz(6)
+  deletedAt         DateTime? @db.Timestamptz(6)
+
+  @@index([baseCurrencyCode, quoteCurrencyCode, effectiveAt])
+  @@index([provider])
+  @@index([deletedAt])
+  @@map("currency_exchange_rates")
+}
+
+model TaxProfile {
+  id                 String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId             String           @db.Uuid
+  countryCode        String           @db.Char(2)
+  name               String           @db.VarChar(160)
+  registrationNumber String?          @db.VarChar(120)
+  rateBps            Int              @default(0)
+  pricesIncludeTax   Boolean          @default(false)
+  appliesToShipping  Boolean          @default(false)
+  status             TaxProfileStatus @default(ACTIVE)
+  shop               Shop             @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  country            Country          @relation(fields: [countryCode], references: [code], onDelete: Restrict)
+  createdAt          DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime         @updatedAt @db.Timestamptz(6)
+  deletedAt          DateTime?        @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([countryCode])
+  @@index([deletedAt])
+  @@map("tax_profiles")
+}
+
+model ShippingZone {
+  id        String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId    String                @db.Uuid
+  name      String                @db.VarChar(160)
+  status    ShippingZoneStatus    @default(ACTIVE)
+  shop      Shop                  @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  countries ShippingZoneCountry[]
+  createdAt DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime              @updatedAt @db.Timestamptz(6)
+  deletedAt DateTime?             @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([deletedAt])
+  @@map("shipping_zones")
+}
+
+model ShippingZoneCountry {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shippingZoneId String       @db.Uuid
+  countryCode    String       @db.Char(2)
+  shippingZone   ShippingZone @relation(fields: [shippingZoneId], references: [id], onDelete: Cascade)
+  country        Country      @relation(fields: [countryCode], references: [code], onDelete: Restrict)
+  createdAt      DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime     @updatedAt @db.Timestamptz(6)
+  deletedAt      DateTime?    @db.Timestamptz(6)
+
+  @@index([countryCode])
+  @@index([deletedAt])
+  @@map("shipping_zone_countries")
+}
+
+model PaymentGatewayConfiguration {
+  id                  String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId              String                 @db.Uuid
+  provider            PaymentGatewayProvider
+  status              PaymentGatewayStatus   @default(DRAFT)
+  displayName         String                 @db.VarChar(160)
+  accountRef          String?                @db.VarChar(160)
+  supportedCurrencies String[]               @default([])
+  supportedCountries  String[]               @default([])
+  credentialsRef      String?                @db.VarChar(240)
+  metadata            Json?
+  shop                Shop                   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  createdAt           DateTime               @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime               @updatedAt @db.Timestamptz(6)
+  deletedAt           DateTime?              @db.Timestamptz(6)
+
+  @@index([shopId, provider, status])
+  @@index([deletedAt])
+  @@map("payment_gateway_configurations")
+}
+
+model ShopTranslation {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId      String    @db.Uuid
+  localeCode  String    @db.VarChar(35)
+  name        String    @db.VarChar(160)
+  description String?   @db.Text
+  shop        Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  locale      Locale    @relation(fields: [localeCode], references: [code], onDelete: Restrict)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
+  deletedAt   DateTime? @db.Timestamptz(6)
+
+  @@index([localeCode])
+  @@index([deletedAt])
+  @@map("shop_translations")
 }
 
 model ShopStaff {
@@ -207,20 +522,21 @@ model ShopStaff {
 }
 
 model Category {
-  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  shopId      String     @db.Uuid
-  parentId    String?    @db.Uuid
-  name        String     @db.VarChar(160)
-  slug        String     @db.VarChar(160)
-  description String?    @db.Text
-  sortOrder   Int        @default(0)
-  shop        Shop       @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  parent      Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
-  children    Category[] @relation("CategoryTree")
-  products    Product[]
-  createdAt   DateTime   @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime   @updatedAt @db.Timestamptz(6)
-  deletedAt   DateTime?  @db.Timestamptz(6)
+  id           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId       String                @db.Uuid
+  parentId     String?               @db.Uuid
+  name         String                @db.VarChar(160)
+  slug         String                @db.VarChar(160)
+  description  String?               @db.Text
+  sortOrder    Int                   @default(0)
+  shop         Shop                  @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  parent       Category?             @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children     Category[]            @relation("CategoryTree")
+  products     Product[]
+  translations CategoryTranslation[]
+  createdAt    DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime              @updatedAt @db.Timestamptz(6)
+  deletedAt    DateTime?             @db.Timestamptz(6)
 
   @@index([shopId, parentId])
   @@index([shopId, sortOrder])
@@ -228,21 +544,40 @@ model Category {
   @@map("categories")
 }
 
+model CategoryTranslation {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  categoryId  String    @db.Uuid
+  localeCode  String    @db.VarChar(35)
+  name        String    @db.VarChar(160)
+  slug        String    @db.VarChar(160)
+  description String?   @db.Text
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  locale      Locale    @relation(fields: [localeCode], references: [code], onDelete: Restrict)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
+  deletedAt   DateTime? @db.Timestamptz(6)
+
+  @@index([localeCode])
+  @@index([deletedAt])
+  @@map("category_translations")
+}
+
 model Product {
-  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  shopId      String           @db.Uuid
-  categoryId  String?          @db.Uuid
-  name        String           @db.VarChar(200)
-  slug        String           @db.VarChar(200)
-  description String?          @db.Text
-  status      ProductStatus    @default(DRAFT)
-  shop        Shop             @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  category    Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  variants    ProductVariant[]
-  images      ProductImage[]
-  createdAt   DateTime         @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime         @updatedAt @db.Timestamptz(6)
-  deletedAt   DateTime?        @db.Timestamptz(6)
+  id           String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId       String               @db.Uuid
+  categoryId   String?              @db.Uuid
+  name         String               @db.VarChar(200)
+  slug         String               @db.VarChar(200)
+  description  String?              @db.Text
+  status       ProductStatus        @default(DRAFT)
+  shop         Shop                 @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  category     Category?            @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  translations ProductTranslation[]
+  variants     ProductVariant[]
+  images       ProductImage[]
+  createdAt    DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime             @updatedAt @db.Timestamptz(6)
+  deletedAt    DateTime?            @db.Timestamptz(6)
 
   @@index([shopId, status])
   @@index([categoryId])
@@ -250,23 +585,61 @@ model Product {
   @@map("products")
 }
 
+model ProductTranslation {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId   String    @db.Uuid
+  localeCode  String    @db.VarChar(35)
+  name        String    @db.VarChar(200)
+  slug        String    @db.VarChar(200)
+  description String?   @db.Text
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  locale      Locale    @relation(fields: [localeCode], references: [code], onDelete: Restrict)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
+  deletedAt   DateTime? @db.Timestamptz(6)
+
+  @@index([localeCode])
+  @@index([deletedAt])
+  @@map("product_translations")
+}
+
 model ProductVariant {
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  productId      String    @db.Uuid
-  sku            String    @db.VarChar(120)
-  title          String    @db.VarChar(200)
+  id             String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId      String                @db.Uuid
+  sku            String                @db.VarChar(120)
+  title          String                @db.VarChar(200)
   priceCents     Int
-  currency       String    @default("USD") @db.Char(3)
-  inventoryCount Int       @default(0)
-  isDefault      Boolean   @default(false)
-  product        Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  createdAt      DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt      DateTime  @updatedAt @db.Timestamptz(6)
-  deletedAt      DateTime? @db.Timestamptz(6)
+  currency       String                @default("USD") @db.Char(3)
+  currencyRef    Currency              @relation(fields: [currency], references: [code], onDelete: Restrict)
+  inventoryCount Int                   @default(0)
+  isDefault      Boolean               @default(false)
+  product        Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
+  prices         ProductVariantPrice[]
+  createdAt      DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime              @updatedAt @db.Timestamptz(6)
+  deletedAt      DateTime?             @db.Timestamptz(6)
 
   @@index([productId, isDefault])
+  @@index([currency])
   @@index([deletedAt])
   @@map("product_variants")
+}
+
+model ProductVariantPrice {
+  id                  String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productVariantId    String         @db.Uuid
+  currencyCode        String         @db.Char(3)
+  priceCents          Int
+  compareAtPriceCents Int?
+  productVariant      ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+  currency            Currency       @relation(fields: [currencyCode], references: [code], onDelete: Restrict)
+  createdAt           DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime       @updatedAt @db.Timestamptz(6)
+  deletedAt           DateTime?      @db.Timestamptz(6)
+
+  @@index([currencyCode])
+  @@index([deletedAt])
+  @@map("product_variant_prices")
 }
 
 model ProductImage {
