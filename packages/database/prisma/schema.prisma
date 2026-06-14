@@ -86,6 +86,51 @@ enum ProductVariantStatus {
   ARCHIVED
 }
 
+enum WarehouseStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum InventoryItemStatus {
+  ACTIVE
+  OUT_OF_STOCK
+  ARCHIVED
+}
+
+enum InventoryMovementType {
+  INBOUND
+  OUTBOUND
+  TRANSFER_IN
+  TRANSFER_OUT
+  ADJUSTMENT
+  RESERVATION
+  RELEASE
+}
+
+enum InventoryAdjustmentReason {
+  COUNT_CORRECTION
+  DAMAGED
+  LOST
+  EXPIRED
+  MANUAL
+}
+
+enum InventoryReservationStatus {
+  ACTIVE
+  RELEASED
+  EXPIRED
+}
+
+enum InventoryAlertType {
+  LOW_STOCK
+  OUT_OF_STOCK
+}
+
+enum InventoryAlertStatus {
+  OPEN
+  RESOLVED
+}
+
 enum PaymentGatewayProvider {
   STRIPE
   OMISE
@@ -158,6 +203,8 @@ model User {
   sessions                   Session[]
   ownedShops                 Shop[]                   @relation("ShopOwner")
   shopStaff                  ShopStaff[]
+  inventoryMovements         InventoryMovement[]
+  inventoryAdjustments       InventoryAdjustment[]
   requestedGovernanceActions GovernanceActionReview[] @relation("GovernanceActionRequester")
   reviewedGovernanceActions  GovernanceActionReview[] @relation("GovernanceActionReviewer")
   createdAt                  DateTime                 @default(now()) @db.Timestamptz(6)
@@ -226,6 +273,7 @@ model Country {
   defaultLocale         Locale?               @relation("CountryDefaultLocale", fields: [defaultLocaleCode], references: [code], onDelete: SetNull)
   users                 User[]
   shops                 Shop[]
+  warehouses            Warehouse[]
   taxProfiles           TaxProfile[]
   shippingZoneCountries ShippingZoneCountry[]
   createdAt             DateTime              @default(now()) @db.Timestamptz(6)
@@ -419,6 +467,7 @@ model Shop {
   invoices                Invoice[]
   categories              Category[]
   products                Product[]
+  warehouses              Warehouse[]
   paymentGateways         PaymentGatewayConfiguration[]
   shippingZones           ShippingZone[]
   taxProfiles             TaxProfile[]
@@ -726,6 +775,7 @@ model ProductVariant {
   isDefault           Boolean               @default(false)
   product             Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
   prices              ProductVariantPrice[]
+  inventoryItems      InventoryItem[]
   createdAt           DateTime              @default(now()) @db.Timestamptz(6)
   updatedAt           DateTime              @updatedAt @db.Timestamptz(6)
   deletedAt           DateTime?             @db.Timestamptz(6)
@@ -769,4 +819,123 @@ model ProductImage {
   @@index([productId, sortOrder])
   @@index([deletedAt])
   @@map("product_images")
+}
+
+model Warehouse {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId         String          @db.Uuid
+  name           String          @db.VarChar(160)
+  code           String          @db.VarChar(80)
+  address        String?         @db.Text
+  countryCode    String          @db.Char(2)
+  timeZone       String          @default("UTC") @db.VarChar(64)
+  status         WarehouseStatus @default(ACTIVE)
+  shop           Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  country        Country         @relation(fields: [countryCode], references: [code], onDelete: Restrict)
+  inventoryItems InventoryItem[]
+  createdAt      DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime        @updatedAt @db.Timestamptz(6)
+  deletedAt      DateTime?       @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([countryCode])
+  @@index([deletedAt])
+  @@map("warehouses")
+}
+
+model InventoryItem {
+  id               String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  warehouseId      String                 @db.Uuid
+  productVariantId String                 @db.Uuid
+  sku              String                 @db.VarChar(120)
+  quantityOnHand   Int                    @default(0)
+  quantityReserved Int                    @default(0)
+  reorderPoint     Int                    @default(0)
+  reorderQuantity  Int                    @default(0)
+  status           InventoryItemStatus    @default(ACTIVE)
+  warehouse        Warehouse              @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  productVariant   ProductVariant         @relation(fields: [productVariantId], references: [id], onDelete: Restrict)
+  movements        InventoryMovement[]
+  adjustments      InventoryAdjustment[]
+  reservations     InventoryReservation[]
+  alerts           InventoryAlert[]
+  createdAt        DateTime               @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime               @updatedAt @db.Timestamptz(6)
+  deletedAt        DateTime?              @db.Timestamptz(6)
+
+  @@index([warehouseId, status])
+  @@index([productVariantId])
+  @@index([sku])
+  @@index([deletedAt])
+  @@map("inventory_items")
+}
+
+model InventoryMovement {
+  id              String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  inventoryItemId String                @db.Uuid
+  movementType    InventoryMovementType
+  quantity        Int
+  referenceNumber String?               @db.VarChar(120)
+  notes           String?               @db.Text
+  performedBy     String?               @db.Uuid
+  inventoryItem   InventoryItem         @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  performer       User?                 @relation(fields: [performedBy], references: [id], onDelete: SetNull)
+  createdAt       DateTime              @default(now()) @db.Timestamptz(6)
+
+  @@index([inventoryItemId, movementType])
+  @@index([referenceNumber])
+  @@index([performedBy])
+  @@map("inventory_movements")
+}
+
+model InventoryAdjustment {
+  id              String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  inventoryItemId String                    @db.Uuid
+  reason          InventoryAdjustmentReason
+  beforeQuantity  Int
+  afterQuantity   Int
+  notes           String?                   @db.Text
+  performedBy     String?                   @db.Uuid
+  inventoryItem   InventoryItem             @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  performer       User?                     @relation(fields: [performedBy], references: [id], onDelete: SetNull)
+  createdAt       DateTime                  @default(now()) @db.Timestamptz(6)
+
+  @@index([inventoryItemId, reason])
+  @@index([performedBy])
+  @@map("inventory_adjustments")
+}
+
+model InventoryReservation {
+  id              String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  inventoryItemId String                     @db.Uuid
+  quantity        Int
+  status          InventoryReservationStatus @default(ACTIVE)
+  expiresAt       DateTime                   @db.Timestamptz(6)
+  inventoryItem   InventoryItem              @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  createdAt       DateTime                   @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime                   @updatedAt @db.Timestamptz(6)
+  deletedAt       DateTime?                  @db.Timestamptz(6)
+
+  @@index([inventoryItemId, status])
+  @@index([expiresAt])
+  @@index([deletedAt])
+  @@map("inventory_reservations")
+}
+
+model InventoryAlert {
+  id              String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  inventoryItemId String               @db.Uuid
+  alertType       InventoryAlertType
+  threshold       Int
+  currentQuantity Int
+  status          InventoryAlertStatus @default(OPEN)
+  inventoryItem   InventoryItem        @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  createdAt       DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime             @updatedAt @db.Timestamptz(6)
+  deletedAt       DateTime?            @db.Timestamptz(6)
+
+  @@index([inventoryItemId, status])
+  @@index([alertType, status])
+  @@index([deletedAt])
+  @@map("inventory_alerts")
 }
