@@ -109,14 +109,20 @@ enum GovernanceApprovalStatus {
 model User {
   id                         String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email                      String                   @db.VarChar(320)
+  passwordHash               String                   @db.Text
   name                       String?                  @db.VarChar(160)
   status                     UserStatus               @default(ACTIVE)
   countryCode                String?                  @db.Char(2)
   localeCode                 String?                  @db.VarChar(35)
+  preferredLocale            String?                  @db.VarChar(35)
+  preferredCurrency          String?                  @db.Char(3)
   timeZone                   String                   @default("UTC") @db.VarChar(64)
   country                    Country?                 @relation(fields: [countryCode], references: [code], onDelete: SetNull)
   locale                     Locale?                  @relation(fields: [localeCode], references: [code], onDelete: SetNull)
+  preferredLocaleRef         Locale?                  @relation("UserPreferredLocale", fields: [preferredLocale], references: [code], onDelete: SetNull)
+  preferredCurrencyRef       Currency?                @relation(fields: [preferredCurrency], references: [code], onDelete: SetNull)
   roles                      UserRole[]
+  sessions                   Session[]
   ownedShops                 Shop[]                   @relation("ShopOwner")
   shopStaff                  ShopStaff[]
   requestedGovernanceActions GovernanceActionReview[] @relation("GovernanceActionRequester")
@@ -128,6 +134,8 @@ model User {
   @@index([status])
   @@index([countryCode])
   @@index([localeCode])
+  @@index([preferredLocale])
+  @@index([preferredCurrency])
   @@index([deletedAt])
   @@map("users")
 }
@@ -158,6 +166,7 @@ model Locale {
   language             Language              @relation(fields: [languageCode], references: [code], onDelete: Restrict)
   defaultCountries     Country[]             @relation("CountryDefaultLocale")
   users                User[]
+  preferredUsers       User[]                @relation("UserPreferredLocale")
   shops                Shop[]
   shopTranslations     ShopTranslation[]
   productTranslations  ProductTranslation[]
@@ -204,6 +213,7 @@ model Currency {
   decimalDigits        Int                    @default(2)
   isActive             Boolean                @default(true)
   defaultCountries     Country[]
+  preferredUsers       User[]
   shops                Shop[]
   plans                Plan[]
   invoices             Invoice[]
@@ -218,6 +228,27 @@ model Currency {
   @@index([isActive])
   @@index([deletedAt])
   @@map("currencies")
+}
+
+model Session {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId           String    @db.Uuid
+  refreshTokenHash String    @db.Text
+  userAgent        String?   @db.Text
+  ipAddress        String?   @db.VarChar(64)
+  expiresAt        DateTime  @db.Timestamptz(6)
+  revokedAt        DateTime? @db.Timestamptz(6)
+  lastUsedAt       DateTime? @db.Timestamptz(6)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt        DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime  @updatedAt @db.Timestamptz(6)
+  deletedAt        DateTime? @db.Timestamptz(6)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([revokedAt])
+  @@index([deletedAt])
+  @@map("sessions")
 }
 
 model Role {

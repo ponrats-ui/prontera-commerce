@@ -23,6 +23,7 @@ export type {
   ProductVariant,
   ProductVariantPrice,
   Role,
+  Session,
   Shop,
   ShopStaff,
   ShopTranslation,
