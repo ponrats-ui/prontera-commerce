@@ -17,3 +17,9 @@ It enables merchants worldwide to open virtual shops, manage real businesses, se
 The long-term vision is a persistent global commerce world where merchants, customers, AI agents, and communities interact naturally in immersive marketplace spaces.
 
 Prontera Commerce should combine real business operations with social discovery, community engagement, and AI-assisted merchant enablement while preserving human control over high-impact decisions.
+
+## AI Executive Board Vision
+
+Prontera Commerce will evolve into an AI-assisted virtual commerce organization where specialized AI agents support operations, merchant success, marketplace growth, and virtual economy management.
+
+The Founder remains the final decision-maker.

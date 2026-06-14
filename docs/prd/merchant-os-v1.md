@@ -37,3 +37,11 @@ Future architecture may include dedicated entities for AI agent governance:
 - `AgentApprovalRequest`
 
 These entities are future roadmap items only. They should not be implemented as database models until the approval workflows, audit requirements, and product requirements are finalized.
+
+## AI Agent Roadmap Reference
+
+Refer to:
+
+- [AI Executive Board](../governance/ai-executive-board.md)
+- [AI Agent Roadmap](../governance/agent-roadmap.md)
+- [Human-in-the-Loop Agent Rules](../governance/human-in-the-loop-agent-rules.md)
