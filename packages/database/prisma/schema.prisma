@@ -74,6 +74,18 @@ enum ProductStatus {
   ARCHIVED
 }
 
+enum CategoryStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum ProductVariantStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
 enum PaymentGatewayProvider {
   STRIPE
   OMISE
@@ -619,6 +631,7 @@ model Category {
   name         String                @db.VarChar(160)
   slug         String                @db.VarChar(160)
   description  String?               @db.Text
+  status       CategoryStatus        @default(ACTIVE)
   sortOrder    Int                   @default(0)
   shop         Shop                  @relation(fields: [shopId], references: [id], onDelete: Cascade)
   parent       Category?             @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
@@ -630,6 +643,7 @@ model Category {
   deletedAt    DateTime?             @db.Timestamptz(6)
 
   @@index([shopId, parentId])
+  @@index([shopId, status])
   @@index([shopId, sortOrder])
   @@index([deletedAt])
   @@map("categories")
@@ -640,7 +654,7 @@ model CategoryTranslation {
   categoryId  String    @db.Uuid
   localeCode  String    @db.VarChar(35)
   name        String    @db.VarChar(160)
-  slug        String    @db.VarChar(160)
+  slug        String?   @db.VarChar(160)
   description String?   @db.Text
   category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   locale      Locale    @relation(fields: [localeCode], references: [code], onDelete: Restrict)
@@ -656,13 +670,14 @@ model CategoryTranslation {
 model Product {
   id           String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   shopId       String               @db.Uuid
-  categoryId   String?              @db.Uuid
+  categoryId   String               @db.Uuid
+  sku          String               @db.VarChar(120)
   name         String               @db.VarChar(200)
   slug         String               @db.VarChar(200)
   description  String?              @db.Text
   status       ProductStatus        @default(DRAFT)
   shop         Shop                 @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  category     Category?            @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  category     Category             @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   translations ProductTranslation[]
   variants     ProductVariant[]
   images       ProductImage[]
@@ -671,23 +686,26 @@ model Product {
   deletedAt    DateTime?            @db.Timestamptz(6)
 
   @@index([shopId, status])
+  @@index([shopId, sku])
+  @@index([shopId, slug])
   @@index([categoryId])
   @@index([deletedAt])
   @@map("products")
 }
 
 model ProductTranslation {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  productId   String    @db.Uuid
-  localeCode  String    @db.VarChar(35)
-  name        String    @db.VarChar(200)
-  slug        String    @db.VarChar(200)
-  description String?   @db.Text
-  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  locale      Locale    @relation(fields: [localeCode], references: [code], onDelete: Restrict)
-  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
-  deletedAt   DateTime? @db.Timestamptz(6)
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId        String    @db.Uuid
+  localeCode       String    @db.VarChar(35)
+  name             String    @db.VarChar(200)
+  slug             String?   @db.VarChar(200)
+  shortDescription String?   @db.VarChar(500)
+  description      String?   @db.Text
+  product          Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  locale           Locale    @relation(fields: [localeCode], references: [code], onDelete: Restrict)
+  createdAt        DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime  @updatedAt @db.Timestamptz(6)
+  deletedAt        DateTime? @db.Timestamptz(6)
 
   @@index([localeCode])
   @@index([deletedAt])
@@ -695,22 +713,26 @@ model ProductTranslation {
 }
 
 model ProductVariant {
-  id             String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  productId      String                @db.Uuid
-  sku            String                @db.VarChar(120)
-  title          String                @db.VarChar(200)
-  priceCents     Int
-  currency       String                @default("USD") @db.Char(3)
-  currencyRef    Currency              @relation(fields: [currency], references: [code], onDelete: Restrict)
-  inventoryCount Int                   @default(0)
-  isDefault      Boolean               @default(false)
-  product        Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
-  prices         ProductVariantPrice[]
-  createdAt      DateTime              @default(now()) @db.Timestamptz(6)
-  updatedAt      DateTime              @updatedAt @db.Timestamptz(6)
-  deletedAt      DateTime?             @db.Timestamptz(6)
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId           String                @db.Uuid
+  sku                 String                @db.VarChar(120)
+  name                String                @map("title") @db.VarChar(200)
+  priceCents          Int
+  compareAtPriceCents Int?
+  status              ProductVariantStatus  @default(ACTIVE)
+  currency            String                @default("USD") @db.Char(3)
+  currencyRef         Currency              @relation(fields: [currency], references: [code], onDelete: Restrict)
+  inventoryCount      Int                   @default(0)
+  isDefault           Boolean               @default(false)
+  product             Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
+  prices              ProductVariantPrice[]
+  createdAt           DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime              @updatedAt @db.Timestamptz(6)
+  deletedAt           DateTime?             @db.Timestamptz(6)
 
   @@index([productId, isDefault])
+  @@index([productId, sku])
+  @@index([productId, status])
   @@index([currency])
   @@index([deletedAt])
   @@map("product_variants")
@@ -736,7 +758,7 @@ model ProductVariantPrice {
 model ProductImage {
   id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   productId String    @db.Uuid
-  url       String    @db.Text
+  imageUrl  String    @map("url") @db.Text
   altText   String?   @db.VarChar(200)
   sortOrder Int       @default(0)
   product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)

@@ -1,6 +1,7 @@
 export { PrismaClient } from "@prisma/client";
 export type {
   Category,
+  CategoryStatus,
   CategoryTranslation,
   Country,
   Currency,
@@ -19,9 +20,11 @@ export type {
   Prisma,
   Product,
   ProductImage,
+  ProductStatus,
   ProductTranslation,
   ProductVariant,
   ProductVariantPrice,
+  ProductVariantStatus,
   Role,
   Session,
   Shop,
