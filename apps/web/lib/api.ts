@@ -59,6 +59,34 @@ export type InventoryItem = {
   status: string;
 };
 
+export type Customer = {
+  id: string;
+  shopId: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  displayName: string;
+  email?: string | null;
+  phone?: string | null;
+  preferredLocale?: string | null;
+  preferredCurrency?: string | null;
+  countryCode?: string | null;
+  timeZone?: string | null;
+  status: string;
+  source: string;
+  tagAssignments?: Array<{
+    id: string;
+    tag: { id: string; name: string; color?: string | null };
+  }>;
+  groupMemberships?: Array<{ id: string; group: { id: string; name: string } }>;
+  loyaltyAccount?: {
+    id: string;
+    pointsBalance: number;
+    lifetimePoints: number;
+    tier: string;
+    status: string;
+  } | null;
+};
+
 export type Order = {
   id: string;
   orderNumber: string;
@@ -182,6 +210,22 @@ export const inventoryApi = {
     apiFetch<Warehouse[]>(`/shops/${shopId}/warehouses`),
   items: () => apiFetch<InventoryItem[]>("/inventory/items"),
   alerts: () => apiFetch<InventoryAlert[]>("/inventory/alerts"),
+};
+
+export const customersApi = {
+  list: (shopId: string) => apiFetch<Customer[]>(`/shops/${shopId}/customers`),
+  create: (shopId: string, body: unknown) =>
+    apiFetch<Customer>(`/shops/${shopId}/customers`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  update: (id: string, body: unknown) =>
+    apiFetch<Customer>(`/customers/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }),
+  loyalty: (id: string) =>
+    apiFetch<Customer["loyaltyAccount"]>(`/customers/${id}/loyalty`),
 };
 
 export const ordersApi = {

@@ -171,6 +171,57 @@ enum POSShiftStatus {
   CLOSED
 }
 
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+enum CustomerSource {
+  POS
+  ONLINE
+  MANUAL
+  IMPORTED
+}
+
+enum CustomerGroupStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum CustomerTagStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum CustomerNoteVisibility {
+  INTERNAL
+  MANAGER_ONLY
+}
+
+enum CustomerActivityType {
+  customer_created
+  customer_updated
+  address_added
+  note_added
+  group_assigned
+  tag_assigned
+  order_created_reference
+}
+
+enum CustomerLoyaltyTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum CustomerLoyaltyStatus {
+  ACTIVE
+  PAUSED
+  CLOSED
+}
+
 enum PaymentGatewayProvider {
   STRIPE
   OMISE
@@ -245,6 +296,8 @@ model User {
   orders                     Order[]                  @relation("CustomerOrders")
   posSessions                POSSession[]             @relation("POSSessionCashier")
   posShifts                  POSShift[]               @relation("POSShiftCashier")
+  customerNotes              CustomerNote[]
+  customerActivities         CustomerActivity[]
   ownedShops                 Shop[]                   @relation("ShopOwner")
   shopStaff                  ShopStaff[]
   inventoryMovements         InventoryMovement[]
@@ -296,6 +349,7 @@ model Locale {
   shopTranslations     ShopTranslation[]
   productTranslations  ProductTranslation[]
   categoryTranslations CategoryTranslation[]
+  customers            Customer[]
   createdAt            DateTime              @default(now()) @db.Timestamptz(6)
   updatedAt            DateTime              @updatedAt @db.Timestamptz(6)
   deletedAt            DateTime?             @db.Timestamptz(6)
@@ -318,6 +372,8 @@ model Country {
   users                 User[]
   shops                 Shop[]
   warehouses            Warehouse[]
+  customers             Customer[]
+  customerAddresses     CustomerAddress[]
   taxProfiles           TaxProfile[]
   shippingZoneCountries ShippingZoneCountry[]
   createdAt             DateTime              @default(now()) @db.Timestamptz(6)
@@ -348,6 +404,7 @@ model Currency {
   exchangeRatesTo      CurrencyExchangeRate[] @relation("ExchangeRateToCurrency")
   productVariants      ProductVariant[]
   productVariantPrices ProductVariantPrice[]
+  customers            Customer[]
   createdAt            DateTime               @default(now()) @db.Timestamptz(6)
   updatedAt            DateTime               @updatedAt @db.Timestamptz(6)
   deletedAt            DateTime?              @db.Timestamptz(6)
@@ -514,6 +571,9 @@ model Shop {
   warehouses              Warehouse[]
   carts                   Cart[]
   orders                  Order[]
+  customers               Customer[]
+  customerGroups          CustomerGroup[]
+  customerTags            CustomerTag[]
   posSessions             POSSession[]
   posShifts               POSShift[]
   paymentGateways         PaymentGatewayConfiguration[]
@@ -1039,29 +1099,218 @@ model CartItem {
   @@map("cart_items")
 }
 
+model Customer {
+  id                String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId            String                  @db.Uuid
+  firstName         String?                 @db.VarChar(120)
+  lastName          String?                 @db.VarChar(120)
+  displayName       String                  @db.VarChar(200)
+  email             String?                 @db.VarChar(320)
+  normalizedEmail   String?                 @db.VarChar(320)
+  phone             String?                 @db.VarChar(40)
+  normalizedPhone   String?                 @db.VarChar(40)
+  birthDate         DateTime?               @db.Date
+  gender            String?                 @db.VarChar(40)
+  preferredLocale   String?                 @db.VarChar(35)
+  preferredCurrency String?                 @db.Char(3)
+  countryCode       String?                 @db.Char(2)
+  timeZone          String                  @default("UTC") @db.VarChar(64)
+  status            CustomerStatus          @default(ACTIVE)
+  source            CustomerSource          @default(MANUAL)
+  shop              Shop                    @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  locale            Locale?                 @relation(fields: [preferredLocale], references: [code], onDelete: SetNull)
+  currency          Currency?               @relation(fields: [preferredCurrency], references: [code], onDelete: SetNull)
+  country           Country?                @relation(fields: [countryCode], references: [code], onDelete: SetNull)
+  addresses         CustomerAddress[]
+  notes             CustomerNote[]
+  tagAssignments    CustomerTagAssignment[]
+  groupMemberships  CustomerGroupMember[]
+  activities        CustomerActivity[]
+  loyaltyAccount    CustomerLoyaltyAccount?
+  orders            Order[]
+  createdAt         DateTime                @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime                @updatedAt @db.Timestamptz(6)
+  deletedAt         DateTime?               @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([shopId, normalizedEmail])
+  @@index([shopId, normalizedPhone])
+  @@index([preferredLocale])
+  @@index([preferredCurrency])
+  @@index([countryCode])
+  @@index([deletedAt])
+  @@map("customers")
+}
+
+model CustomerAddress {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId        String    @db.Uuid
+  label             String?   @db.VarChar(80)
+  recipientName     String?   @db.VarChar(200)
+  phone             String?   @db.VarChar(40)
+  addressLine1      String    @db.VarChar(240)
+  addressLine2      String?   @db.VarChar(240)
+  district          String?   @db.VarChar(120)
+  province          String?   @db.VarChar(120)
+  postalCode        String?   @db.VarChar(40)
+  countryCode       String    @db.Char(2)
+  isDefaultShipping Boolean   @default(false)
+  isDefaultBilling  Boolean   @default(false)
+  customer          Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  country           Country   @relation(fields: [countryCode], references: [code], onDelete: Restrict)
+  createdAt         DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime  @updatedAt @db.Timestamptz(6)
+  deletedAt         DateTime? @db.Timestamptz(6)
+
+  @@index([customerId])
+  @@index([countryCode])
+  @@index([deletedAt])
+  @@map("customer_addresses")
+}
+
+model CustomerGroup {
+  id          String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId      String                @db.Uuid
+  name        String                @db.VarChar(120)
+  description String?               @db.Text
+  status      CustomerGroupStatus   @default(ACTIVE)
+  shop        Shop                  @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  members     CustomerGroupMember[]
+  createdAt   DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime              @updatedAt @db.Timestamptz(6)
+  deletedAt   DateTime?             @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([deletedAt])
+  @@map("customer_groups")
+}
+
+model CustomerGroupMember {
+  id         String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId String        @db.Uuid
+  groupId    String        @db.Uuid
+  customer   Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  group      CustomerGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdAt  DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime      @updatedAt @db.Timestamptz(6)
+  deletedAt  DateTime?     @db.Timestamptz(6)
+
+  @@index([customerId])
+  @@index([groupId])
+  @@index([deletedAt])
+  @@map("customer_group_members")
+}
+
+model CustomerTag {
+  id          String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId      String                  @db.Uuid
+  name        String                  @db.VarChar(80)
+  color       String?                 @db.VarChar(32)
+  status      CustomerTagStatus       @default(ACTIVE)
+  shop        Shop                    @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  assignments CustomerTagAssignment[]
+  createdAt   DateTime                @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime                @updatedAt @db.Timestamptz(6)
+  deletedAt   DateTime?               @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([deletedAt])
+  @@map("customer_tags")
+}
+
+model CustomerTagAssignment {
+  id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId String      @db.Uuid
+  tagId      String      @db.Uuid
+  customer   Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  tag        CustomerTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt  DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime    @updatedAt @db.Timestamptz(6)
+  deletedAt  DateTime?   @db.Timestamptz(6)
+
+  @@index([customerId])
+  @@index([tagId])
+  @@index([deletedAt])
+  @@map("customer_tag_assignments")
+}
+
+model CustomerNote {
+  id         String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId String                 @db.Uuid
+  authorId   String?                @db.Uuid
+  note       String                 @db.Text
+  visibility CustomerNoteVisibility @default(INTERNAL)
+  customer   Customer               @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  author     User?                  @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  createdAt  DateTime               @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime               @updatedAt @db.Timestamptz(6)
+  deletedAt  DateTime?              @db.Timestamptz(6)
+
+  @@index([customerId])
+  @@index([authorId])
+  @@index([deletedAt])
+  @@map("customer_notes")
+}
+
+model CustomerActivity {
+  id          String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId  String               @db.Uuid
+  type        CustomerActivityType
+  metadata    Json?
+  performedBy String?              @db.Uuid
+  customer    Customer             @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  performer   User?                @relation(fields: [performedBy], references: [id], onDelete: SetNull)
+  createdAt   DateTime             @default(now()) @db.Timestamptz(6)
+
+  @@index([customerId, type])
+  @@index([performedBy])
+  @@map("customer_activities")
+}
+
+model CustomerLoyaltyAccount {
+  id             String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId     String                @unique @db.Uuid
+  pointsBalance  Int                   @default(0)
+  lifetimePoints Int                   @default(0)
+  tier           CustomerLoyaltyTier   @default(BRONZE)
+  status         CustomerLoyaltyStatus @default(ACTIVE)
+  customer       Customer              @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt      DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime              @updatedAt @db.Timestamptz(6)
+  deletedAt      DateTime?             @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([tier])
+  @@index([deletedAt])
+  @@map("customer_loyalty_accounts")
+}
+
 model Order {
-  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  orderNumber    String          @db.VarChar(80)
-  shopId         String          @db.Uuid
-  customerId     String?         @db.Uuid
-  status         OrderStatus     @default(DRAFT)
-  subtotal       Int             @default(0)
-  discount       Int             @default(0)
-  tax            Int             @default(0)
-  total          Int             @default(0)
-  currency       String          @db.Char(3)
-  notes          String?         @db.Text
-  shop           Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  customer       User?           @relation("CustomerOrders", fields: [customerId], references: [id], onDelete: SetNull)
-  items          OrderItem[]
-  paymentRecords PaymentRecord[]
-  createdAt      DateTime        @default(now()) @db.Timestamptz(6)
-  updatedAt      DateTime        @updatedAt @db.Timestamptz(6)
-  deletedAt      DateTime?       @db.Timestamptz(6)
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderNumber       String          @db.VarChar(80)
+  shopId            String          @db.Uuid
+  customerId        String?         @db.Uuid
+  customerProfileId String?         @db.Uuid
+  status            OrderStatus     @default(DRAFT)
+  subtotal          Int             @default(0)
+  discount          Int             @default(0)
+  tax               Int             @default(0)
+  total             Int             @default(0)
+  currency          String          @db.Char(3)
+  notes             String?         @db.Text
+  shop              Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customer          User?           @relation("CustomerOrders", fields: [customerId], references: [id], onDelete: SetNull)
+  customerProfile   Customer?       @relation(fields: [customerProfileId], references: [id], onDelete: SetNull)
+  items             OrderItem[]
+  paymentRecords    PaymentRecord[]
+  createdAt         DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime        @updatedAt @db.Timestamptz(6)
+  deletedAt         DateTime?       @db.Timestamptz(6)
 
   @@unique([shopId, orderNumber])
   @@index([shopId, status])
   @@index([customerId])
+  @@index([customerProfileId])
   @@index([deletedAt])
   @@map("orders")
 }

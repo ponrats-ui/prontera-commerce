@@ -1,8 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { inventoryApi, ordersApi, productsApi, shopsApi } from "../../lib/api";
-import type { InventoryAlert, Order, Product, Shop } from "../../lib/api";
+import {
+  customersApi,
+  inventoryApi,
+  ordersApi,
+  productsApi,
+  shopsApi,
+} from "../../lib/api";
+import type {
+  Customer,
+  InventoryAlert,
+  Order,
+  Product,
+  Shop,
+} from "../../lib/api";
 import {
   EmptyState,
   EmptyStateCard,
@@ -14,6 +26,7 @@ import {
 export default function DashboardPage() {
   const [shops, setShops] = useState<Shop[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [alerts, setAlerts] = useState<InventoryAlert[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -26,13 +39,16 @@ export default function DashboardPage() {
         const firstShop = myShops[0];
         if (!firstShop) return;
 
-        const [shopProducts, shopOrders, inventoryAlerts] = await Promise.all([
-          productsApi.list(firstShop.id).catch(() => []),
-          ordersApi.list(firstShop.id).catch(() => []),
-          inventoryApi.alerts().catch(() => []),
-        ]);
+        const [shopProducts, shopCustomers, shopOrders, inventoryAlerts] =
+          await Promise.all([
+            productsApi.list(firstShop.id).catch(() => []),
+            customersApi.list(firstShop.id).catch(() => []),
+            ordersApi.list(firstShop.id).catch(() => []),
+            inventoryApi.alerts().catch(() => []),
+          ]);
 
         setProducts(shopProducts);
+        setCustomers(shopCustomers);
         setOrders(shopOrders);
         setAlerts(inventoryAlerts);
       } catch (err) {
@@ -56,6 +72,7 @@ export default function DashboardPage() {
       <ErrorMessage message={error} />
       <div className="grid four">
         <MetricCard label="Shops" value={shops.length} />
+        <MetricCard label="Customers" value={customers.length} />
         <MetricCard label="Products" value={products.length} />
         <MetricCard label="Inventory alerts" value={alerts.length} />
         <MetricCard label="Orders today" value={ordersToday} />
@@ -75,6 +92,14 @@ export default function DashboardPage() {
             description="Create the first catalog item once your shop and category data are ready."
             href="/dashboard/products"
             title="Add your first product"
+          />
+        ) : null}
+        {shops.length && !customers.length ? (
+          <EmptyStateCard
+            action="Add customer"
+            description="Create the first CRM profile for POS, online, or manual customers."
+            href="/dashboard/customers"
+            title="Add your first customer"
           />
         ) : null}
         {shops.length && !alerts.length ? (

@@ -9,6 +9,7 @@ import { clearAuthSession, getAccessToken, getStoredUser } from "../lib/auth";
 const navItems = [
   { href: "/dashboard", label: "Overview" },
   { href: "/dashboard/shops", label: "Shops" },
+  { href: "/dashboard/customers", label: "Customers" },
   { href: "/dashboard/products", label: "Products" },
   { href: "/dashboard/inventory", label: "Inventory" },
   { href: "/dashboard/orders", label: "Orders" },
