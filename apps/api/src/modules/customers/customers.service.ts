@@ -28,6 +28,8 @@ import type {
   UpdateCustomerTagDto,
 } from "./dto/customer.dto";
 
+const nullable = (value?: string | null): string | null => value ?? null;
+
 const customerInclude = {
   addresses: { where: { deletedAt: null }, orderBy: { createdAt: "desc" } },
   notes: { where: { deletedAt: null }, orderBy: { createdAt: "desc" } },
@@ -233,9 +235,9 @@ export class CustomersService {
     const data: Prisma.CustomerGroupUncheckedCreateInput = {
       shopId,
       name: dto.name,
+      description: nullable(dto.description),
       status: dto.status ?? CustomerGroupStatus.ACTIVE,
     };
-    if (dto.description !== undefined) data.description = dto.description;
 
     return this.prisma.customerGroup.create({ data });
   }
@@ -342,9 +344,9 @@ export class CustomersService {
     const data: Prisma.CustomerTagUncheckedCreateInput = {
       shopId,
       name: dto.name,
+      color: nullable(dto.color),
       status: dto.status ?? CustomerTagStatus.ACTIVE,
     };
-    if (dto.color !== undefined) data.color = dto.color;
 
     return this.prisma.customerTag.create({ data });
   }
@@ -620,9 +622,9 @@ export class CustomersService {
   }
 
   private resolveDisplayName(dto: {
-    displayName?: string | undefined;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
+    displayName?: string | null | undefined;
+    firstName?: string | null | undefined;
+    lastName?: string | null | undefined;
   }) {
     const composed = [dto.firstName, dto.lastName].filter(Boolean).join(" ");
     return dto.displayName ?? (composed || "Customer");

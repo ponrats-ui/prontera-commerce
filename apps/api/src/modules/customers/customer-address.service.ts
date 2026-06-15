@@ -12,6 +12,8 @@ import type {
 } from "./dto/customer.dto";
 import { CustomerPermissionsService } from "./customer-permissions.service";
 
+const nullable = (value?: string | null): string | null => value ?? null;
+
 @Injectable()
 export class CustomerAddressService {
   constructor(
@@ -31,21 +33,18 @@ export class CustomerAddressService {
       await this.clearDefaults(tx, customerId, dto);
       const data: Prisma.CustomerAddressUncheckedCreateInput = {
         customerId,
+        label: nullable(dto.label),
+        recipientName: nullable(dto.recipientName),
+        phone: nullable(dto.phone),
         addressLine1: dto.addressLine1,
+        addressLine2: nullable(dto.addressLine2),
+        district: nullable(dto.district),
+        province: nullable(dto.province),
+        postalCode: nullable(dto.postalCode),
         countryCode: dto.countryCode,
         isDefaultShipping: dto.isDefaultShipping ?? false,
         isDefaultBilling: dto.isDefaultBilling ?? false,
       };
-
-      if (dto.label !== undefined) data.label = dto.label;
-      if (dto.recipientName !== undefined) {
-        data.recipientName = dto.recipientName;
-      }
-      if (dto.phone !== undefined) data.phone = dto.phone;
-      if (dto.addressLine2 !== undefined) data.addressLine2 = dto.addressLine2;
-      if (dto.district !== undefined) data.district = dto.district;
-      if (dto.province !== undefined) data.province = dto.province;
-      if (dto.postalCode !== undefined) data.postalCode = dto.postalCode;
 
       const address = await tx.customerAddress.create({
         data,
