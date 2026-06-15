@@ -1,74 +1,174 @@
 # Prontera Commerce
 
-Prontera Commerce is a global AI-assisted virtual marketplace inspired by the social and community experience of MMORPG towns. Its mission is to enable merchants worldwide to open virtual shops, manage real businesses, and engage with customers in an immersive digital marketplace.
+The Open World Commerce Platform for Real Businesses
 
-## Architecture
+Prontera Commerce is a Merchant OS + Marketplace + AI Commerce + Open World Commerce platform inspired by MMORPG towns, designed for real-world businesses.
+
+## Current Status
+
+Status: Internal Alpha
+
+Current release: `v0.1.0-core-commerce`
+
+Latest completed sprint: Sprint 7 Customer & CRM Foundation
+
+Next planned release: `v0.2.0-crm-foundation`
+
+## Completed Modules
+
+- [x] Infrastructure Foundation
+- [x] Docker
+- [x] PostgreSQL
+- [x] Redis
+- [x] Prisma
+- [x] NestJS API
+- [x] Swagger API docs
+- [x] Authentication
+- [x] JWT
+- [x] RBAC
+- [x] Session Management
+- [x] Shop Management
+- [x] Product Catalog
+- [x] Inventory & Warehouse
+- [x] Orders
+- [x] Checkout
+- [x] POS
+- [x] Merchant Dashboard Foundation
+- [x] Developer onboarding / demo login flow
+- [x] Customer CRM Foundation
+- [x] Global Commerce Foundation
+- [x] Human-in-the-Loop Governance
+- [x] AI Executive Board Documentation
+- [x] Intellectual Property Foundation
+
+## Architecture Overview
 
 ```text
 apps/
-  web/      Next.js 15 customer storefront
   api/      NestJS backend API
-  mobile/   Flutter application placeholder
+  web/      Next.js merchant dashboard and web foundation
   admin/    Admin console placeholder
+  mobile/   Mobile application placeholder
 
 packages/
   database/ Prisma schema and database client boundary
   shared/   Cross-platform domain primitives and contracts
-  ui/       Shared UI package for web-facing applications
-  sdk/      Typed client SDK for consumers of the API
+  ui/       Shared UI package
+  sdk/      Typed client SDK boundary
+
+infrastructure/
+  docker    PostgreSQL and Redis through Docker Compose
 ```
 
-The monorepo uses Turborepo with npm workspaces. Shared code is intentionally split by responsibility so domain contracts, persistence, UI, and API client concerns can evolve independently.
+The repository is a TypeScript monorepo using npm workspaces and Turborepo.
+
+## Tech Stack
+
+- NestJS
+- Next.js
+- TypeScript
+- Prisma
+- PostgreSQL
+- Redis
+- Docker
+- Swagger
+
+## Local Development
+
+Copy environment variables:
+
+```bash
+copy .env.example .env
+```
+
+Start local infrastructure:
+
+```bash
+docker compose up -d
+```
+
+Install dependencies:
+
+```bash
+npm.cmd install
+```
+
+Generate Prisma client:
+
+```bash
+npm.cmd run db:generate
+```
+
+Run migrations:
+
+```bash
+npm.cmd run db:migrate
+```
+
+Start the API:
+
+```bash
+npm.cmd run dev --workspace=@prontera/api
+```
+
+Start the web app:
+
+```bash
+npm.cmd run dev --workspace=@prontera/web
+```
+
+Local URLs:
+
+- Backend: `http://localhost:4000`
+- Swagger: `http://localhost:4000/docs`
+- Web: `http://localhost:3000`
+
+## Environment
+
+Example `DATABASE_URL`:
+
+```text
+postgresql://prontera:prontera_password@localhost:5432/prontera_commerce?schema=public
+```
+
+## Release Milestones
+
+- `v0.1.0-core-commerce`: Core Commerce Engine foundation complete.
+- `v0.2.0-crm-foundation`: Planned Customer & CRM release milestone.
+
+## Roadmap
+
+Next priorities:
+
+- Sprint 8 Promotion & Pricing Engine
+- Sprint 9 Payment Gateway Foundation
+- Sprint 10 Shipping & Fulfillment Foundation
+- Marketplace Storefront
+- AI Merchant
+- Virtual Prontera World
+
+## Governance
+
+COM / Ponrat / Founder has final decision-making authority across Prontera Commerce.
+
+AI agents may assist, recommend, document, analyze, and automate low-risk tasks under Human-in-the-Loop governance. High-impact financial, legal, compliance, moderation, policy, pricing, and strategic decisions remain under human authority.
 
 ## Documentation
 
+- [Core Commerce Release](docs/releases/v0.1.0-core-commerce.md)
+- [Merchant Dashboard](docs/web/merchant-dashboard.md)
+- [Customer CRM Foundation](docs/architecture/customer-crm-foundation.md)
 - [Vision Asset Library](docs/vision/README.md)
-- [Vision History](docs/vision/vision-history.md)
 - [Master Roadmap](docs/roadmap/master-roadmap.md)
-- [Prontera Commerce Vision](docs/vision/prontera-commerce-vision.md)
 - [Founder Principles](docs/architecture/founder-principles.md)
+- [AI Executive Board](docs/governance/ai-executive-board.md)
 - [Legal and Ownership Documents](docs/legal/README.md)
 
-## Technical Decisions
+## Known Limitations
 
-- **TypeScript first:** all JavaScript application and package boundaries are typed from the start.
-- **Clean Architecture:** app entrypoints depend inward on shared contracts and package APIs instead of coupling directly to infrastructure details.
-- **Domain Driven Design:** core commerce concepts begin in the database model and will be promoted into explicit domain modules during Sprint 1.
-- **Docker ready:** PostgreSQL and Redis run through Docker Compose with health checks and persisted volumes.
-- **CI/CD ready:** root scripts expose consistent `build`, `lint`, `test`, and `typecheck` commands through Turborepo.
-
-## Getting Started
-
-1. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-2. Copy environment variables:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Start infrastructure:
-
-   ```bash
-   npm run docker:up
-   ```
-
-4. Generate the Prisma client:
-
-   ```bash
-   npm run db:generate
-   ```
-
-5. Create a development migration:
-
-   ```bash
-   npm run db:migrate
-   ```
-
-## Sprint 1 Readiness
-
-Sprint 1 can begin by implementing authentication, shop onboarding, subscription lifecycle workflows, and the first API modules on top of the `User`, `Shop`, and `Subscription` models.
+- Internal alpha UI
+- No external payment gateway yet
+- No production hosting yet
+- No customer marketplace storefront yet
+- No AI Merchant UI yet
+- No Open World layer yet
