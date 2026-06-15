@@ -134,6 +134,32 @@ export type POSSession = {
   }>;
 };
 
+export type LiveChannel = {
+  id: string;
+  shopId: string;
+  provider: string;
+  title: string;
+  description?: string | null;
+  videoUrl: string;
+  embedUrl: string;
+  thumbnailUrl?: string | null;
+  status: string;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  createdBy?: {
+    id: string;
+    email: string;
+    name?: string | null;
+  } | null;
+};
+
+export type LiveCommerceAccess = {
+  canUseLiveCommerce: boolean;
+  minimumPlan: string;
+};
+
 export type AuthResponse = {
   accessToken: string;
   refreshToken?: string;
@@ -245,5 +271,41 @@ export const posApi = {
     apiFetch<POSSession>("/pos/close", {
       method: "POST",
       body: JSON.stringify(body),
+    }),
+};
+
+export const liveCommerceApi = {
+  access: (shopId: string) =>
+    apiFetch<LiveCommerceAccess>(`/shops/${shopId}/live-channels/access`),
+  list: (shopId: string) =>
+    apiFetch<LiveChannel[]>(`/shops/${shopId}/live-channels`),
+  active: (shopId: string) =>
+    apiFetch<LiveChannel | null>(`/shops/${shopId}/live-channels/active`),
+  create: (
+    shopId: string,
+    body: {
+      title: string;
+      description?: string;
+      videoUrl: string;
+      thumbnailUrl?: string;
+      status?: string;
+    },
+  ) =>
+    apiFetch<LiveChannel>(`/shops/${shopId}/live-channels`, {
+      method: "POST",
+      body: JSON.stringify({ provider: "YOUTUBE", ...body }),
+    }),
+  update: (id: string, body: Partial<LiveChannel>) =>
+    apiFetch<LiveChannel>(`/live-channels/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }),
+  goLive: (id: string) =>
+    apiFetch<LiveChannel>(`/live-channels/${id}/go-live`, {
+      method: "POST",
+    }),
+  end: (id: string) =>
+    apiFetch<LiveChannel>(`/live-channels/${id}/end`, {
+      method: "POST",
     }),
 };

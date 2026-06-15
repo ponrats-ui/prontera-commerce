@@ -222,6 +222,21 @@ enum CustomerLoyaltyStatus {
   CLOSED
 }
 
+enum LiveChannelProvider {
+  YOUTUBE
+  FACEBOOK
+  TIKTOK
+  CUSTOM_EMBED
+}
+
+enum LiveChannelStatus {
+  DRAFT
+  SCHEDULED
+  LIVE
+  ENDED
+  DISABLED
+}
+
 enum PaymentGatewayProvider {
   STRIPE
   OMISE
@@ -298,6 +313,7 @@ model User {
   posShifts                  POSShift[]               @relation("POSShiftCashier")
   customerNotes              CustomerNote[]
   customerActivities         CustomerActivity[]
+  createdLiveChannels        ShopLiveChannel[]
   ownedShops                 Shop[]                   @relation("ShopOwner")
   shopStaff                  ShopStaff[]
   inventoryMovements         InventoryMovement[]
@@ -574,6 +590,7 @@ model Shop {
   customers               Customer[]
   customerGroups          CustomerGroup[]
   customerTags            CustomerTag[]
+  liveChannels            ShopLiveChannel[]
   posSessions             POSSession[]
   posShifts               POSShift[]
   paymentGateways         PaymentGatewayConfiguration[]
@@ -1283,6 +1300,33 @@ model CustomerLoyaltyAccount {
   @@index([tier])
   @@index([deletedAt])
   @@map("customer_loyalty_accounts")
+}
+
+model ShopLiveChannel {
+  id           String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId       String              @db.Uuid
+  provider     LiveChannelProvider
+  title        String              @db.VarChar(160)
+  description  String?             @db.Text
+  videoUrl     String              @db.Text
+  embedUrl     String              @db.Text
+  thumbnailUrl String?             @db.Text
+  status       LiveChannelStatus   @default(DRAFT)
+  startsAt     DateTime?           @db.Timestamptz(6)
+  endsAt       DateTime?           @db.Timestamptz(6)
+  createdById  String?             @db.Uuid
+  shop         Shop                @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  createdBy    User?               @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt    DateTime            @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime            @updatedAt @db.Timestamptz(6)
+  deletedAt    DateTime?           @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([provider])
+  @@index([createdById])
+  @@index([startsAt])
+  @@index([deletedAt])
+  @@map("shop_live_channels")
 }
 
 model Order {

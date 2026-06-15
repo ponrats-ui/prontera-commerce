@@ -14,6 +14,7 @@ const navItems = [
   { href: "/dashboard/inventory", label: "Inventory" },
   { href: "/dashboard/orders", label: "Orders" },
   { href: "/dashboard/pos", label: "POS" },
+  { href: "/dashboard/live-commerce", label: "Live Commerce", badge: "Pro" },
 ];
 
 export function DashboardShell({ children }: { children: ReactNode }) {
@@ -49,7 +50,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               href={item.href}
               key={item.href}
             >
-              {item.label}
+              <span>{item.label}</span>
+              {"badge" in item ? <span className="nav-badge">{item.badge}</span> : null}
             </Link>
           ))}
         </nav>

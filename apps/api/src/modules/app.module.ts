@@ -4,6 +4,7 @@ import { CatalogModule } from "./catalog/catalog.module";
 import { CustomersModule } from "./customers/customers.module";
 import { GlobalCommerceModule } from "./global-commerce/global-commerce.module";
 import { InventoryModule } from "./inventory/inventory.module";
+import { LiveCommerceModule } from "./live-commerce/live-commerce.module";
 import { OrdersModule } from "./orders/orders.module";
 import { ShopsModule } from "./shops/shops.module";
 
@@ -16,6 +17,7 @@ import { ShopsModule } from "./shops/shops.module";
     InventoryModule,
     OrdersModule,
     CustomersModule,
+    LiveCommerceModule,
   ],
 })
 export class AppModule {}

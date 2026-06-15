@@ -10,7 +10,7 @@ Status: Internal Alpha
 
 Current release: `v0.1.0-core-commerce`
 
-Latest completed sprint: Sprint 7 Customer & CRM Foundation
+Latest completed sprint: Sprint 8A Pro Live Commerce Foundation
 
 Next planned release: `v0.2.0-crm-foundation`
 
@@ -36,6 +36,8 @@ Next planned release: `v0.2.0-crm-foundation`
 - [x] Merchant Dashboard Foundation
 - [x] Developer onboarding / demo login flow
 - [x] Customer CRM Foundation
+- [x] Pro Live Commerce Foundation
+- [x] YouTube Live Channel Embed Support
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
 - [x] AI Executive Board Documentation
@@ -140,7 +142,7 @@ postgresql://prontera:prontera_password@localhost:5432/prontera_commerce?schema=
 
 Next priorities:
 
-- Sprint 8 Promotion & Pricing Engine
+- Sprint 8B Pricing, Promotions, and Pro Plan Packaging
 - Sprint 9 Payment Gateway Foundation
 - Sprint 10 Shipping & Fulfillment Foundation
 - Marketplace Storefront
@@ -158,6 +160,8 @@ AI agents may assist, recommend, document, analyze, and automate low-risk tasks 
 - [Core Commerce Release](docs/releases/v0.1.0-core-commerce.md)
 - [Merchant Dashboard](docs/web/merchant-dashboard.md)
 - [Customer CRM Foundation](docs/architecture/customer-crm-foundation.md)
+- [Live Commerce Architecture](docs/architecture/live-commerce.md)
+- [Live Commerce API](docs/api/live-commerce.md)
 - [Vision Asset Library](docs/vision/README.md)
 - [Master Roadmap](docs/roadmap/master-roadmap.md)
 - [Founder Principles](docs/architecture/founder-principles.md)
