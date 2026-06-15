@@ -45,9 +45,9 @@ CREATE INDEX "product_variants_productId_sku_idx" ON "product_variants"("product
 CREATE INDEX "product_variants_productId_status_idx" ON "product_variants"("productId", "status");
 
 -- Soft-delete-aware uniqueness
-CREATE UNIQUE INDEX "categories_shopId_slug_active_key" ON "categories"("shopId", "slug") WHERE "deletedAt" IS NULL;
-CREATE UNIQUE INDEX "products_shopId_slug_active_key" ON "products"("shopId", "slug") WHERE "deletedAt" IS NULL;
-CREATE UNIQUE INDEX "products_shopId_sku_active_key" ON "products"("shopId", "sku") WHERE "deletedAt" IS NULL;
-CREATE UNIQUE INDEX "product_variants_productId_sku_active_key" ON "product_variants"("productId", "sku") WHERE "deletedAt" IS NULL;
-CREATE UNIQUE INDEX "category_translations_categoryId_localeCode_active_key" ON "category_translations"("categoryId", "localeCode") WHERE "deletedAt" IS NULL;
-CREATE UNIQUE INDEX "product_translations_productId_localeCode_active_key" ON "product_translations"("productId", "localeCode") WHERE "deletedAt" IS NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS "categories_shopId_slug_active_key" ON "categories"("shopId", "slug") WHERE "deletedAt" IS NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS "products_shopId_slug_active_key" ON "products"("shopId", "slug") WHERE "deletedAt" IS NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS "products_shopId_sku_active_key" ON "products"("shopId", "sku") WHERE "deletedAt" IS NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS "product_variants_productId_sku_active_key" ON "product_variants"("productId", "sku") WHERE "deletedAt" IS NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS "category_translations_categoryId_localeCode_active_key" ON "category_translations"("categoryId", "localeCode") WHERE "deletedAt" IS NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS "product_translations_productId_localeCode_active_key" ON "product_translations"("productId", "localeCode") WHERE "deletedAt" IS NULL;
