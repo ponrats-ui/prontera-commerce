@@ -155,6 +155,12 @@ COM / Ponrat / Founder has final decision-making authority across Prontera Comme
 
 AI agents may assist, recommend, document, analyze, and automate low-risk tasks under Human-in-the-Loop governance. High-impact financial, legal, compliance, moderation, policy, pricing, and strategic decisions remain under human authority.
 
+## AI Partner Continuity
+
+Prontera Commerce uses documented AI operating memory to preserve the working continuity of Mr.P, the CTO AI partner.
+
+Reference: [Mr.P Operating Memory](docs/ai/mr-p-operating-memory.md)
+
 ## Documentation
 
 - [Core Commerce Release](docs/releases/v0.1.0-core-commerce.md)
