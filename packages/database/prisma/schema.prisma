@@ -237,6 +237,22 @@ enum LiveChannelStatus {
   DISABLED
 }
 
+enum WorldZoneStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum CommerceGateType {
+  CITY_GATE
+  DISTRICT_GATE
+  SPECIAL_GATE
+}
+
+enum CommerceGateStatus {
+  ACTIVE
+  DISABLED
+}
+
 enum PaymentGatewayProvider {
   STRIPE
   OMISE
@@ -1327,6 +1343,74 @@ model ShopLiveChannel {
   @@index([startsAt])
   @@index([deletedAt])
   @@map("shop_live_channels")
+}
+
+model WorldZone {
+  id                       String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code                     String          @db.VarChar(80)
+  name                     String          @db.VarChar(160)
+  description              String?         @db.Text
+  status                   WorldZoneStatus @default(ACTIVE)
+  thumbnailUrl             String?         @db.Text
+  mapImageUrl              String?         @db.Text
+  sortOrder                Int             @default(0)
+  districts                WorldDistrict[]
+  sourceGates              CommerceGate[]  @relation("CommerceGateSourceZone")
+  destinationGates         CommerceGate[]  @relation("CommerceGateDestinationZone")
+  createdAt                DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt                DateTime        @updatedAt @db.Timestamptz(6)
+
+  @@unique([code])
+  @@index([status])
+  @@index([sortOrder])
+  @@map("world_zones")
+}
+
+model WorldDistrict {
+  id                       String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  zoneId                   String         @db.Uuid
+  code                     String         @db.VarChar(80)
+  name                     String         @db.VarChar(160)
+  description              String?        @db.Text
+  category                 String         @db.VarChar(80)
+  sortOrder                Int            @default(0)
+  zone                     WorldZone      @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  sourceGates              CommerceGate[] @relation("CommerceGateSourceDistrict")
+  destinationGates         CommerceGate[] @relation("CommerceGateDestinationDistrict")
+  createdAt                DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt                DateTime       @updatedAt @db.Timestamptz(6)
+
+  @@unique([zoneId, code])
+  @@index([zoneId])
+  @@index([category])
+  @@index([sortOrder])
+  @@map("world_districts")
+}
+
+model CommerceGate {
+  id                       String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceZoneId             String             @db.Uuid
+  destinationZoneId        String             @db.Uuid
+  sourceDistrictId         String?            @db.Uuid
+  destinationDistrictId    String?            @db.Uuid
+  title                    String             @db.VarChar(160)
+  description              String?            @db.Text
+  gateType                 CommerceGateType
+  status                   CommerceGateStatus @default(ACTIVE)
+  sourceZone               WorldZone          @relation("CommerceGateSourceZone", fields: [sourceZoneId], references: [id], onDelete: Restrict)
+  destinationZone          WorldZone          @relation("CommerceGateDestinationZone", fields: [destinationZoneId], references: [id], onDelete: Restrict)
+  sourceDistrict           WorldDistrict?     @relation("CommerceGateSourceDistrict", fields: [sourceDistrictId], references: [id], onDelete: SetNull)
+  destinationDistrict      WorldDistrict?     @relation("CommerceGateDestinationDistrict", fields: [destinationDistrictId], references: [id], onDelete: SetNull)
+  createdAt                DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt                DateTime           @updatedAt @db.Timestamptz(6)
+
+  @@index([sourceZoneId])
+  @@index([destinationZoneId])
+  @@index([sourceDistrictId])
+  @@index([destinationDistrictId])
+  @@index([gateType])
+  @@index([status])
+  @@map("commerce_gates")
 }
 
 model Order {

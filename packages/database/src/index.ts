@@ -6,6 +6,9 @@ export type {
   CartStatus,
   CategoryStatus,
   CategoryTranslation,
+  CommerceGate,
+  CommerceGateStatus,
+  CommerceGateType,
   Country,
   Customer,
   CustomerActivity,
@@ -88,4 +91,7 @@ export type {
   UserRole,
   Warehouse,
   WarehouseStatus,
+  WorldDistrict,
+  WorldZone,
+  WorldZoneStatus,
 } from "@prisma/client";

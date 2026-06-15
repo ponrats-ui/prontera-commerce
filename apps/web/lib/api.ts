@@ -160,6 +160,66 @@ export type LiveCommerceAccess = {
   minimumPlan: string;
 };
 
+export type WorldDistrict = {
+  id: string;
+  zoneId: string;
+  code: string;
+  name: string;
+  description?: string | null;
+  category: string;
+  sortOrder: number;
+  zone?: Pick<WorldZone, "id" | "code" | "name" | "status">;
+};
+
+export type WorldZone = {
+  id: string;
+  code: string;
+  name: string;
+  description?: string | null;
+  status: string;
+  thumbnailUrl?: string | null;
+  mapImageUrl?: string | null;
+  sortOrder: number;
+  districts?: WorldDistrict[];
+};
+
+export type CommerceGate = {
+  id: string;
+  sourceZoneId: string;
+  destinationZoneId: string;
+  sourceDistrictId?: string | null;
+  destinationDistrictId?: string | null;
+  title: string;
+  description?: string | null;
+  gateType: string;
+  status: string;
+  sourceZone?: Pick<WorldZone, "id" | "code" | "name">;
+  destinationZone?: Pick<WorldZone, "id" | "code" | "name">;
+  sourceDistrict?: Pick<
+    WorldDistrict,
+    "id" | "code" | "name" | "category"
+  > | null;
+  destinationDistrict?: Pick<
+    WorldDistrict,
+    "id" | "code" | "name" | "category"
+  > | null;
+};
+
+export type TravelRecommendation = {
+  label: string;
+  destinationType: string;
+  zoneCode?: string;
+  districtCode?: string;
+  reason: string;
+};
+
+export type TravelOverview = {
+  zones: WorldZone[];
+  districts: WorldDistrict[];
+  gates: CommerceGate[];
+  recommendations: TravelRecommendation[];
+};
+
 export type AuthResponse = {
   accessToken: string;
   refreshToken?: string;
@@ -308,4 +368,24 @@ export const liveCommerceApi = {
     apiFetch<LiveChannel>(`/live-channels/${id}/end`, {
       method: "POST",
     }),
+};
+
+export const worldApi = {
+  zones: () => apiFetch<WorldZone[]>("/world/zones", { token: null }),
+  zone: (id: string) => apiFetch<WorldZone>(`/world/zones/${id}`, { token: null }),
+  districts: () =>
+    apiFetch<WorldDistrict[]>("/world/districts", { token: null }),
+  zoneDistricts: (id: string) =>
+    apiFetch<WorldDistrict[]>(`/world/zones/${id}/districts`, {
+      token: null,
+    }),
+  gates: () => apiFetch<CommerceGate[]>("/world/gates", { token: null }),
+  availableGates: () =>
+    apiFetch<CommerceGate[]>("/world/gates/available", { token: null }),
+  travel: (searchTerm?: string) => {
+    const query = searchTerm
+      ? `?searchTerm=${encodeURIComponent(searchTerm)}`
+      : "";
+    return apiFetch<TravelOverview>(`/world/travel${query}`, { token: null });
+  },
 };

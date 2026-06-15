@@ -16,7 +16,7 @@ Chat, Community, Guild, Events
 Mr.P, AI Merchant, CEO AI, Agent Governance
 
 ## Phase 6: Virtual Prontera World
-Avatar, Town Map, Virtual Shops
+Avatar, Town Map, Virtual Shops, Commerce Gate Network, Fast Travel
 
 ## Phase 7: Global Commerce Network
 Multi-country, Multi-language, Multi-currency expansion
