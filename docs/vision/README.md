@@ -21,5 +21,11 @@ It combines:
 - Inventory
 - Subscription
 - AI Merchant
+- Legacy NPC AI
 - Virtual Town
 - Global Commerce
+
+## Vision Documents
+
+- [Prontera Commerce Vision](./prontera-commerce-vision.md)
+- [Legacy NPC AI Vision](./legacy-npc-ai.md)
