@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { defaultLocale } from "../i18n/config";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Prontera Commerce",
