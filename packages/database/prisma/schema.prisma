@@ -131,6 +131,46 @@ enum InventoryAlertStatus {
   RESOLVED
 }
 
+enum OrderStatus {
+  DRAFT
+  PENDING
+  CONFIRMED
+  FULFILLED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  PROMPTPAY
+  MANUAL
+}
+
+enum PaymentRecordStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum CartStatus {
+  ACTIVE
+  CHECKOUT
+  CONVERTED
+  CANCELLED
+}
+
+enum POSSessionStatus {
+  OPEN
+  CLOSED
+}
+
+enum POSShiftStatus {
+  OPEN
+  CLOSED
+}
+
 enum PaymentGatewayProvider {
   STRIPE
   OMISE
@@ -201,6 +241,10 @@ model User {
   preferredCurrencyRef       Currency?                @relation(fields: [preferredCurrency], references: [code], onDelete: SetNull)
   roles                      UserRole[]
   sessions                   Session[]
+  carts                      Cart[]
+  orders                     Order[]                  @relation("CustomerOrders")
+  posSessions                POSSession[]             @relation("POSSessionCashier")
+  posShifts                  POSShift[]               @relation("POSShiftCashier")
   ownedShops                 Shop[]                   @relation("ShopOwner")
   shopStaff                  ShopStaff[]
   inventoryMovements         InventoryMovement[]
@@ -468,6 +512,10 @@ model Shop {
   categories              Category[]
   products                Product[]
   warehouses              Warehouse[]
+  carts                   Cart[]
+  orders                  Order[]
+  posSessions             POSSession[]
+  posShifts               POSShift[]
   paymentGateways         PaymentGatewayConfiguration[]
   shippingZones           ShippingZone[]
   taxProfiles             TaxProfile[]
@@ -730,6 +778,8 @@ model Product {
   translations ProductTranslation[]
   variants     ProductVariant[]
   images       ProductImage[]
+  orderItems   OrderItem[]
+  cartItems    CartItem[]
   createdAt    DateTime             @default(now()) @db.Timestamptz(6)
   updatedAt    DateTime             @updatedAt @db.Timestamptz(6)
   deletedAt    DateTime?            @db.Timestamptz(6)
@@ -776,6 +826,8 @@ model ProductVariant {
   product             Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
   prices              ProductVariantPrice[]
   inventoryItems      InventoryItem[]
+  orderItems          OrderItem[]
+  cartItems           CartItem[]
   createdAt           DateTime              @default(now()) @db.Timestamptz(6)
   updatedAt           DateTime              @updatedAt @db.Timestamptz(6)
   deletedAt           DateTime?             @db.Timestamptz(6)
@@ -862,6 +914,7 @@ model InventoryItem {
   createdAt        DateTime               @default(now()) @db.Timestamptz(6)
   updatedAt        DateTime               @updatedAt @db.Timestamptz(6)
   deletedAt        DateTime?              @db.Timestamptz(6)
+  cartItems        CartItem[]
 
   @@index([warehouseId, status])
   @@index([productVariantId])
@@ -915,6 +968,7 @@ model InventoryReservation {
   createdAt       DateTime                   @default(now()) @db.Timestamptz(6)
   updatedAt       DateTime                   @updatedAt @db.Timestamptz(6)
   deletedAt       DateTime?                  @db.Timestamptz(6)
+  cartItems       CartItem[]
 
   @@index([inventoryItemId, status])
   @@index([expiresAt])
@@ -938,4 +992,163 @@ model InventoryAlert {
   @@index([alertType, status])
   @@index([deletedAt])
   @@map("inventory_alerts")
+}
+
+model Cart {
+  id        String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String     @db.Uuid
+  shopId    String     @db.Uuid
+  status    CartStatus @default(ACTIVE)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shop      Shop       @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime   @updatedAt @db.Timestamptz(6)
+  deletedAt DateTime?  @db.Timestamptz(6)
+
+  @@index([userId, status])
+  @@index([shopId, status])
+  @@index([deletedAt])
+  @@map("carts")
+}
+
+model CartItem {
+  id               String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  cartId           String                @db.Uuid
+  productId        String                @db.Uuid
+  productVariantId String                @db.Uuid
+  quantity         Int
+  unitPrice        Int
+  currency         String                @db.Char(3)
+  inventoryItemId  String?               @db.Uuid
+  reservationId    String?               @db.Uuid
+  cart             Cart                  @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product          Product               @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productVariant   ProductVariant        @relation(fields: [productVariantId], references: [id], onDelete: Restrict)
+  inventoryItem    InventoryItem?        @relation(fields: [inventoryItemId], references: [id], onDelete: SetNull)
+  reservation      InventoryReservation? @relation(fields: [reservationId], references: [id], onDelete: SetNull)
+  createdAt        DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime              @updatedAt @db.Timestamptz(6)
+  deletedAt        DateTime?             @db.Timestamptz(6)
+
+  @@index([cartId])
+  @@index([productVariantId])
+  @@index([inventoryItemId])
+  @@index([reservationId])
+  @@index([deletedAt])
+  @@map("cart_items")
+}
+
+model Order {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderNumber    String          @db.VarChar(80)
+  shopId         String          @db.Uuid
+  customerId     String?         @db.Uuid
+  status         OrderStatus     @default(DRAFT)
+  subtotal       Int             @default(0)
+  discount       Int             @default(0)
+  tax            Int             @default(0)
+  total          Int             @default(0)
+  currency       String          @db.Char(3)
+  notes          String?         @db.Text
+  shop           Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customer       User?           @relation("CustomerOrders", fields: [customerId], references: [id], onDelete: SetNull)
+  items          OrderItem[]
+  paymentRecords PaymentRecord[]
+  createdAt      DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime        @updatedAt @db.Timestamptz(6)
+  deletedAt      DateTime?       @db.Timestamptz(6)
+
+  @@unique([shopId, orderNumber])
+  @@index([shopId, status])
+  @@index([customerId])
+  @@index([deletedAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id                 String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId            String         @db.Uuid
+  productId          String         @db.Uuid
+  productVariantId   String         @db.Uuid
+  quantity           Int
+  unitPrice          Int
+  totalPrice         Int
+  productName        String         @db.VarChar(200)
+  productVariantName String         @db.VarChar(200)
+  sku                String         @db.VarChar(120)
+  order              Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product            Product        @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productVariant     ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Restrict)
+  createdAt          DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime       @updatedAt @db.Timestamptz(6)
+
+  @@index([orderId])
+  @@index([productVariantId])
+  @@map("order_items")
+}
+
+model PaymentRecord {
+  id              String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId         String              @db.Uuid
+  amount          Int
+  currency        String              @db.Char(3)
+  method          PaymentMethod
+  status          PaymentRecordStatus @default(PENDING)
+  referenceNumber String?             @db.VarChar(120)
+  order           Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt       DateTime            @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime            @updatedAt @db.Timestamptz(6)
+  deletedAt       DateTime?           @db.Timestamptz(6)
+
+  @@index([orderId, status])
+  @@index([referenceNumber])
+  @@index([deletedAt])
+  @@map("payment_records")
+}
+
+model POSSession {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId      String           @db.Uuid
+  cashierId   String           @db.Uuid
+  status      POSSessionStatus @default(OPEN)
+  openedAt    DateTime         @default(now()) @db.Timestamptz(6)
+  closedAt    DateTime?        @db.Timestamptz(6)
+  openingCash Int              @default(0)
+  closingCash Int?
+  shop        Shop             @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  cashier     User             @relation("POSSessionCashier", fields: [cashierId], references: [id], onDelete: Restrict)
+  shifts      POSShift[]
+  createdAt   DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime         @updatedAt @db.Timestamptz(6)
+  deletedAt   DateTime?        @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([cashierId, status])
+  @@index([deletedAt])
+  @@map("pos_sessions")
+}
+
+model POSShift {
+  id           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId       String         @db.Uuid
+  posSessionId String         @db.Uuid
+  cashierId    String         @db.Uuid
+  status       POSShiftStatus @default(OPEN)
+  openedAt     DateTime       @default(now()) @db.Timestamptz(6)
+  closedAt     DateTime?      @db.Timestamptz(6)
+  openingCash  Int            @default(0)
+  closingCash  Int?
+  shop         Shop           @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  posSession   POSSession     @relation(fields: [posSessionId], references: [id], onDelete: Cascade)
+  cashier      User           @relation("POSShiftCashier", fields: [cashierId], references: [id], onDelete: Restrict)
+  createdAt    DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime       @updatedAt @db.Timestamptz(6)
+  deletedAt    DateTime?      @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([cashierId, status])
+  @@index([posSessionId])
+  @@index([deletedAt])
+  @@map("pos_shifts")
 }

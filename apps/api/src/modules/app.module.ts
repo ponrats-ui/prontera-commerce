@@ -3,6 +3,7 @@ import { AuthModule } from "./auth/auth.module";
 import { CatalogModule } from "./catalog/catalog.module";
 import { GlobalCommerceModule } from "./global-commerce/global-commerce.module";
 import { InventoryModule } from "./inventory/inventory.module";
+import { OrdersModule } from "./orders/orders.module";
 import { ShopsModule } from "./shops/shops.module";
 
 @Module({
@@ -12,6 +13,7 @@ import { ShopsModule } from "./shops/shops.module";
     ShopsModule,
     CatalogModule,
     InventoryModule,
+    OrdersModule,
   ],
 })
 export class AppModule {}
