@@ -3,7 +3,12 @@
 import { FormEvent, useEffect, useState } from "react";
 import { posApi, shopsApi } from "../../../lib/api";
 import type { POSSession, Shop } from "../../../lib/api";
-import { EmptyState, ErrorMessage, PageHeader } from "../../../components/ui";
+import {
+  EmptyState,
+  EmptyStateCard,
+  ErrorMessage,
+  PageHeader,
+} from "../../../components/ui";
 
 function toCents(value: string) {
   return Math.round(Number(value || "0") * 100);
@@ -181,10 +186,10 @@ export default function POSPage() {
         </section>
         <section className="panel">
           <h2>Cart and order action</h2>
-          <EmptyState>
-            Basic cart and counter order workflow is reserved for the next POS
-            UX sprint.
-          </EmptyState>
+          <EmptyStateCard
+            description="Basic cart and counter order workflow is reserved for the next POS UX sprint."
+            title="Open POS"
+          />
           <div className="card">
             <p className="eyebrow">Sprint 6 boundary</p>
             <h3>Manual payments only</h3>

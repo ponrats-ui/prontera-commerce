@@ -5,6 +5,7 @@ import { inventoryApi, ordersApi, productsApi, shopsApi } from "../../lib/api";
 import type { InventoryAlert, Order, Product, Shop } from "../../lib/api";
 import {
   EmptyState,
+  EmptyStateCard,
   ErrorMessage,
   MetricCard,
   PageHeader,
@@ -60,6 +61,38 @@ export default function DashboardPage() {
         <MetricCard label="Orders today" value={ordersToday} />
       </div>
       <div className="grid two" style={{ marginTop: 16 }}>
+        {!shops.length ? (
+          <EmptyStateCard
+            action="Create shop"
+            description="Start by creating a merchant shop with country, locale, currency, and timezone preferences."
+            href="/dashboard/shops"
+            title="Create your first shop"
+          />
+        ) : null}
+        {shops.length && !products.length ? (
+          <EmptyStateCard
+            action="Add product"
+            description="Create the first catalog item once your shop and category data are ready."
+            href="/dashboard/products"
+            title="Add your first product"
+          />
+        ) : null}
+        {shops.length && !alerts.length ? (
+          <EmptyStateCard
+            action="Review inventory"
+            description="Add warehouses and stock records so the dashboard can surface low stock alerts."
+            href="/dashboard/inventory"
+            title="Add inventory"
+          />
+        ) : null}
+        {shops.length ? (
+          <EmptyStateCard
+            action="Open POS"
+            description="Open a counter sales session and test the POS session lifecycle locally."
+            href="/dashboard/pos"
+            title="Open POS"
+          />
+        ) : null}
         <section className="panel">
           <h2>Total sales summary</h2>
           <p className="metric-value">

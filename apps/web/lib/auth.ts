@@ -6,7 +6,12 @@ const USER_KEY = "prontera_auth_user";
 export type AuthUser = {
   id: string;
   email: string;
+  name?: string | null;
   roles: string[];
+  preferredLocale?: string | null;
+  preferredCurrency?: string | null;
+  countryCode?: string | null;
+  timezone?: string | null;
 };
 
 export function getAccessToken() {

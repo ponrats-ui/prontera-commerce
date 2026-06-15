@@ -3,7 +3,12 @@
 import { FormEvent, useEffect, useState } from "react";
 import { productsApi, shopsApi } from "../../../lib/api";
 import type { Product, Shop } from "../../../lib/api";
-import { EmptyState, ErrorMessage, PageHeader } from "../../../components/ui";
+import {
+  EmptyState,
+  EmptyStateCard,
+  ErrorMessage,
+  PageHeader,
+} from "../../../components/ui";
 
 export default function ProductsPage() {
   const [shops, setShops] = useState<Shop[]>([]);
@@ -140,7 +145,10 @@ export default function ProductsPage() {
               </table>
             </div>
           ) : (
-            <EmptyState>No products loaded.</EmptyState>
+            <EmptyStateCard
+              description="Create a product after selecting a shop. Use the demo seed to preload a category and sample product."
+              title="Add your first product"
+            />
           )}
         </section>
 

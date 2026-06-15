@@ -8,7 +8,12 @@ import type {
   Shop,
   Warehouse,
 } from "../../../lib/api";
-import { EmptyState, ErrorMessage, PageHeader } from "../../../components/ui";
+import {
+  EmptyState,
+  EmptyStateCard,
+  ErrorMessage,
+  PageHeader,
+} from "../../../components/ui";
 
 export default function InventoryPage() {
   const [shops, setShops] = useState<Shop[]>([]);
@@ -102,7 +107,10 @@ export default function InventoryPage() {
               </table>
             </div>
           ) : (
-            <EmptyState>No warehouses found.</EmptyState>
+            <EmptyStateCard
+              description="Create a warehouse through the API or run the demo seed to preload one for local testing."
+              title="Add inventory"
+            />
           )}
         </section>
         <section className="panel">
@@ -157,7 +165,10 @@ export default function InventoryPage() {
             </table>
           </div>
         ) : (
-          <EmptyState>No inventory item rows loaded.</EmptyState>
+          <EmptyStateCard
+            description="Run the demo seed or add stock records through the inventory API to populate this table."
+            title="Add inventory"
+          />
         )}
       </section>
     </>

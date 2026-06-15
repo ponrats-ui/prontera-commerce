@@ -106,14 +106,48 @@ export type POSSession = {
   }>;
 };
 
+export type AuthResponse = {
+  accessToken: string;
+  refreshToken?: string;
+  user: {
+    id: string;
+    email: string;
+    name?: string | null;
+    roles: string[];
+    preferredLocale?: string | null;
+    preferredCurrency?: string | null;
+    countryCode?: string | null;
+    timezone?: string | null;
+  };
+};
+
 export const authApi = {
   login: (body: { email: string; password: string }) =>
-    apiFetch<{
-      accessToken: string;
-      user: { id: string; email: string; roles: string[] };
-    }>("/auth/login", {
+    apiFetch<AuthResponse>("/auth/login", {
       method: "POST",
       body: JSON.stringify(body),
+      token: null,
+    }),
+  register: (body: {
+    name: string;
+    email: string;
+    password: string;
+    preferredLocale: string;
+    preferredCurrency: string;
+    countryCode: string;
+    timeZone: string;
+  }) =>
+    apiFetch<AuthResponse>("/auth/register", {
+      method: "POST",
+      body: JSON.stringify({
+        name: body.name,
+        email: body.email,
+        password: body.password,
+        preferredLocale: body.preferredLocale,
+        preferredCurrency: body.preferredCurrency,
+        countryCode: body.countryCode,
+        timezone: body.timeZone,
+      }),
       token: null,
     }),
 };

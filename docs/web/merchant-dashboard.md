@@ -7,6 +7,7 @@ The Sprint 6 Merchant Dashboard is the first usable web interface for Prontera M
 | Path                   | Purpose                                                                                                       |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------- |
 | `/login`               | Email and password sign-in for merchant users.                                                                |
+| `/register`            | Local merchant registration with global preference fields.                                                    |
 | `/dashboard`           | Merchant overview with shop count, product count, inventory alerts, orders today, and sales summary.          |
 | `/dashboard/shops`     | Shop list, shop creation, basic profile editing, and shop detail view.                                        |
 | `/dashboard/products`  | Product list, product creation, basic product editing, and read views for variants, translations, and images. |
@@ -18,7 +19,50 @@ The Sprint 6 Merchant Dashboard is the first usable web interface for Prontera M
 
 The web app calls `POST /auth/login` and stores the development access token in browser local storage. The authenticated dashboard layout checks for a token before rendering protected pages and redirects unauthenticated users to `/login`.
 
+The register page calls `POST /auth/register`, stores the returned development access token, and redirects the new merchant to `/dashboard`.
+
 The logout action clears the local session and redirects back to `/login`.
+
+## Local Login Instructions
+
+Start the API and web app locally, then open `/login`.
+
+```text
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+
+Developers can either register a new local account at `/register` or seed the demo account.
+
+## Demo Seed Account
+
+Run the demo seed script after the database is migrated and reachable through `DATABASE_URL`.
+
+```bash
+npm run seed:demo
+```
+
+Demo credentials:
+
+```text
+email: demo@prontera.local
+password: DemoPass123!
+```
+
+The seed creates a demo merchant user, shop, category, product, variant, warehouse, inventory item, low stock alert, and placeholder order with a manual payment record.
+
+## Register Flow
+
+The registration form collects:
+
+- Name
+- Email
+- Password
+- Preferred locale
+- Preferred currency
+- Country code
+- Time zone
+
+The UI uses `timeZone` as the field label and maps it to the backend `timezone` request property.
 
 ## API Integration
 
@@ -38,6 +82,14 @@ The web app includes lightweight API clients for:
 - POS
 
 All authenticated requests attach the JWT bearer token from local storage.
+
+## Troubleshooting
+
+If login or registration shows an API connection error, confirm that the NestJS API is running at `http://localhost:3000` or set `NEXT_PUBLIC_API_URL` to the correct backend URL.
+
+If registration fails with a locale, country, or currency relation error, run `npm run seed:demo` or seed the required global commerce reference data first.
+
+If the inventory item table is empty, the current backend does not expose a shop-scoped inventory item listing endpoint yet. The dashboard still shows warehouses and alerts, and the demo seed creates inventory records for future endpoint integration.
 
 ## Dashboard Roadmap
 

@@ -3,7 +3,12 @@
 import { FormEvent, useEffect, useState } from "react";
 import { shopsApi } from "../../../lib/api";
 import type { Shop } from "../../../lib/api";
-import { EmptyState, ErrorMessage, PageHeader } from "../../../components/ui";
+import {
+  EmptyState,
+  EmptyStateCard,
+  ErrorMessage,
+  PageHeader,
+} from "../../../components/ui";
 
 const emptyForm = {
   name: "",
@@ -114,7 +119,10 @@ export default function ShopsPage() {
               </table>
             </div>
           ) : (
-            <EmptyState>No shops yet.</EmptyState>
+            <EmptyStateCard
+              description="Use the create form to add a shop and become its owner."
+              title="Create your first shop"
+            />
           )}
         </section>
 
