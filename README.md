@@ -141,6 +141,15 @@ postgresql://prontera:prontera_password@localhost:5432/prontera_commerce?schema=
 - `v0.1.0-core-commerce`: Core Commerce Engine foundation complete.
 - `v0.2.0-crm-foundation`: Planned Customer & CRM release milestone.
 
+## Current Milestone
+
+v0.3.0 Foundation Complete
+
+Reference:
+
+- [v0.3.0 Foundation Milestone](docs/releases/v0.3.0-foundation-milestone.md)
+- [IP Asset Register](docs/legal/ip-asset-register.md)
+
 ## Roadmap
 
 Next priorities:
@@ -177,6 +186,7 @@ Reference:
 ## Documentation
 
 - [Core Commerce Release](docs/releases/v0.1.0-core-commerce.md)
+- [v0.3.0 Foundation Milestone](docs/releases/v0.3.0-foundation-milestone.md)
 - [Merchant Dashboard](docs/web/merchant-dashboard.md)
 - [Customer CRM Foundation](docs/architecture/customer-crm-foundation.md)
 - [Live Commerce Architecture](docs/architecture/live-commerce.md)
