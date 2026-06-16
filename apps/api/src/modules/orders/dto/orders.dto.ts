@@ -98,6 +98,18 @@ export class CheckoutDto {
   @IsUUID()
   shopId!: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUUID()
+  customerId?: string;
+
+  @ApiPropertyOptional({ example: "VIP10" })
+  @Transform(trim)
+  @IsOptional()
+  @IsString()
+  @MaxLength(80)
+  voucherCode?: string;
+
   @ApiPropertyOptional({ enum: PaymentMethod, default: PaymentMethod.MANUAL })
   @IsOptional()
   @IsEnum(PaymentMethod)

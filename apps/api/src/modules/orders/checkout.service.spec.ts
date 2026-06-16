@@ -55,6 +55,7 @@ describe("CheckoutService", () => {
       cartItem: { update: jest.fn() },
       order: { create: jest.fn().mockResolvedValue({ id: "order-1" }) },
       cart: { update: jest.fn() },
+      voucher: { update: jest.fn() },
     };
     const prisma = {
       cart: { findFirst: jest.fn().mockResolvedValue(cart) },
@@ -66,6 +67,14 @@ describe("CheckoutService", () => {
       {
         generateOrderNumber: jest.fn().mockReturnValue("ORD-1"),
       } as unknown as OrdersService,
+      {
+        evaluateForShop: jest.fn().mockResolvedValue({
+          appliedCampaign: null,
+          appliedVoucher: null,
+          discountAmount: 0,
+          finalSubtotal: 2000,
+        }),
+      } as never,
     );
 
     await expect(service.checkout(user, { shopId: "shop-1" })).resolves.toEqual(
@@ -127,6 +136,7 @@ describe("CheckoutService", () => {
       prisma as never,
       { canCreateTransaction: jest.fn().mockResolvedValue(true) } as never,
       {} as OrdersService,
+      {} as never,
     );
 
     await expect(

@@ -36,7 +36,7 @@ const variant = {
   name: "Variant",
   priceCents: 1000,
   currency: "USD",
-  product: { id: productId, name: "Product", shopId },
+  product: { id: productId, name: "Product", shopId, categoryId: "category-1" },
 };
 
 const cart = {
@@ -89,6 +89,7 @@ function createPrismaMock() {
     },
     cart: { update: jest.fn() },
     paymentRecord: { updateMany: jest.fn() },
+    voucher: { update: jest.fn() },
     pOSShift: { updateMany: jest.fn() },
     pOSSession: {
       update: jest.fn().mockResolvedValue({
@@ -134,6 +135,21 @@ function createPrismaMock() {
         orderNumber: "ORD-1",
       }),
       findMany: jest.fn().mockResolvedValue([{ id: orderId }]),
+    },
+    customer: {
+      findFirst: jest.fn().mockResolvedValue(null),
+    },
+    customerGroupMember: {
+      findMany: jest.fn().mockResolvedValue([]),
+    },
+    promotionCampaign: {
+      findMany: jest.fn().mockResolvedValue([]),
+    },
+    voucher: {
+      findFirst: jest.fn().mockResolvedValue(null),
+    },
+    customerPricingTier: {
+      findMany: jest.fn().mockResolvedValue([]),
     },
     pOSSession: {
       findFirst: jest.fn((args) => {

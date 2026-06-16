@@ -16,6 +16,8 @@ import {
 } from "@prisma/client";
 import type { AuthenticatedUser } from "../auth/auth.types";
 import { PrismaService } from "../database/prisma.service";
+import { PromotionEngineService } from "../promotions/promotion-engine.service";
+import type { EvaluatePromotionsDto } from "../promotions/dto/promotion.dto";
 import type {
   CancelCheckoutDto,
   CheckoutDto,
@@ -50,6 +52,7 @@ export class CheckoutService {
     private readonly prisma: PrismaService,
     private readonly permissions: OrderPermissionsService,
     private readonly ordersService: OrdersService,
+    private readonly promotionEngine: PromotionEngineService,
   ) {}
 
   async checkout(user: AuthenticatedUser, dto: CheckoutDto) {
@@ -73,6 +76,24 @@ export class CheckoutService {
     );
     const currency = cart.items[0]?.currency ?? "USD";
     const orderNumber = this.ordersService.generateOrderNumber();
+    const promotionInput: EvaluatePromotionsDto = {
+      shopId: dto.shopId,
+      orderItems: cart.items.map((item) => ({
+        productVariantId: item.productVariantId,
+        quantity: item.quantity,
+      })),
+    };
+
+    if (dto.customerId !== undefined) {
+      Object.assign(promotionInput, { customerId: dto.customerId });
+    }
+
+    if (dto.voucherCode !== undefined) {
+      Object.assign(promotionInput, { voucherCode: dto.voucherCode });
+    }
+
+    const promotionResult =
+      await this.promotionEngine.evaluateForShop(promotionInput);
 
     return this.prisma.$transaction(async (tx) => {
       const reservedItems: Array<{
@@ -152,7 +173,7 @@ export class CheckoutService {
       }
 
       const paymentData: Prisma.PaymentRecordCreateWithoutOrderInput = {
-        amount: subtotal,
+        amount: promotionResult.finalSubtotal,
         currency,
         method: dto.paymentMethod ?? PaymentMethod.MANUAL,
         status: PaymentRecordStatus.PENDING,
@@ -168,11 +189,17 @@ export class CheckoutService {
         customerId: user.id,
         status: OrderStatus.PENDING,
         subtotal,
-        discount: 0,
+        discount: promotionResult.discountAmount,
         tax: 0,
-        total: subtotal,
+        total: promotionResult.finalSubtotal,
         currency,
+        appliedPromotionSnapshot:
+          promotionResult as unknown as Prisma.InputJsonValue,
       };
+
+      if (dto.customerId !== undefined) {
+        orderData.customerProfileId = dto.customerId;
+      }
 
       if (dto.notes !== undefined) {
         orderData.notes = dto.notes;
@@ -204,6 +231,13 @@ export class CheckoutService {
         where: { id: cart.id },
         data: { status: CartStatus.CHECKOUT },
       });
+
+      if (promotionResult.appliedVoucher) {
+        await tx.voucher.update({
+          where: { id: promotionResult.appliedVoucher.id },
+          data: { usageCount: { increment: 1 } },
+        });
+      }
 
       return { order, reservations: reservedItems };
     });

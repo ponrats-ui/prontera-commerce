@@ -81,9 +81,13 @@ Rules:
 Fields:
 
 - `shopId`
+- `customerId`
+- `voucherCode`
 - `paymentMethod`
 - `referenceNumber`
 - `notes`
+
+Checkout evaluates the Promotion & Pricing Engine before creating the pending order. The winning promotion discount is stored in `discount`, the final amount is stored in `total`, and the full evaluation context is stored in `appliedPromotionSnapshot`.
 
 ### POST /checkout/confirm
 

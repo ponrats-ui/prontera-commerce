@@ -10,7 +10,7 @@ Status: Internal Alpha
 
 Current release: `v0.1.0-core-commerce`
 
-Latest completed sprint: Sprint 8A Pro Live Commerce Foundation
+Latest completed sprint: Sprint 8 Promotion & Pricing Engine Foundation
 
 Next planned release: `v0.2.0-crm-foundation`
 
@@ -38,6 +38,7 @@ Next planned release: `v0.2.0-crm-foundation`
 - [x] Customer CRM Foundation
 - [x] Pro Live Commerce Foundation
 - [x] YouTube Live Channel Embed Support
+- [x] Promotion & Pricing Engine Foundation
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
 - [x] AI Executive Board Documentation
@@ -142,7 +143,7 @@ postgresql://prontera:prontera_password@localhost:5432/prontera_commerce?schema=
 
 Next priorities:
 
-- Sprint 8B Pricing, Promotions, and Pro Plan Packaging
+- Promotion & Pricing Engine expansion
 - Sprint 9 Payment Gateway Foundation
 - Sprint 10 Shipping & Fulfillment Foundation
 - Marketplace Storefront
@@ -168,6 +169,8 @@ Reference: [Mr.P Operating Memory](docs/ai/mr-p-operating-memory.md)
 - [Customer CRM Foundation](docs/architecture/customer-crm-foundation.md)
 - [Live Commerce Architecture](docs/architecture/live-commerce.md)
 - [Live Commerce API](docs/api/live-commerce.md)
+- [Promotion Engine API](docs/api/promotion-engine.md)
+- [Promotion Engine Architecture](docs/architecture/promotion-engine.md)
 - [Vision Asset Library](docs/vision/README.md)
 - [Master Roadmap](docs/roadmap/master-roadmap.md)
 - [Founder Principles](docs/architecture/founder-principles.md)

@@ -87,6 +87,14 @@ export type Customer = {
   } | null;
 };
 
+export type CustomerGroup = {
+  id: string;
+  shopId: string;
+  name: string;
+  description?: string | null;
+  status: string;
+};
+
 export type Order = {
   id: string;
   orderNumber: string;
@@ -114,6 +122,53 @@ export type Order = {
     amount: number;
     referenceNumber?: string | null;
   }>;
+};
+
+export type PromotionCampaign = {
+  id: string;
+  shopId: string;
+  name: string;
+  description?: string | null;
+  promotionType: string;
+  status: string;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  priority: number;
+  stackable: boolean;
+  rules?: Array<{
+    id: string;
+    discountPercent?: number | null;
+    discountAmount?: number | null;
+    minimumOrderAmount?: number | null;
+    minimumQuantity?: number | null;
+    buyQuantity?: number | null;
+    getQuantity?: number | null;
+    targetCustomerGroupId?: string | null;
+  }>;
+};
+
+export type Voucher = {
+  id: string;
+  shopId: string;
+  campaignId: string;
+  code: string;
+  description?: string | null;
+  status: string;
+  usageLimit?: number | null;
+  usageCount: number;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  campaign?: PromotionCampaign;
+};
+
+export type CustomerPricingTier = {
+  id: string;
+  shopId: string;
+  customerGroupId: string;
+  name: string;
+  discountPercent: number;
+  status: string;
+  customerGroup?: CustomerGroup;
 };
 
 export type POSSession = {
@@ -300,6 +355,8 @@ export const inventoryApi = {
 
 export const customersApi = {
   list: (shopId: string) => apiFetch<Customer[]>(`/shops/${shopId}/customers`),
+  groups: (shopId: string) =>
+    apiFetch<CustomerGroup[]>(`/shops/${shopId}/customer-groups`),
   create: (shopId: string, body: unknown) =>
     apiFetch<Customer>(`/shops/${shopId}/customers`, {
       method: "POST",
@@ -312,6 +369,32 @@ export const customersApi = {
     }),
   loyalty: (id: string) =>
     apiFetch<Customer["loyaltyAccount"]>(`/customers/${id}/loyalty`),
+};
+
+export const promotionsApi = {
+  campaigns: (shopId: string) =>
+    apiFetch<PromotionCampaign[]>(`/promotions/campaigns?shopId=${shopId}`),
+  createCampaign: (body: unknown) =>
+    apiFetch<PromotionCampaign>("/promotions/campaigns", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  vouchers: (shopId: string) =>
+    apiFetch<Voucher[]>(`/promotions/vouchers?shopId=${shopId}`),
+  createVoucher: (body: unknown) =>
+    apiFetch<Voucher>("/promotions/vouchers", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  pricingTiers: (shopId: string) =>
+    apiFetch<CustomerPricingTier[]>(
+      `/promotions/pricing-tiers?shopId=${shopId}`,
+    ),
+  createPricingTier: (body: unknown) =>
+    apiFetch<CustomerPricingTier>("/promotions/pricing-tiers", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
 };
 
 export const ordersApi = {
@@ -372,7 +455,8 @@ export const liveCommerceApi = {
 
 export const worldApi = {
   zones: () => apiFetch<WorldZone[]>("/world/zones", { token: null }),
-  zone: (id: string) => apiFetch<WorldZone>(`/world/zones/${id}`, { token: null }),
+  zone: (id: string) =>
+    apiFetch<WorldZone>(`/world/zones/${id}`, { token: null }),
   districts: () =>
     apiFetch<WorldDistrict[]>("/world/districts", { token: null }),
   zoneDistricts: (id: string) =>

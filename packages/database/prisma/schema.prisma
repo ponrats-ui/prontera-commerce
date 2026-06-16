@@ -222,6 +222,34 @@ enum CustomerLoyaltyStatus {
   CLOSED
 }
 
+enum PromotionType {
+  PERCENT_DISCOUNT
+  FIXED_DISCOUNT
+  BUY_X_GET_Y
+  FREE_SHIPPING_PLACEHOLDER
+  CUSTOMER_GROUP_DISCOUNT
+}
+
+enum PromotionStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  EXPIRED
+}
+
+enum VoucherStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  EXPIRED
+}
+
+enum PricingTierStatus {
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
 enum LiveChannelProvider {
   YOUTUBE
   FACEBOOK
@@ -330,6 +358,7 @@ model User {
   customerNotes              CustomerNote[]
   customerActivities         CustomerActivity[]
   createdLiveChannels        ShopLiveChannel[]
+  createdPromotionCampaigns  PromotionCampaign[]
   ownedShops                 Shop[]                   @relation("ShopOwner")
   shopStaff                  ShopStaff[]
   inventoryMovements         InventoryMovement[]
@@ -606,6 +635,9 @@ model Shop {
   customers               Customer[]
   customerGroups          CustomerGroup[]
   customerTags            CustomerTag[]
+  promotionCampaigns      PromotionCampaign[]
+  vouchers                Voucher[]
+  customerPricingTiers    CustomerPricingTier[]
   liveChannels            ShopLiveChannel[]
   posSessions             POSSession[]
   posShifts               POSShift[]
@@ -815,22 +847,23 @@ model ShopInvitation {
 }
 
 model Category {
-  id           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  shopId       String                @db.Uuid
-  parentId     String?               @db.Uuid
-  name         String                @db.VarChar(160)
-  slug         String                @db.VarChar(160)
-  description  String?               @db.Text
-  status       CategoryStatus        @default(ACTIVE)
-  sortOrder    Int                   @default(0)
-  shop         Shop                  @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  parent       Category?             @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
-  children     Category[]            @relation("CategoryTree")
-  products     Product[]
-  translations CategoryTranslation[]
-  createdAt    DateTime              @default(now()) @db.Timestamptz(6)
-  updatedAt    DateTime              @updatedAt @db.Timestamptz(6)
-  deletedAt    DateTime?             @db.Timestamptz(6)
+  id             String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId         String                @db.Uuid
+  parentId       String?               @db.Uuid
+  name           String                @db.VarChar(160)
+  slug           String                @db.VarChar(160)
+  description    String?               @db.Text
+  status         CategoryStatus        @default(ACTIVE)
+  sortOrder      Int                   @default(0)
+  shop           Shop                  @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  parent         Category?             @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children       Category[]            @relation("CategoryTree")
+  products       Product[]
+  promotionRules PromotionRule[]
+  translations   CategoryTranslation[]
+  createdAt      DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime              @updatedAt @db.Timestamptz(6)
+  deletedAt      DateTime?             @db.Timestamptz(6)
 
   @@index([shopId, parentId])
   @@index([shopId, status])
@@ -858,24 +891,25 @@ model CategoryTranslation {
 }
 
 model Product {
-  id           String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  shopId       String               @db.Uuid
-  categoryId   String               @db.Uuid
-  sku          String               @db.VarChar(120)
-  name         String               @db.VarChar(200)
-  slug         String               @db.VarChar(200)
-  description  String?              @db.Text
-  status       ProductStatus        @default(DRAFT)
-  shop         Shop                 @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  category     Category             @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  translations ProductTranslation[]
-  variants     ProductVariant[]
-  images       ProductImage[]
-  orderItems   OrderItem[]
-  cartItems    CartItem[]
-  createdAt    DateTime             @default(now()) @db.Timestamptz(6)
-  updatedAt    DateTime             @updatedAt @db.Timestamptz(6)
-  deletedAt    DateTime?            @db.Timestamptz(6)
+  id             String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId         String               @db.Uuid
+  categoryId     String               @db.Uuid
+  sku            String               @db.VarChar(120)
+  name           String               @db.VarChar(200)
+  slug           String               @db.VarChar(200)
+  description    String?              @db.Text
+  status         ProductStatus        @default(DRAFT)
+  shop           Shop                 @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  category       Category             @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  translations   ProductTranslation[]
+  variants       ProductVariant[]
+  images         ProductImage[]
+  orderItems     OrderItem[]
+  cartItems      CartItem[]
+  promotionRules PromotionRule[]
+  createdAt      DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime             @updatedAt @db.Timestamptz(6)
+  deletedAt      DateTime?            @db.Timestamptz(6)
 
   @@index([shopId, status])
   @@index([shopId, sku])
@@ -1202,16 +1236,18 @@ model CustomerAddress {
 }
 
 model CustomerGroup {
-  id          String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  shopId      String                @db.Uuid
-  name        String                @db.VarChar(120)
-  description String?               @db.Text
-  status      CustomerGroupStatus   @default(ACTIVE)
-  shop        Shop                  @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  members     CustomerGroupMember[]
-  createdAt   DateTime              @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime              @updatedAt @db.Timestamptz(6)
-  deletedAt   DateTime?             @db.Timestamptz(6)
+  id             String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId         String                @db.Uuid
+  name           String                @db.VarChar(120)
+  description    String?               @db.Text
+  status         CustomerGroupStatus   @default(ACTIVE)
+  shop           Shop                  @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  members        CustomerGroupMember[]
+  promotionRules PromotionRule[]
+  pricingTiers   CustomerPricingTier[]
+  createdAt      DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime              @updatedAt @db.Timestamptz(6)
+  deletedAt      DateTime?             @db.Timestamptz(6)
 
   @@index([shopId, status])
   @@index([deletedAt])
@@ -1318,6 +1354,109 @@ model CustomerLoyaltyAccount {
   @@map("customer_loyalty_accounts")
 }
 
+model PromotionCampaign {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId        String          @db.Uuid
+  name          String          @db.VarChar(160)
+  description   String?         @db.Text
+  promotionType PromotionType
+  status        PromotionStatus @default(DRAFT)
+  startsAt      DateTime?       @db.Timestamptz(6)
+  endsAt        DateTime?       @db.Timestamptz(6)
+  priority      Int             @default(0)
+  stackable     Boolean         @default(false)
+  createdById   String?         @db.Uuid
+  shop          Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  createdBy     User?           @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  rules         PromotionRule[]
+  vouchers      Voucher[]
+  createdAt     DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime        @updatedAt @db.Timestamptz(6)
+  deletedAt     DateTime?       @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([promotionType])
+  @@index([startsAt])
+  @@index([endsAt])
+  @@index([priority])
+  @@index([createdById])
+  @@index([deletedAt])
+  @@map("promotion_campaigns")
+}
+
+model PromotionRule {
+  id                    String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  campaignId            String            @db.Uuid
+  minimumOrderAmount    Int?
+  minimumQuantity       Int?
+  discountPercent       Int?
+  discountAmount        Int?
+  buyQuantity           Int?
+  getQuantity           Int?
+  targetProductId       String?           @db.Uuid
+  targetCategoryId      String?           @db.Uuid
+  targetCustomerGroupId String?           @db.Uuid
+  campaign              PromotionCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  targetProduct         Product?          @relation(fields: [targetProductId], references: [id], onDelete: SetNull)
+  targetCategory        Category?         @relation(fields: [targetCategoryId], references: [id], onDelete: SetNull)
+  targetCustomerGroup   CustomerGroup?    @relation(fields: [targetCustomerGroupId], references: [id], onDelete: SetNull)
+  createdAt             DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt             DateTime          @updatedAt @db.Timestamptz(6)
+  deletedAt             DateTime?         @db.Timestamptz(6)
+
+  @@index([campaignId])
+  @@index([targetProductId])
+  @@index([targetCategoryId])
+  @@index([targetCustomerGroupId])
+  @@index([deletedAt])
+  @@map("promotion_rules")
+}
+
+model Voucher {
+  id          String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId      String            @db.Uuid
+  code        String            @db.VarChar(80)
+  description String?           @db.Text
+  status      VoucherStatus     @default(DRAFT)
+  usageLimit  Int?
+  usageCount  Int               @default(0)
+  startsAt    DateTime?         @db.Timestamptz(6)
+  endsAt      DateTime?         @db.Timestamptz(6)
+  campaignId  String            @db.Uuid
+  shop        Shop              @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  campaign    PromotionCampaign @relation(fields: [campaignId], references: [id], onDelete: Restrict)
+  createdAt   DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime          @updatedAt @db.Timestamptz(6)
+  deletedAt   DateTime?         @db.Timestamptz(6)
+
+  @@unique([shopId, code])
+  @@index([shopId, status])
+  @@index([campaignId])
+  @@index([startsAt])
+  @@index([endsAt])
+  @@index([deletedAt])
+  @@map("vouchers")
+}
+
+model CustomerPricingTier {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId          String            @db.Uuid
+  customerGroupId String            @db.Uuid
+  name            String            @db.VarChar(160)
+  discountPercent Int
+  status          PricingTierStatus @default(ACTIVE)
+  shop            Shop              @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customerGroup   CustomerGroup     @relation(fields: [customerGroupId], references: [id], onDelete: Restrict)
+  createdAt       DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime          @updatedAt @db.Timestamptz(6)
+  deletedAt       DateTime?         @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([customerGroupId])
+  @@index([deletedAt])
+  @@map("customer_pricing_tiers")
+}
+
 model ShopLiveChannel {
   id           String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   shopId       String              @db.Uuid
@@ -1346,19 +1485,19 @@ model ShopLiveChannel {
 }
 
 model WorldZone {
-  id                       String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  code                     String          @db.VarChar(80)
-  name                     String          @db.VarChar(160)
-  description              String?         @db.Text
-  status                   WorldZoneStatus @default(ACTIVE)
-  thumbnailUrl             String?         @db.Text
-  mapImageUrl              String?         @db.Text
-  sortOrder                Int             @default(0)
-  districts                WorldDistrict[]
-  sourceGates              CommerceGate[]  @relation("CommerceGateSourceZone")
-  destinationGates         CommerceGate[]  @relation("CommerceGateDestinationZone")
-  createdAt                DateTime        @default(now()) @db.Timestamptz(6)
-  updatedAt                DateTime        @updatedAt @db.Timestamptz(6)
+  id               String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code             String          @db.VarChar(80)
+  name             String          @db.VarChar(160)
+  description      String?         @db.Text
+  status           WorldZoneStatus @default(ACTIVE)
+  thumbnailUrl     String?         @db.Text
+  mapImageUrl      String?         @db.Text
+  sortOrder        Int             @default(0)
+  districts        WorldDistrict[]
+  sourceGates      CommerceGate[]  @relation("CommerceGateSourceZone")
+  destinationGates CommerceGate[]  @relation("CommerceGateDestinationZone")
+  createdAt        DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime        @updatedAt @db.Timestamptz(6)
 
   @@unique([code])
   @@index([status])
@@ -1367,18 +1506,18 @@ model WorldZone {
 }
 
 model WorldDistrict {
-  id                       String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  zoneId                   String         @db.Uuid
-  code                     String         @db.VarChar(80)
-  name                     String         @db.VarChar(160)
-  description              String?        @db.Text
-  category                 String         @db.VarChar(80)
-  sortOrder                Int            @default(0)
-  zone                     WorldZone      @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  sourceGates              CommerceGate[] @relation("CommerceGateSourceDistrict")
-  destinationGates         CommerceGate[] @relation("CommerceGateDestinationDistrict")
-  createdAt                DateTime       @default(now()) @db.Timestamptz(6)
-  updatedAt                DateTime       @updatedAt @db.Timestamptz(6)
+  id               String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  zoneId           String         @db.Uuid
+  code             String         @db.VarChar(80)
+  name             String         @db.VarChar(160)
+  description      String?        @db.Text
+  category         String         @db.VarChar(80)
+  sortOrder        Int            @default(0)
+  zone             WorldZone      @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  sourceGates      CommerceGate[] @relation("CommerceGateSourceDistrict")
+  destinationGates CommerceGate[] @relation("CommerceGateDestinationDistrict")
+  createdAt        DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime       @updatedAt @db.Timestamptz(6)
 
   @@unique([zoneId, code])
   @@index([zoneId])
@@ -1388,21 +1527,21 @@ model WorldDistrict {
 }
 
 model CommerceGate {
-  id                       String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  sourceZoneId             String             @db.Uuid
-  destinationZoneId        String             @db.Uuid
-  sourceDistrictId         String?            @db.Uuid
-  destinationDistrictId    String?            @db.Uuid
-  title                    String             @db.VarChar(160)
-  description              String?            @db.Text
-  gateType                 CommerceGateType
-  status                   CommerceGateStatus @default(ACTIVE)
-  sourceZone               WorldZone          @relation("CommerceGateSourceZone", fields: [sourceZoneId], references: [id], onDelete: Restrict)
-  destinationZone          WorldZone          @relation("CommerceGateDestinationZone", fields: [destinationZoneId], references: [id], onDelete: Restrict)
-  sourceDistrict           WorldDistrict?     @relation("CommerceGateSourceDistrict", fields: [sourceDistrictId], references: [id], onDelete: SetNull)
-  destinationDistrict      WorldDistrict?     @relation("CommerceGateDestinationDistrict", fields: [destinationDistrictId], references: [id], onDelete: SetNull)
-  createdAt                DateTime           @default(now()) @db.Timestamptz(6)
-  updatedAt                DateTime           @updatedAt @db.Timestamptz(6)
+  id                    String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceZoneId          String             @db.Uuid
+  destinationZoneId     String             @db.Uuid
+  sourceDistrictId      String?            @db.Uuid
+  destinationDistrictId String?            @db.Uuid
+  title                 String             @db.VarChar(160)
+  description           String?            @db.Text
+  gateType              CommerceGateType
+  status                CommerceGateStatus @default(ACTIVE)
+  sourceZone            WorldZone          @relation("CommerceGateSourceZone", fields: [sourceZoneId], references: [id], onDelete: Restrict)
+  destinationZone       WorldZone          @relation("CommerceGateDestinationZone", fields: [destinationZoneId], references: [id], onDelete: Restrict)
+  sourceDistrict        WorldDistrict?     @relation("CommerceGateSourceDistrict", fields: [sourceDistrictId], references: [id], onDelete: SetNull)
+  destinationDistrict   WorldDistrict?     @relation("CommerceGateDestinationDistrict", fields: [destinationDistrictId], references: [id], onDelete: SetNull)
+  createdAt             DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt             DateTime           @updatedAt @db.Timestamptz(6)
 
   @@index([sourceZoneId])
   @@index([destinationZoneId])
@@ -1414,26 +1553,27 @@ model CommerceGate {
 }
 
 model Order {
-  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  orderNumber       String          @db.VarChar(80)
-  shopId            String          @db.Uuid
-  customerId        String?         @db.Uuid
-  customerProfileId String?         @db.Uuid
-  status            OrderStatus     @default(DRAFT)
-  subtotal          Int             @default(0)
-  discount          Int             @default(0)
-  tax               Int             @default(0)
-  total             Int             @default(0)
-  currency          String          @db.Char(3)
-  notes             String?         @db.Text
-  shop              Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  customer          User?           @relation("CustomerOrders", fields: [customerId], references: [id], onDelete: SetNull)
-  customerProfile   Customer?       @relation(fields: [customerProfileId], references: [id], onDelete: SetNull)
-  items             OrderItem[]
-  paymentRecords    PaymentRecord[]
-  createdAt         DateTime        @default(now()) @db.Timestamptz(6)
-  updatedAt         DateTime        @updatedAt @db.Timestamptz(6)
-  deletedAt         DateTime?       @db.Timestamptz(6)
+  id                       String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderNumber              String          @db.VarChar(80)
+  shopId                   String          @db.Uuid
+  customerId               String?         @db.Uuid
+  customerProfileId        String?         @db.Uuid
+  status                   OrderStatus     @default(DRAFT)
+  subtotal                 Int             @default(0)
+  discount                 Int             @default(0)
+  tax                      Int             @default(0)
+  total                    Int             @default(0)
+  currency                 String          @db.Char(3)
+  notes                    String?         @db.Text
+  appliedPromotionSnapshot Json?
+  shop                     Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customer                 User?           @relation("CustomerOrders", fields: [customerId], references: [id], onDelete: SetNull)
+  customerProfile          Customer?       @relation(fields: [customerProfileId], references: [id], onDelete: SetNull)
+  items                    OrderItem[]
+  paymentRecords           PaymentRecord[]
+  createdAt                DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt                DateTime        @updatedAt @db.Timestamptz(6)
+  deletedAt                DateTime?       @db.Timestamptz(6)
 
   @@unique([shopId, orderNumber])
   @@index([shopId, status])
