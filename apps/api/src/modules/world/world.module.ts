@@ -4,11 +4,20 @@ import { DatabaseModule } from "../database/database.module";
 import { CommerceGateService } from "./commerce-gate.service";
 import { TravelRecommendationService } from "./travel-recommendation.service";
 import { WorldController } from "./world.controller";
+import { WorldDiscoveryService } from "./world-discovery.service";
 
 @Module({
   imports: [AuthModule, DatabaseModule],
   controllers: [WorldController],
-  providers: [CommerceGateService, TravelRecommendationService],
-  exports: [CommerceGateService, TravelRecommendationService],
+  providers: [
+    CommerceGateService,
+    TravelRecommendationService,
+    WorldDiscoveryService,
+  ],
+  exports: [
+    CommerceGateService,
+    TravelRecommendationService,
+    WorldDiscoveryService,
+  ],
 })
 export class WorldModule {}

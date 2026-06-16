@@ -1,10 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
 import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiTags,
-} from "@nestjs/swagger";
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
@@ -14,12 +17,35 @@ import {
   CreateWorldDistrictDto,
   CreateWorldZoneDto,
   TravelQueryDto,
+  WorldSearchQueryDto,
 } from "./dto/world.dto";
+import { WorldDiscoveryService } from "./world-discovery.service";
 
 @ApiTags("World Travel")
 @Controller("world")
 export class WorldController {
-  constructor(private readonly commerceGateService: CommerceGateService) {}
+  constructor(
+    private readonly commerceGateService: CommerceGateService,
+    private readonly worldDiscoveryService: WorldDiscoveryService,
+  ) {}
+
+  @Get("regions")
+  @ApiOperation({ summary: "List world regions" })
+  listRegions() {
+    return this.worldDiscoveryService.listRegions();
+  }
+
+  @Get("cities")
+  @ApiOperation({ summary: "List world cities" })
+  listCities() {
+    return this.worldDiscoveryService.listCities();
+  }
+
+  @Get("cities/:slug")
+  @ApiOperation({ summary: "Get a world city by slug" })
+  getCity(@Param("slug") slug: string) {
+    return this.worldDiscoveryService.getCityBySlug(slug);
+  }
 
   @Post("zones")
   @ApiBearerAuth()
@@ -56,7 +82,13 @@ export class WorldController {
   @Get("districts")
   @ApiOperation({ summary: "List world districts" })
   listDistricts() {
-    return this.commerceGateService.listDistricts();
+    return this.worldDiscoveryService.listDistricts();
+  }
+
+  @Get("districts/:slug")
+  @ApiOperation({ summary: "Get a world district by slug" })
+  getDistrict(@Param("slug") slug: string) {
+    return this.worldDiscoveryService.getDistrictBySlug(slug);
   }
 
   @Get("zones/:id/districts")
@@ -91,5 +123,35 @@ export class WorldController {
   @ApiOperation({ summary: "Get world travel overview and recommendations" })
   getTravelOverview(@Query() query: TravelQueryDto) {
     return this.commerceGateService.getTravelOverview(query);
+  }
+
+  @Get("shops")
+  @ApiOperation({ summary: "Discover world storefronts" })
+  listShops(@Query() query: WorldSearchQueryDto) {
+    return this.worldDiscoveryService.listShops(query);
+  }
+
+  @Get("shops/:slug")
+  @ApiOperation({ summary: "Get a world storefront preview by shop slug" })
+  getShop(@Param("slug") slug: string) {
+    return this.worldDiscoveryService.getShopBySlug(slug);
+  }
+
+  @Get("live")
+  @ApiOperation({ summary: "List live storefronts with world priority" })
+  listLive(@Query() query: WorldSearchQueryDto) {
+    return this.worldDiscoveryService.listLive(query);
+  }
+
+  @Get("founders")
+  @ApiOperation({ summary: "List founder merchant storefronts" })
+  listFounders(@Query() query: WorldSearchQueryDto) {
+    return this.worldDiscoveryService.listFounders(query);
+  }
+
+  @Get("map")
+  @ApiOperation({ summary: "Get world map with cities, districts, and shops" })
+  getMap(@Query() query: WorldSearchQueryDto) {
+    return this.worldDiscoveryService.getMap(query);
   }
 }

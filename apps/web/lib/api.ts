@@ -279,7 +279,15 @@ export type WorldDistrict = {
   description?: string | null;
   category: string;
   sortOrder: number;
+  slug?: string;
   zone?: Pick<WorldZone, "id" | "code" | "name" | "status">;
+  cityLocations?: Array<{
+    id: string;
+    coordinateX: number;
+    coordinateY: number;
+    displayOrder: number;
+    city: WorldCity;
+  }>;
 };
 
 export type WorldZone = {
@@ -329,6 +337,90 @@ export type TravelOverview = {
   districts: WorldDistrict[];
   gates: CommerceGate[];
   recommendations: TravelRecommendation[];
+};
+
+export type WorldRegion = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  status: string;
+  displayOrder: number;
+  cities?: WorldCity[];
+};
+
+export type WorldCity = {
+  id: string;
+  regionId: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  mapImageUrl?: string | null;
+  status: string;
+  region?: WorldRegion;
+  districtLocations?: Array<{
+    id: string;
+    coordinateX: number;
+    coordinateY: number;
+    displayOrder: number;
+    district: WorldDistrict;
+  }>;
+  shops?: WorldShop[];
+};
+
+export type WorldShop = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  category: string;
+  city: {
+    id: string;
+    name: string;
+    slug: string;
+    region: string;
+  };
+  district: {
+    id: string;
+    name: string;
+    slug: string;
+    category: string;
+  };
+  buildingStyle: string;
+  storefrontTheme: string;
+  featured: boolean;
+  founderPlacement: boolean;
+  liveNow: boolean;
+  liveBadge?: string | null;
+  isFounderMerchant: boolean;
+  founderBadge?: string | null;
+  promotionBadge?: string | null;
+  campaignBadge?: string | null;
+  subscriptionTier: string;
+  featuredProducts: Array<{
+    id: string;
+    name: string;
+    slug: string;
+    category: string;
+    priceCents?: number | null;
+    imageUrl?: string | null;
+  }>;
+  rankingScore: number;
+};
+
+export type WorldMap = {
+  regions: WorldRegion[];
+  cities: WorldCity[];
+  districts: WorldDistrict[];
+  shops: WorldShop[];
+  totals: {
+    regions: number;
+    cities: number;
+    districts: number;
+    shops: number;
+    live: number;
+    founders: number;
+  };
 };
 
 export type AuthResponse = {
@@ -541,15 +633,32 @@ export const liveCommerceApi = {
 };
 
 export const worldApi = {
+  regions: () => apiFetch<WorldRegion[]>("/world/regions", { token: null }),
+  cities: () => apiFetch<WorldCity[]>("/world/cities", { token: null }),
+  city: (slug: string) =>
+    apiFetch<WorldCity>(`/world/cities/${slug}`, { token: null }),
   zones: () => apiFetch<WorldZone[]>("/world/zones", { token: null }),
   zone: (id: string) =>
     apiFetch<WorldZone>(`/world/zones/${id}`, { token: null }),
   districts: () =>
     apiFetch<WorldDistrict[]>("/world/districts", { token: null }),
+  district: (slug: string) =>
+    apiFetch<WorldDistrict & { shops?: WorldShop[] }>(
+      `/world/districts/${slug}`,
+      { token: null },
+    ),
   zoneDistricts: (id: string) =>
     apiFetch<WorldDistrict[]>(`/world/zones/${id}/districts`, {
       token: null,
     }),
+  shops: (query?: Record<string, string>) =>
+    apiFetch<WorldShop[]>(`/world/shops${toQuery(query)}`, { token: null }),
+  shop: (slug: string) =>
+    apiFetch<WorldShop>(`/world/shops/${slug}`, { token: null }),
+  live: () => apiFetch<WorldShop[]>("/world/live", { token: null }),
+  founders: () => apiFetch<WorldShop[]>("/world/founders", { token: null }),
+  map: (query?: Record<string, string>) =>
+    apiFetch<WorldMap>(`/world/map${toQuery(query)}`, { token: null }),
   gates: () => apiFetch<CommerceGate[]>("/world/gates", { token: null }),
   availableGates: () =>
     apiFetch<CommerceGate[]>("/world/gates/available", { token: null }),
@@ -560,3 +669,13 @@ export const worldApi = {
     return apiFetch<TravelOverview>(`/world/travel${query}`, { token: null });
   },
 };
+
+function toQuery(query?: Record<string, string>) {
+  if (!query) return "";
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(query)) {
+    if (value) params.set(key, value);
+  }
+  const serialized = params.toString();
+  return serialized ? `?${serialized}` : "";
+}

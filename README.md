@@ -10,7 +10,7 @@ Status: Internal Alpha
 
 Current release: `v0.1.0-core-commerce`
 
-Latest completed sprint: Sprint 8 Promotion & Pricing Engine Foundation
+Latest completed sprint: Sprint 10 Merchant World Experience Foundation
 
 Next planned release: `v0.2.0-crm-foundation`
 
@@ -40,6 +40,7 @@ Next planned release: `v0.2.0-crm-foundation`
 - [x] YouTube Live Channel Embed Support
 - [x] Promotion & Pricing Engine Foundation
 - [x] Merchant Subscription Foundation
+- [x] Merchant World Experience Foundation
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
 - [x] AI Executive Board Documentation
@@ -184,6 +185,9 @@ Reference:
 - [Promotion Engine Architecture](docs/architecture/promotion-engine.md)
 - [Merchant Subscription Model](docs/business/subscription-model.md)
 - [Founder Merchant Program](docs/business/founder-program.md)
+- [World Experience](docs/world/world-experience.md)
+- [Storefront System](docs/world/storefront-system.md)
+- [World Discovery Engine](docs/world/discovery-engine.md)
 - [Vision Asset Library](docs/vision/README.md)
 - [Master Roadmap](docs/roadmap/master-roadmap.md)
 - [Founder Principles](docs/architecture/founder-principles.md)
@@ -196,6 +200,6 @@ Reference:
 - Internal alpha UI
 - No external payment gateway yet
 - No production hosting yet
-- No customer marketplace storefront yet
+- Customer marketplace storefront is foundation-only
 - No AI Merchant UI yet
-- No Open World layer yet
+- Open World layer is commerce-discovery foundation only

@@ -6,12 +6,15 @@ import type { AuthenticatedUser } from "../auth/auth.types";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
 import { PrismaService } from "../database/prisma.service";
+import { WorldDiscoveryService } from "./world-discovery.service";
 import { WorldModule } from "./world.module";
 
 const zoneId = "11111111-1111-4111-8111-111111111111";
 const destinationZoneId = "22222222-2222-4222-8222-222222222222";
 const districtId = "33333333-3333-4333-8333-333333333333";
 const gateId = "44444444-4444-4444-8444-444444444444";
+const regionId = "55555555-5555-4555-8555-555555555555";
+const cityId = "66666666-6666-4666-8666-666666666666";
 
 const adminUser: AuthenticatedUser = {
   id: "admin-1",
@@ -58,6 +61,39 @@ const gate = {
   destinationDistrict: district,
 };
 
+const region = {
+  id: regionId,
+  name: "Central Trade Region",
+  slug: "central-trade-region",
+  description: null,
+  status: "ACTIVE",
+  displayOrder: 1,
+};
+
+const city = {
+  id: cityId,
+  regionId,
+  name: "Merchant City",
+  slug: "merchant-city",
+  description: null,
+  mapImageUrl: null,
+  status: "ACTIVE",
+  region,
+  districtLocations: [{ id: "location-1", district, displayOrder: 1 }],
+};
+
+const worldShop = {
+  id: "shop-1",
+  name: "Velora Coffee",
+  slug: "velora-coffee",
+  city: { name: "Merchant City", slug: "merchant-city" },
+  district: { name: "Founder District", slug: "founder-district" },
+  category: "FOUNDERS",
+  liveNow: true,
+  isFounderMerchant: true,
+  rankingScore: 1500,
+};
+
 function createPrismaMock() {
   return {
     worldZone: {
@@ -73,6 +109,16 @@ function createPrismaMock() {
     commerceGate: {
       create: jest.fn().mockResolvedValue(gate),
       findMany: jest.fn().mockResolvedValue([gate]),
+    },
+    worldRegion: {
+      findMany: jest.fn().mockResolvedValue([region]),
+    },
+    worldCity: {
+      findFirst: jest.fn().mockResolvedValue(city),
+      findMany: jest.fn().mockResolvedValue([city]),
+    },
+    merchantWorldLocation: {
+      findMany: jest.fn().mockResolvedValue([]),
     },
   };
 }
@@ -166,5 +212,27 @@ describe("WorldController (integration)", () => {
     expect(response.body.recommendations).toEqual([
       expect.objectContaining({ label: "AI District" }),
     ]);
+  });
+
+  it("lists world regions", async () => {
+    const response = await request(app.getHttpServer())
+      .get("/world/regions")
+      .expect(200);
+
+    expect(response.body[0].slug).toBe("central-trade-region");
+  });
+
+  it("returns world map data", async () => {
+    jest
+      .spyOn(app.get(WorldDiscoveryService), "listShops")
+      .mockResolvedValue([worldShop] as never);
+
+    const response = await request(app.getHttpServer())
+      .get("/world/map")
+      .expect(200);
+
+    expect(response.body.totals).toEqual(
+      expect.objectContaining({ regions: 1, cities: 1, shops: 1 }),
+    );
   });
 });

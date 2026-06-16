@@ -47,6 +47,19 @@ Future AI pricing is intentionally deferred until the promotion and pricing foun
 
 Avatar, Town Map, Virtual Shops, Commerce Gate Network, Fast Travel
 
+Sprint 10 adds Merchant World Experience Foundation:
+
+- World regions
+- World cities
+- District location placement
+- Merchant storefront placement
+- Live storefront discovery priority
+- Founder Merchant world visibility
+- Promotion discovery badges
+- Public world portal, map, city, district, and storefront pages
+
+This phase remains commerce-first. Combat, leveling, equipment, quests, monster systems, and MMORPG mechanics are intentionally excluded.
+
 ## Phase 7: Global Commerce Network
 
 Multi-country, Multi-language, Multi-currency expansion

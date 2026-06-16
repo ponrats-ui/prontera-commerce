@@ -290,6 +290,27 @@ enum CommerceGateStatus {
   DISABLED
 }
 
+enum WorldEntityStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum MerchantBuildingStyle {
+  CLASSIC_SHOP
+  MODERN_SHOP
+  MARKET_STALL
+  TECH_STORE
+  PREMIUM_HALL
+}
+
+enum StorefrontTheme {
+  WARM_MARKET
+  HARBOR_TRADE
+  ARTISAN_LIGHT
+  TECH_BAZAAR
+  FOUNDER_GOLD
+}
+
 enum PaymentGatewayProvider {
   STRIPE
   OMISE
@@ -727,6 +748,7 @@ model Shop {
   vouchers                Voucher[]
   customerPricingTiers    CustomerPricingTier[]
   liveChannels            ShopLiveChannel[]
+  worldLocations          MerchantWorldLocation[]
   posSessions             POSSession[]
   posShifts               POSShift[]
   paymentGateways         PaymentGatewayConfiguration[]
@@ -1594,24 +1616,100 @@ model WorldZone {
 }
 
 model WorldDistrict {
-  id               String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  zoneId           String         @db.Uuid
-  code             String         @db.VarChar(80)
-  name             String         @db.VarChar(160)
-  description      String?        @db.Text
-  category         String         @db.VarChar(80)
-  sortOrder        Int            @default(0)
-  zone             WorldZone      @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  sourceGates      CommerceGate[] @relation("CommerceGateSourceDistrict")
-  destinationGates CommerceGate[] @relation("CommerceGateDestinationDistrict")
-  createdAt        DateTime       @default(now()) @db.Timestamptz(6)
-  updatedAt        DateTime       @updatedAt @db.Timestamptz(6)
+  id                String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  zoneId            String                  @db.Uuid
+  code              String                  @db.VarChar(80)
+  name              String                  @db.VarChar(160)
+  description       String?                 @db.Text
+  category          String                  @db.VarChar(80)
+  sortOrder         Int                     @default(0)
+  zone              WorldZone               @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  sourceGates       CommerceGate[]          @relation("CommerceGateSourceDistrict")
+  destinationGates  CommerceGate[]          @relation("CommerceGateDestinationDistrict")
+  cityLocations     WorldDistrictLocation[]
+  merchantLocations MerchantWorldLocation[]
+  createdAt         DateTime                @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime                @updatedAt @db.Timestamptz(6)
 
   @@unique([zoneId, code])
   @@index([zoneId])
   @@index([category])
   @@index([sortOrder])
   @@map("world_districts")
+}
+
+model WorldRegion {
+  id           String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String            @db.VarChar(160)
+  slug         String            @unique @db.VarChar(160)
+  description  String?           @db.Text
+  status       WorldEntityStatus @default(ACTIVE)
+  displayOrder Int               @default(0)
+  cities       WorldCity[]
+  createdAt    DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime          @updatedAt @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([displayOrder])
+  @@map("world_regions")
+}
+
+model WorldCity {
+  id                String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  regionId          String                  @db.Uuid
+  name              String                  @db.VarChar(160)
+  slug              String                  @unique @db.VarChar(160)
+  description       String?                 @db.Text
+  mapImageUrl       String?                 @db.Text
+  status            WorldEntityStatus       @default(ACTIVE)
+  region            WorldRegion             @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  districtLocations WorldDistrictLocation[]
+  merchantLocations MerchantWorldLocation[]
+  createdAt         DateTime                @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime                @updatedAt @db.Timestamptz(6)
+
+  @@index([regionId])
+  @@index([status])
+  @@map("world_cities")
+}
+
+model WorldDistrictLocation {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  districtId   String        @db.Uuid
+  cityId       String        @db.Uuid
+  coordinateX  Int
+  coordinateY  Int
+  displayOrder Int           @default(0)
+  district     WorldDistrict @relation(fields: [districtId], references: [id], onDelete: Cascade)
+  city         WorldCity     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+
+  @@unique([districtId, cityId])
+  @@index([cityId, displayOrder])
+  @@index([districtId])
+  @@map("world_district_locations")
+}
+
+model MerchantWorldLocation {
+  id               String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId           String                @db.Uuid
+  cityId           String                @db.Uuid
+  districtId       String                @db.Uuid
+  buildingStyle    MerchantBuildingStyle @default(CLASSIC_SHOP)
+  storefrontTheme  StorefrontTheme       @default(WARM_MARKET)
+  featured         Boolean               @default(false)
+  founderPlacement Boolean               @default(false)
+  shop             Shop                  @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  city             WorldCity             @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  district         WorldDistrict         @relation(fields: [districtId], references: [id], onDelete: Restrict)
+  createdAt        DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime              @updatedAt @db.Timestamptz(6)
+
+  @@unique([shopId])
+  @@index([cityId])
+  @@index([districtId])
+  @@index([featured])
+  @@index([founderPlacement])
+  @@map("merchant_world_locations")
 }
 
 model CommerceGate {

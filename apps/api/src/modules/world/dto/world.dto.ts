@@ -2,11 +2,15 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   CommerceGateStatus,
   CommerceGateType,
+  MerchantBuildingStyle,
+  StorefrontTheme,
+  WorldEntityStatus,
   WorldZoneStatus,
 } from "@prisma/client";
 import {
   IsEnum,
   IsInt,
+  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
@@ -131,4 +135,152 @@ export class TravelQueryDto {
   @IsString()
   @MaxLength(120)
   searchTerm?: string;
+}
+
+export class WorldSearchQueryDto {
+  @ApiPropertyOptional({ example: "merchant" })
+  @IsOptional()
+  @IsString()
+  @MaxLength(120)
+  search?: string;
+
+  @ApiPropertyOptional({ example: "merchant-city" })
+  @IsOptional()
+  @IsString()
+  @MaxLength(160)
+  citySlug?: string;
+
+  @ApiPropertyOptional({ example: "founder-district" })
+  @IsOptional()
+  @IsString()
+  @MaxLength(160)
+  districtSlug?: string;
+
+  @ApiPropertyOptional({ example: "FASHION" })
+  @IsOptional()
+  @IsString()
+  @MaxLength(80)
+  category?: string;
+
+  @ApiPropertyOptional({ example: "true" })
+  @IsOptional()
+  @IsString()
+  liveNow?: string;
+
+  @ApiPropertyOptional({ example: "true" })
+  @IsOptional()
+  @IsString()
+  founders?: string;
+
+  @ApiPropertyOptional({ example: "true" })
+  @IsOptional()
+  @IsString()
+  featured?: string;
+}
+
+export class CreateWorldRegionDto {
+  @ApiProperty({ example: "Central Trade Region" })
+  @IsString()
+  @MaxLength(160)
+  name!: string;
+
+  @ApiProperty({ example: "central-trade-region" })
+  @Matches(/^[a-z0-9-]+$/)
+  @MaxLength(160)
+  slug!: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @ApiPropertyOptional({ enum: WorldEntityStatus })
+  @IsOptional()
+  @IsEnum(WorldEntityStatus)
+  status?: WorldEntityStatus;
+
+  @ApiPropertyOptional({ default: 0 })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  displayOrder?: number;
+}
+
+export class CreateWorldCityDto {
+  @ApiProperty()
+  @IsUUID()
+  regionId!: string;
+
+  @ApiProperty({ example: "Merchant City" })
+  @IsString()
+  @MaxLength(160)
+  name!: string;
+
+  @ApiProperty({ example: "merchant-city" })
+  @Matches(/^[a-z0-9-]+$/)
+  @MaxLength(160)
+  slug!: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUrl({ require_protocol: true })
+  mapImageUrl?: string;
+
+  @ApiPropertyOptional({ enum: WorldEntityStatus })
+  @IsOptional()
+  @IsEnum(WorldEntityStatus)
+  status?: WorldEntityStatus;
+}
+
+export class CreateWorldDistrictLocationDto {
+  @ApiProperty()
+  @IsUUID()
+  districtId!: string;
+
+  @ApiProperty()
+  @IsUUID()
+  cityId!: string;
+
+  @ApiProperty({ example: 42 })
+  @IsNumber()
+  coordinateX!: number;
+
+  @ApiProperty({ example: 64 })
+  @IsNumber()
+  coordinateY!: number;
+
+  @ApiPropertyOptional({ default: 0 })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  displayOrder?: number;
+}
+
+export class CreateMerchantWorldLocationDto {
+  @ApiProperty()
+  @IsUUID()
+  shopId!: string;
+
+  @ApiProperty()
+  @IsUUID()
+  cityId!: string;
+
+  @ApiProperty()
+  @IsUUID()
+  districtId!: string;
+
+  @ApiPropertyOptional({ enum: MerchantBuildingStyle })
+  @IsOptional()
+  @IsEnum(MerchantBuildingStyle)
+  buildingStyle?: MerchantBuildingStyle;
+
+  @ApiPropertyOptional({ enum: StorefrontTheme })
+  @IsOptional()
+  @IsEnum(StorefrontTheme)
+  storefrontTheme?: StorefrontTheme;
 }
