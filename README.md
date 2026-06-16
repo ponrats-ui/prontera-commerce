@@ -2,7 +2,19 @@
 
 The Open World Commerce Platform for Real Businesses
 
-Prontera Commerce is a Merchant OS + Marketplace + AI Commerce + Open World Commerce platform inspired by MMORPG towns, designed for real-world businesses.
+Prontera Commerce is a Merchant Civilization Platform for real businesses.
+
+It combines Merchant OS, Marketplace, Live Commerce, AI Commerce direction, and Commerce World discovery into a connected digital economy for merchants, customers, communities, and stories.
+
+## Platform Positioning
+
+Prontera Commerce is not a marketplace.
+
+Prontera Commerce is not a game.
+
+Prontera Commerce is a Merchant Civilization Platform.
+
+Reference: [Merchant Civilization Platform](docs/vision/merchant-civilization-platform.md)
 
 ## Current Status
 
