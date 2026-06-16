@@ -53,11 +53,20 @@ enum PlanStatus {
 }
 
 enum SubscriptionStatus {
+  TRIAL
   TRIALING
   ACTIVE
+  GRACE_PERIOD
   PAST_DUE
   CANCELED
+  CANCELLED
   EXPIRED
+}
+
+enum SubscriptionPlanType {
+  STARTER
+  PRO
+  ENTERPRISE
 }
 
 enum InvoiceStatus {
@@ -358,6 +367,7 @@ model User {
   customerNotes              CustomerNote[]
   customerActivities         CustomerActivity[]
   createdLiveChannels        ShopLiveChannel[]
+  founderProgramsGranted     FounderMerchantProgram[] @relation("FounderProgramGrantedBy")
   createdPromotionCampaigns  PromotionCampaign[]
   ownedShops                 Shop[]                   @relation("ShopOwner")
   shopStaff                  ShopStaff[]
@@ -570,6 +580,82 @@ model Subscription {
   @@map("subscriptions")
 }
 
+model SubscriptionPlan {
+  id                    String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code                  String                 @db.VarChar(80)
+  name                  String                 @db.VarChar(160)
+  description           String?                @db.Text
+  planType              SubscriptionPlanType
+  priceCents            Int                    @default(0)
+  currency              String                 @default("USD") @db.Char(3)
+  productLimit          Int?
+  monthlyOrderLimit     Int?
+  liveCommerce          Boolean                @default(false)
+  advancedAnalytics     Boolean                @default(false)
+  multiStaff            Boolean                @default(false)
+  aiMerchantAssistant   Boolean                @default(false)
+  crmAdvanced           Boolean                @default(false)
+  promotionFullAccess   Boolean                @default(false)
+  status                PlanStatus             @default(ACTIVE)
+  merchantSubscriptions MerchantSubscription[]
+  createdAt             DateTime               @default(now()) @db.Timestamptz(6)
+  updatedAt             DateTime               @updatedAt @db.Timestamptz(6)
+  deletedAt             DateTime?              @db.Timestamptz(6)
+
+  @@unique([code])
+  @@index([planType])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("subscription_plans")
+}
+
+model MerchantSubscription {
+  id                 String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId             String             @db.Uuid
+  planId             String             @db.Uuid
+  status             SubscriptionStatus @default(TRIAL)
+  trialStartAt       DateTime?          @db.Timestamptz(6)
+  trialEndAt         DateTime?          @db.Timestamptz(6)
+  currentPeriodStart DateTime?          @db.Timestamptz(6)
+  currentPeriodEnd   DateTime?          @db.Timestamptz(6)
+  upgradedAt         DateTime?          @db.Timestamptz(6)
+  cancelledAt        DateTime?          @db.Timestamptz(6)
+  gracePeriodEndAt   DateTime?          @db.Timestamptz(6)
+  shop               Shop               @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  plan               SubscriptionPlan   @relation(fields: [planId], references: [id], onDelete: Restrict)
+  createdAt          DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime           @updatedAt @db.Timestamptz(6)
+  deletedAt          DateTime?          @db.Timestamptz(6)
+
+  @@index([shopId, status])
+  @@index([planId])
+  @@index([trialEndAt])
+  @@index([currentPeriodEnd])
+  @@index([deletedAt])
+  @@map("merchant_subscriptions")
+}
+
+model FounderMerchantProgram {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId            String    @unique @db.Uuid
+  isFounderMerchant Boolean   @default(true)
+  founderGrantedAt  DateTime  @default(now()) @db.Timestamptz(6)
+  founderExpiresAt  DateTime? @db.Timestamptz(6)
+  grantedById       String?   @db.Uuid
+  benefits          Json?
+  shop              Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  grantedBy         User?     @relation("FounderProgramGrantedBy", fields: [grantedById], references: [id], onDelete: SetNull)
+  createdAt         DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime  @updatedAt @db.Timestamptz(6)
+  deletedAt         DateTime? @db.Timestamptz(6)
+
+  @@index([isFounderMerchant])
+  @@index([founderExpiresAt])
+  @@index([grantedById])
+  @@index([deletedAt])
+  @@map("founder_merchant_programs")
+}
+
 model Invoice {
   id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   shopId         String        @db.Uuid
@@ -626,6 +712,8 @@ model Shop {
   staff                   ShopStaff[]
   invitations             ShopInvitation[]
   subscriptions           Subscription[]
+  merchantSubscriptions   MerchantSubscription[]
+  founderMerchantProgram  FounderMerchantProgram?
   invoices                Invoice[]
   categories              Category[]
   products                Product[]

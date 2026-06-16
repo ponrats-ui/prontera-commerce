@@ -39,6 +39,7 @@ Next planned release: `v0.2.0-crm-foundation`
 - [x] Pro Live Commerce Foundation
 - [x] YouTube Live Channel Embed Support
 - [x] Promotion & Pricing Engine Foundation
+- [x] Merchant Subscription Foundation
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
 - [x] AI Executive Board Documentation
@@ -144,6 +145,7 @@ postgresql://prontera:prontera_password@localhost:5432/prontera_commerce?schema=
 Next priorities:
 
 - Promotion & Pricing Engine expansion
+- Merchant Subscription expansion
 - Sprint 9 Payment Gateway Foundation
 - Sprint 10 Shipping & Fulfillment Foundation
 - Marketplace Storefront
@@ -180,6 +182,8 @@ Reference:
 - [Live Commerce API](docs/api/live-commerce.md)
 - [Promotion Engine API](docs/api/promotion-engine.md)
 - [Promotion Engine Architecture](docs/architecture/promotion-engine.md)
+- [Merchant Subscription Model](docs/business/subscription-model.md)
+- [Founder Merchant Program](docs/business/founder-program.md)
 - [Vision Asset Library](docs/vision/README.md)
 - [Master Roadmap](docs/roadmap/master-roadmap.md)
 - [Founder Principles](docs/architecture/founder-principles.md)

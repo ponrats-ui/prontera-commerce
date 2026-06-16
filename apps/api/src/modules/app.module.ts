@@ -8,6 +8,7 @@ import { LiveCommerceModule } from "./live-commerce/live-commerce.module";
 import { OrdersModule } from "./orders/orders.module";
 import { PromotionsModule } from "./promotions/promotions.module";
 import { ShopsModule } from "./shops/shops.module";
+import { SubscriptionsModule } from "./subscriptions/subscriptions.module";
 import { WorldModule } from "./world/world.module";
 
 @Module({
@@ -20,6 +21,7 @@ import { WorldModule } from "./world/world.module";
     OrdersModule,
     CustomersModule,
     PromotionsModule,
+    SubscriptionsModule,
     LiveCommerceModule,
     WorldModule,
   ],

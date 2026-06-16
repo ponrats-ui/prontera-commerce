@@ -4,6 +4,13 @@
 
 Auth, Shop, Billing, Founder Governance
 
+Sprint 9A adds Merchant Subscription Foundation:
+
+- 30-day Pro trial
+- Starter Free Forever
+- Pro subscription lifecycle
+- Founder Merchant program
+
 Brand & IP Safety Foundation:
 
 - Original Art Bible

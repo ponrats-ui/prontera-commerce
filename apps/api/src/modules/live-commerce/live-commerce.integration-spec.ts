@@ -4,6 +4,7 @@ import {
   LiveChannelProvider,
   LiveChannelStatus,
   ShopStaffRole,
+  SubscriptionPlanType,
   SubscriptionStatus,
 } from "@prisma/client";
 import request from "supertest";
@@ -58,6 +59,23 @@ function createPrismaMock(getPlanCode: () => string) {
         ownerId: ownerUser.id,
         staff: [{ role: ShopStaffRole.OWNER }],
       }),
+    },
+    founderMerchantProgram: {
+      findFirst: jest.fn().mockResolvedValue(null),
+    },
+    merchantSubscription: {
+      findFirst: jest.fn(() =>
+        Promise.resolve({
+          status: SubscriptionStatus.ACTIVE,
+          plan: {
+            code: getPlanCode(),
+            planType:
+              getPlanCode() === "STARTER"
+                ? SubscriptionPlanType.STARTER
+                : SubscriptionPlanType.PRO,
+          },
+        }),
+      ),
     },
     subscription: {
       findFirst: jest.fn(() =>

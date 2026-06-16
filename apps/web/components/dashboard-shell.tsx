@@ -15,6 +15,7 @@ const navItems = [
   { href: "/dashboard/orders", label: "Orders" },
   { href: "/dashboard/pos", label: "POS" },
   { href: "/dashboard/promotions", label: "Promotions" },
+  { href: "/dashboard/subscription", label: "Subscription" },
   { href: "/dashboard/live-commerce", label: "Live Commerce", badge: "Pro" },
 ];
 

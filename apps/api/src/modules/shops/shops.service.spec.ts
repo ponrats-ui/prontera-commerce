@@ -50,6 +50,13 @@ function createPrismaMock() {
         ],
       }),
     },
+    subscriptionPlan: {
+      upsert: jest.fn(),
+      findFirst: jest.fn().mockResolvedValue({ id: "pro-plan" }),
+    },
+    merchantSubscription: {
+      create: jest.fn(),
+    },
   };
 
   return {
@@ -119,6 +126,15 @@ describe("ShopsService", () => {
               status: StaffStatus.ACTIVE,
             }),
           },
+        }),
+      }),
+    );
+    expect(prisma.tx.merchantSubscription.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          shopId: "shop-1",
+          planId: "pro-plan",
+          status: "TRIAL",
         }),
       }),
     );

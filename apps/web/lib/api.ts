@@ -171,6 +171,62 @@ export type CustomerPricingTier = {
   customerGroup?: CustomerGroup;
 };
 
+export type SubscriptionPlan = {
+  id: string;
+  code: string;
+  name: string;
+  description?: string | null;
+  planType: string;
+  priceCents: number;
+  currency: string;
+  productLimit?: number | null;
+  monthlyOrderLimit?: number | null;
+  liveCommerce: boolean;
+  advancedAnalytics: boolean;
+  multiStaff: boolean;
+  aiMerchantAssistant: boolean;
+  crmAdvanced: boolean;
+  promotionFullAccess: boolean;
+};
+
+export type MerchantSubscriptionOverview = {
+  shop: Pick<Shop, "id" | "name" | "slug">;
+  subscription: {
+    id: string;
+    status: string;
+    trialStartAt?: string | null;
+    trialEndAt?: string | null;
+    currentPeriodStart?: string | null;
+    currentPeriodEnd?: string | null;
+    cancelledAt?: string | null;
+    plan: SubscriptionPlan;
+  };
+  founderProgram?: {
+    id: string;
+    isFounderMerchant: boolean;
+    founderGrantedAt: string;
+    founderExpiresAt?: string | null;
+  } | null;
+  isFounderMerchant: boolean;
+  effectivePlan: SubscriptionPlan;
+  trialDaysRemaining: number;
+  trialDurationDays: number;
+  starterLimits: {
+    productLimit: number;
+    monthlyOrderLimit: number;
+    liveCommerce: boolean;
+    advancedAnalytics: boolean;
+    multiStaff: boolean;
+    aiMerchantAssistant: boolean;
+  };
+  founderBenefits: {
+    founderBadge: boolean;
+    proAccess: boolean;
+    priorityPlacement: boolean;
+    earlyFeatureAccess: boolean;
+  };
+};
+
 export type POSSession = {
   id: string;
   shopId: string;
@@ -395,6 +451,37 @@ export const promotionsApi = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+};
+
+export const subscriptionsApi = {
+  plans: () => apiFetch<SubscriptionPlan[]>("/subscriptions/plans"),
+  me: (shopId?: string) =>
+    apiFetch<MerchantSubscriptionOverview>(
+      `/subscriptions/me${shopId ? `?shopId=${shopId}` : ""}`,
+    ),
+  upgrade: (body: { shopId: string; planType?: string }) =>
+    apiFetch<MerchantSubscriptionOverview["subscription"]>(
+      "/subscriptions/upgrade",
+      {
+        method: "POST",
+        body: JSON.stringify(body),
+      },
+    ),
+  cancel: (body: { shopId: string }) =>
+    apiFetch<MerchantSubscriptionOverview["subscription"]>(
+      "/subscriptions/cancel",
+      {
+        method: "POST",
+        body: JSON.stringify(body),
+      },
+    ),
+  founder: (shopId?: string) =>
+    apiFetch<
+      Pick<
+        MerchantSubscriptionOverview,
+        "shop" | "founderProgram" | "isFounderMerchant" | "founderBenefits"
+      >
+    >(`/subscriptions/founder${shopId ? `?shopId=${shopId}` : ""}`),
 };
 
 export const ordersApi = {

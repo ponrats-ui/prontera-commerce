@@ -6,6 +6,7 @@ import {
 import {
   LiveChannelProvider,
   LiveChannelStatus,
+  SubscriptionPlanType,
   SubscriptionStatus,
 } from "@prisma/client";
 import type { AuthenticatedUser } from "../auth/auth.types";
@@ -38,6 +39,15 @@ const channel = {
 
 function createPrismaMock() {
   return {
+    founderMerchantProgram: {
+      findFirst: jest.fn().mockResolvedValue(null),
+    },
+    merchantSubscription: {
+      findFirst: jest.fn().mockResolvedValue({
+        status: SubscriptionStatus.ACTIVE,
+        plan: { code: "PRO", planType: SubscriptionPlanType.PRO },
+      }),
+    },
     subscription: {
       findFirst: jest.fn().mockResolvedValue({
         status: SubscriptionStatus.ACTIVE,
@@ -105,9 +115,9 @@ describe("LiveCommerceService", () => {
 
   it("blocks Starter shops from creating live channels", async () => {
     const prisma = createPrismaMock();
-    prisma.subscription.findFirst.mockResolvedValue({
+    prisma.merchantSubscription.findFirst.mockResolvedValue({
       status: SubscriptionStatus.ACTIVE,
-      plan: { code: "STARTER" },
+      plan: { code: "STARTER", planType: SubscriptionPlanType.STARTER },
     });
     const service = new LiveCommerceService(
       prisma as never,

@@ -5,9 +5,21 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { Prisma, ShopStaffRole, ShopStatus, StaffStatus } from "@prisma/client";
+import {
+  PlanStatus,
+  Prisma,
+  ShopStaffRole,
+  ShopStatus,
+  StaffStatus,
+  SubscriptionPlanType,
+  SubscriptionStatus,
+} from "@prisma/client";
 import type { AuthenticatedUser } from "../auth/auth.types";
 import { PrismaService } from "../database/prisma.service";
+import {
+  subscriptionPlanDefinitions,
+  trialDurationDays,
+} from "../subscriptions/subscription-plan-definitions";
 import type { CreateShopDto } from "./dto/create-shop.dto";
 import type { CreateShopInvitationDto } from "./dto/invitation.dto";
 import type { AddShopStaffDto, UpdateShopStaffDto } from "./dto/staff.dto";
@@ -96,12 +108,28 @@ export class ShopsService {
       }
     }
 
-    return this.prisma.$transaction(async (tx) =>
-      tx.shop.create({
+    return this.prisma.$transaction(async (tx) => {
+      const shop = await tx.shop.create({
         data,
         include: shopInclude,
-      }),
-    );
+      });
+
+      const proPlan = await this.ensureSubscriptionPlans(tx);
+      const now = new Date();
+      await tx.merchantSubscription.create({
+        data: {
+          shopId: shop.id,
+          planId: proPlan.id,
+          status: SubscriptionStatus.TRIAL,
+          trialStartAt: now,
+          trialEndAt: this.addDays(now, trialDurationDays),
+          currentPeriodStart: now,
+          currentPeriodEnd: this.addDays(now, trialDurationDays),
+        },
+      });
+
+      return shop;
+    });
   }
 
   async getMyShops(user: AuthenticatedUser) {
@@ -490,5 +518,37 @@ export class ShopsService {
     }
 
     await Promise.all(checks);
+  }
+
+  private async ensureSubscriptionPlans(tx: Prisma.TransactionClient) {
+    for (const plan of subscriptionPlanDefinitions) {
+      await tx.subscriptionPlan.upsert({
+        where: { code: plan.code },
+        create: plan,
+        update: {
+          ...plan,
+          status: PlanStatus.ACTIVE,
+          deletedAt: null,
+        },
+      });
+    }
+
+    const proPlan = await tx.subscriptionPlan.findFirst({
+      where: {
+        planType: SubscriptionPlanType.PRO,
+        status: PlanStatus.ACTIVE,
+        deletedAt: null,
+      },
+    });
+
+    if (!proPlan) {
+      throw new NotFoundException("Pro subscription plan not found.");
+    }
+
+    return proPlan;
+  }
+
+  private addDays(date: Date, days: number) {
+    return new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
   }
 }

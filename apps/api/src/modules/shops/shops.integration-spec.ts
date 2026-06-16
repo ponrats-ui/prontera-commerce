@@ -121,6 +121,13 @@ function createPrismaMock(getCurrentUser: () => AuthenticatedUser) {
         shop: {
           create: jest.fn(() => createdShop),
         },
+        subscriptionPlan: {
+          upsert: jest.fn(),
+          findFirst: jest.fn(() => ({ id: "pro-plan" })),
+        },
+        merchantSubscription: {
+          create: jest.fn(),
+        },
       }),
     ),
   };
