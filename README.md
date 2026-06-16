@@ -162,6 +162,10 @@ Reference:
 - [v0.3.0 Foundation Milestone](docs/releases/v0.3.0-foundation-milestone.md)
 - [IP Asset Register](docs/legal/ip-asset-register.md)
 
+## Investor Resources
+
+- [Investor One Pager](docs/investors/investor-one-pager.md)
+
 ## Roadmap
 
 Next priorities:
@@ -199,6 +203,7 @@ Reference:
 
 - [Core Commerce Release](docs/releases/v0.1.0-core-commerce.md)
 - [v0.3.0 Foundation Milestone](docs/releases/v0.3.0-foundation-milestone.md)
+- [Investor One Pager](docs/investors/investor-one-pager.md)
 - [Merchant Dashboard](docs/web/merchant-dashboard.md)
 - [Customer CRM Foundation](docs/architecture/customer-crm-foundation.md)
 - [Live Commerce Architecture](docs/architecture/live-commerce.md)
