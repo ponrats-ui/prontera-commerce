@@ -166,6 +166,15 @@ Reference:
 
 - [Investor One Pager](docs/investors/investor-one-pager.md)
 
+## Company Philosophy
+
+Prontera Commerce is built to restore merchant identity, strengthen merchant relationships, and create a long-term Merchant Civilization Platform.
+
+Reference:
+
+- [Founder Letter](docs/investors/founder-letter.md)
+- [Company Manifesto](docs/investors/company-manifesto.md)
+
 ## Roadmap
 
 Next priorities:
@@ -204,6 +213,8 @@ Reference:
 - [Core Commerce Release](docs/releases/v0.1.0-core-commerce.md)
 - [v0.3.0 Foundation Milestone](docs/releases/v0.3.0-foundation-milestone.md)
 - [Investor One Pager](docs/investors/investor-one-pager.md)
+- [Founder Letter](docs/investors/founder-letter.md)
+- [Company Manifesto](docs/investors/company-manifesto.md)
 - [Merchant Dashboard](docs/web/merchant-dashboard.md)
 - [Customer CRM Foundation](docs/architecture/customer-crm-foundation.md)
 - [Live Commerce Architecture](docs/architecture/live-commerce.md)
