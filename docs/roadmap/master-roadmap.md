@@ -4,6 +4,13 @@
 
 Auth, Shop, Billing, Founder Governance
 
+Brand & IP Safety Foundation:
+
+- Original Art Bible
+- IP Safety Guidelines
+- Asset Review Rules
+- Future Open World Style Guide
+
 ## Phase 2: Commerce Core
 
 Product, Inventory, POS, Orders

@@ -162,6 +162,15 @@ Prontera Commerce uses documented AI operating memory to preserve the working co
 
 Reference: [Mr.P Operating Memory](docs/ai/mr-p-operating-memory.md)
 
+## Original Art Direction and IP Safety
+
+Prontera Commerce uses an original fantasy commerce art direction. It does not clone or copy Ragnarok, Pixar, Disney, Ghibli, Nintendo, or any existing franchise.
+
+Reference:
+
+- [Prontera Art Bible](docs/brand/prontera-art-bible.md)
+- [IP Safety Guidelines](docs/brand/ip-safety-guidelines.md)
+
 ## Documentation
 
 - [Core Commerce Release](docs/releases/v0.1.0-core-commerce.md)
@@ -174,6 +183,7 @@ Reference: [Mr.P Operating Memory](docs/ai/mr-p-operating-memory.md)
 - [Vision Asset Library](docs/vision/README.md)
 - [Master Roadmap](docs/roadmap/master-roadmap.md)
 - [Founder Principles](docs/architecture/founder-principles.md)
+- [Brand Documentation](docs/brand/README.md)
 - [AI Executive Board](docs/governance/ai-executive-board.md)
 - [Legal and Ownership Documents](docs/legal/README.md)
 
