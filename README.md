@@ -212,6 +212,12 @@ Prontera Commerce uses documented AI operating memory to preserve the working co
 
 Reference: [Mr.P Operating Memory](docs/ai/mr-p-operating-memory.md)
 
+## AI Founder Council
+
+Prontera Commerce uses an AI Founder Council to provide specialized perspectives across strategy, product, engineering, growth, and governance while preserving Founder authority.
+
+Reference: [Prontera AI Founder Council](docs/ai/ai-founder-council.md)
+
 ## Original Art Direction and IP Safety
 
 Prontera Commerce uses an original fantasy commerce art direction. It does not clone or copy Ragnarok, Pixar, Disney, Ghibli, Nintendo, or any existing franchise.
@@ -246,6 +252,7 @@ Reference:
 - [Master Roadmap](docs/roadmap/master-roadmap.md)
 - [Founder Principles](docs/architecture/founder-principles.md)
 - [Brand Documentation](docs/brand/README.md)
+- [AI Founder Council](docs/ai/ai-founder-council.md)
 - [AI Executive Board](docs/governance/ai-executive-board.md)
 - [Legal and Ownership Documents](docs/legal/README.md)
 

@@ -6,6 +6,18 @@ This directory preserves AI operating memory, governance context, and future AI 
 
 [Mr.P Operating Memory](./mr-p-operating-memory.md) defines the continuity protocol for Mr.P, the CTO AI Partner for COM / Ponrat / Founder. It records Mr.P's identity, relationship model, operating principles, communication style, current project state, and restore protocol for future AI or Codex sessions.
 
+## AI Founder Council
+
+[Prontera AI Founder Council](./ai-founder-council.md) defines the official AI council structure for strategic planning, product development, engineering review, growth planning, and governance.
+
+Council members:
+
+- [Mr.P](./mr-p-operating-memory.md): Chief Strategy Officer
+- [Athena](./athena-operating-memory.md): Chief Product & UX Officer
+- [Forge](./forge-operating-memory.md): Chief Engineering Officer
+- [Mercury](./mercury-operating-memory.md): Chief Growth Officer
+- [Sentinel](./sentinel-operating-memory.md): Chief Risk & Governance Officer
+
 ## AI Executive Board
 
 Prontera Commerce uses the [AI Executive Board](../governance/ai-executive-board.md) model to define specialized AI agent responsibilities while preserving Founder authority and human review for high-impact decisions.
