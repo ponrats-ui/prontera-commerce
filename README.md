@@ -175,6 +175,17 @@ Reference:
 - [Founder Letter](docs/investors/founder-letter.md)
 - [Company Manifesto](docs/investors/company-manifesto.md)
 
+## Merchant Media Network
+
+Prontera Commerce is also a future merchant-focused advertising and visibility network.
+
+The Merchant Media Network turns storefronts, districts, warp gates, featured placements, and Official Store status into a future revenue and ecosystem layer for the Merchant Civilization Platform.
+
+Reference:
+
+- [Merchant Media Network](docs/business/merchant-media-network.md)
+- [Advertising Economy](docs/business/advertising-economy.md)
+
 ## Roadmap
 
 Next priorities:
@@ -223,6 +234,8 @@ Reference:
 - [Promotion Engine Architecture](docs/architecture/promotion-engine.md)
 - [Merchant Subscription Model](docs/business/subscription-model.md)
 - [Founder Merchant Program](docs/business/founder-program.md)
+- [Merchant Media Network](docs/business/merchant-media-network.md)
+- [Advertising Economy](docs/business/advertising-economy.md)
 - [World Experience](docs/world/world-experience.md)
 - [Storefront System](docs/world/storefront-system.md)
 - [World Discovery Engine](docs/world/discovery-engine.md)

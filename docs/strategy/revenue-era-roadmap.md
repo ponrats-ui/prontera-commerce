@@ -26,6 +26,19 @@ Sprint 15:
 
 - Revenue Validation
 
+Sprint 16:
+
+- Merchant Media Network
+
+Features:
+
+- Advertising Zones
+- Billboard System
+- Official Store Program
+- District Sponsorship
+- Warp Gate Ads
+- Featured Merchant Placements
+
 ## Success Metrics
 
 - 100 Founder Merchants
