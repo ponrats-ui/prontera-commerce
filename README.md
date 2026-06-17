@@ -187,6 +187,18 @@ Reference:
 - [Merchant Media Network](docs/business/merchant-media-network.md)
 - [Advertising Economy](docs/business/advertising-economy.md)
 
+## Founder Merchant Program
+
+The Founder Merchant 100 Program is Prontera Commerce's first official merchant acquisition strategy for the Revenue Era.
+
+It focuses on recruiting the first 100 founder merchants across computer stores, IT equipment sellers, gaming shops, handmade businesses, coffee shops, local brands, hobby stores, educational businesses, creator businesses, and SME retailers.
+
+Reference:
+
+- [Founder Merchant 100 Program](docs/growth/founder-merchant-100-program.md)
+- [Merchant Acquisition Playbook](docs/growth/merchant-acquisition-playbook.md)
+- [Merchant Personas](docs/growth/merchant-personas.md)
+
 ## Roadmap
 
 Next priorities:
@@ -260,6 +272,9 @@ Reference:
 - [Promotion Engine Architecture](docs/architecture/promotion-engine.md)
 - [Merchant Subscription Model](docs/business/subscription-model.md)
 - [Founder Merchant Program](docs/business/founder-program.md)
+- [Founder Merchant 100 Program](docs/growth/founder-merchant-100-program.md)
+- [Merchant Acquisition Playbook](docs/growth/merchant-acquisition-playbook.md)
+- [Merchant Personas](docs/growth/merchant-personas.md)
 - [Merchant Media Network](docs/business/merchant-media-network.md)
 - [Advertising Economy](docs/business/advertising-economy.md)
 - [Sprint 11 Merchant Onboarding World](docs/product/sprint-11-merchant-onboarding-world.md)

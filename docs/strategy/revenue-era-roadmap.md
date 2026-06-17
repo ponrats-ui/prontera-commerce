@@ -31,6 +31,15 @@ Sprint 14:
 
 - Founder Merchant Program
 
+Features:
+
+- Founder Merchant 100 Program
+- merchant recruitment playbook
+- founder merchant personas
+- founder benefits positioning
+- early merchant activation
+- first recurring revenue pathway
+
 Sprint 15:
 
 - Revenue Validation
@@ -52,9 +61,19 @@ Features:
 
 - 100 Founder Merchants
 - 1,000 Registered Customers
-- 100 Active Shops
-- First Paying Merchants
+- 50 Active Shops
+- 10 Paying Merchants
 - First Recurring Revenue
+
+## Founder Merchant 100 Program
+
+The Founder Merchant 100 Program is the official first merchant acquisition program for the Revenue Era.
+
+References:
+
+- [Founder Merchant 100 Program](../growth/founder-merchant-100-program.md)
+- [Merchant Acquisition Playbook](../growth/merchant-acquisition-playbook.md)
+- [Merchant Personas](../growth/merchant-personas.md)
 
 ## North Star
 
