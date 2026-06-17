@@ -281,6 +281,73 @@ export type MerchantOnboardingPublishResult = {
   };
 };
 
+export type FounderApplication = {
+  id: string;
+  merchantName: string;
+  businessName: string;
+  businessType: string;
+  category: string;
+  website?: string | null;
+  facebookPage?: string | null;
+  email: string;
+  phone: string;
+  motivation: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  reviewedBy?: string | null;
+  reviewNotes?: string | null;
+  submittedAt: string;
+  reviewedAt?: string | null;
+  reviewer?: {
+    id: string;
+    email: string;
+    name?: string | null;
+  } | null;
+};
+
+export type FounderApplicationInput = {
+  merchantName: string;
+  businessName: string;
+  businessType: string;
+  category: string;
+  website?: string;
+  facebookPage?: string;
+  email: string;
+  phone: string;
+  motivation: string;
+};
+
+export type FounderMetrics = {
+  goal: number;
+  publicGoal: number;
+  publicLabel: string;
+  exampleLabel: string;
+  applications: number;
+  pendingApplications: number;
+  approvedApplications: number;
+  rejectedApplications: number;
+  approvedFounders: number;
+  activeFounders: number;
+  founderConversionRate: number;
+  progressLabel: string;
+};
+
+export type FounderStatusOverview = {
+  founderStatus: "PENDING" | "APPROVED" | "REJECTED" | null;
+  application?: FounderApplication | null;
+  applications: FounderApplication[];
+  founderShop?:
+    | (Shop & {
+        founderMerchantProgram?: {
+          id: string;
+          isFounderMerchant: boolean;
+          founderGrantedAt: string;
+        } | null;
+      })
+    | null;
+  benefits: Record<string, boolean>;
+  progress: FounderMetrics;
+};
+
 export type POSSession = {
   id: string;
   shopId: string;
@@ -643,6 +710,42 @@ export const merchantOnboardingApi = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+};
+
+export const foundersApi = {
+  metrics: () => apiFetch<FounderMetrics>("/founders/metrics", { token: null }),
+  apply: (body: FounderApplicationInput) =>
+    apiFetch<{
+      message: string;
+      application: FounderApplication;
+      founderCounter: FounderMetrics;
+    }>("/founders/applications", {
+      method: "POST",
+      body: JSON.stringify(body),
+      token: null,
+    }),
+  me: () => apiFetch<FounderStatusOverview>("/founders/me"),
+  adminList: (status?: FounderApplication["status"]) =>
+    apiFetch<FounderApplication[]>(
+      `/admin/founders${status ? `?status=${status}` : ""}`,
+    ),
+  approve: (id: string, body: { shopId?: string; reviewNotes?: string }) =>
+    apiFetch<{
+      application: FounderApplication;
+      founderProgram?: { id: string; isFounderMerchant: boolean } | null;
+      message: string;
+    }>(`/admin/founders/${id}/approve`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }),
+  reject: (id: string, body: { reviewNotes?: string }) =>
+    apiFetch<{ application: FounderApplication; message: string }>(
+      `/admin/founders/${id}/reject`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(body),
+      },
+    ),
 };
 
 export const ordersApi = {

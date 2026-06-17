@@ -22,7 +22,7 @@ Status: Internal Alpha
 
 Current release: `v0.1.0-core-commerce`
 
-Latest completed sprint: Sprint 11 Merchant Onboarding World
+Latest completed sprint: Sprint 11A Founder Merchant Platform
 
 Next planned release: `v0.2.0-crm-foundation`
 
@@ -54,6 +54,7 @@ Next planned release: `v0.2.0-crm-foundation`
 - [x] Merchant Subscription Foundation
 - [x] Merchant World Experience Foundation
 - [x] Merchant Onboarding World
+- [x] Founder Merchant Platform
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
 - [x] AI Executive Board Documentation
@@ -193,11 +194,14 @@ The Founder Merchant 100 Program is Prontera Commerce's first official merchant 
 
 It focuses on recruiting the first 100 founder merchants across computer stores, IT equipment sellers, gaming shops, handmade businesses, coffee shops, local brands, hobby stores, educational businesses, creator businesses, and SME retailers.
 
+Sprint 11A adds the operational Founder Merchant Platform for public applications, admin review, Founder benefit activation, dashboard status, and public Founder counters.
+
 Reference:
 
 - [Founder Merchant 100 Program](docs/growth/founder-merchant-100-program.md)
 - [Merchant Acquisition Playbook](docs/growth/merchant-acquisition-playbook.md)
 - [Merchant Personas](docs/growth/merchant-personas.md)
+- [Sprint 11A Founder Merchant Platform](docs/product/sprint-11a-founder-merchant-platform.md)
 
 ## Roadmap
 
@@ -278,6 +282,7 @@ Reference:
 - [Merchant Media Network](docs/business/merchant-media-network.md)
 - [Advertising Economy](docs/business/advertising-economy.md)
 - [Sprint 11 Merchant Onboarding World](docs/product/sprint-11-merchant-onboarding-world.md)
+- [Sprint 11A Founder Merchant Platform](docs/product/sprint-11a-founder-merchant-platform.md)
 - [World Experience](docs/world/world-experience.md)
 - [Storefront System](docs/world/storefront-system.md)
 - [World Discovery Engine](docs/world/discovery-engine.md)

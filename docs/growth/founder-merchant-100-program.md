@@ -50,6 +50,19 @@ Founder Merchants are not treated as ordinary early users.
 
 They are recognized as the first builders of the Prontera merchant ecosystem. Their feedback should influence onboarding, shop presence, world discovery, promotions, live commerce, subscription packaging, and future merchant media network strategy.
 
+## Operating Platform
+
+Sprint 11A creates the operational Founder Merchant Platform for recruitment and review.
+
+Platform surfaces:
+
+- `/founders`
+- `/founders/apply`
+- `/admin/founders`
+- merchant dashboard Founder widget
+
+The platform supports public applications, admin review, approval, rejection, notes, Founder benefit activation, and public Founder counters.
+
 ## Merchant Acquisition Channels
 
 - Facebook Groups
@@ -104,5 +117,6 @@ The program should remain Human-in-the-Loop because founder status affects platf
 
 - [Merchant Acquisition Playbook](./merchant-acquisition-playbook.md)
 - [Merchant Personas](./merchant-personas.md)
+- [Sprint 11A Founder Merchant Platform](../product/sprint-11a-founder-merchant-platform.md)
 - [Revenue Era Roadmap](../strategy/revenue-era-roadmap.md)
 - [Founder Program](../business/founder-program.md)

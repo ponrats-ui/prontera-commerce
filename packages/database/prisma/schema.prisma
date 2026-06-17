@@ -69,6 +69,12 @@ enum SubscriptionPlanType {
   ENTERPRISE
 }
 
+enum FounderApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum InvoiceStatus {
   DRAFT
   OPEN
@@ -373,40 +379,41 @@ enum GovernanceApprovalStatus {
 }
 
 model User {
-  id                         String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email                      String                   @db.VarChar(320)
-  passwordHash               String                   @db.Text
-  name                       String?                  @db.VarChar(160)
-  status                     UserStatus               @default(ACTIVE)
-  countryCode                String?                  @db.Char(2)
-  localeCode                 String?                  @db.VarChar(35)
-  preferredLocale            String?                  @db.VarChar(35)
-  preferredCurrency          String?                  @db.Char(3)
-  timeZone                   String                   @default("UTC") @db.VarChar(64)
-  country                    Country?                 @relation(fields: [countryCode], references: [code], onDelete: SetNull)
-  locale                     Locale?                  @relation(fields: [localeCode], references: [code], onDelete: SetNull)
-  preferredLocaleRef         Locale?                  @relation("UserPreferredLocale", fields: [preferredLocale], references: [code], onDelete: SetNull)
-  preferredCurrencyRef       Currency?                @relation(fields: [preferredCurrency], references: [code], onDelete: SetNull)
-  roles                      UserRole[]
-  sessions                   Session[]
-  carts                      Cart[]
-  orders                     Order[]                  @relation("CustomerOrders")
-  posSessions                POSSession[]             @relation("POSSessionCashier")
-  posShifts                  POSShift[]               @relation("POSShiftCashier")
-  customerNotes              CustomerNote[]
-  customerActivities         CustomerActivity[]
-  createdLiveChannels        ShopLiveChannel[]
-  founderProgramsGranted     FounderMerchantProgram[] @relation("FounderProgramGrantedBy")
-  createdPromotionCampaigns  PromotionCampaign[]
-  ownedShops                 Shop[]                   @relation("ShopOwner")
-  shopStaff                  ShopStaff[]
-  inventoryMovements         InventoryMovement[]
-  inventoryAdjustments       InventoryAdjustment[]
-  requestedGovernanceActions GovernanceActionReview[] @relation("GovernanceActionRequester")
-  reviewedGovernanceActions  GovernanceActionReview[] @relation("GovernanceActionReviewer")
-  createdAt                  DateTime                 @default(now()) @db.Timestamptz(6)
-  updatedAt                  DateTime                 @updatedAt @db.Timestamptz(6)
-  deletedAt                  DateTime?                @db.Timestamptz(6)
+  id                          String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                       String                   @db.VarChar(320)
+  passwordHash                String                   @db.Text
+  name                        String?                  @db.VarChar(160)
+  status                      UserStatus               @default(ACTIVE)
+  countryCode                 String?                  @db.Char(2)
+  localeCode                  String?                  @db.VarChar(35)
+  preferredLocale             String?                  @db.VarChar(35)
+  preferredCurrency           String?                  @db.Char(3)
+  timeZone                    String                   @default("UTC") @db.VarChar(64)
+  country                     Country?                 @relation(fields: [countryCode], references: [code], onDelete: SetNull)
+  locale                      Locale?                  @relation(fields: [localeCode], references: [code], onDelete: SetNull)
+  preferredLocaleRef          Locale?                  @relation("UserPreferredLocale", fields: [preferredLocale], references: [code], onDelete: SetNull)
+  preferredCurrencyRef        Currency?                @relation(fields: [preferredCurrency], references: [code], onDelete: SetNull)
+  roles                       UserRole[]
+  sessions                    Session[]
+  carts                       Cart[]
+  orders                      Order[]                  @relation("CustomerOrders")
+  posSessions                 POSSession[]             @relation("POSSessionCashier")
+  posShifts                   POSShift[]               @relation("POSShiftCashier")
+  customerNotes               CustomerNote[]
+  customerActivities          CustomerActivity[]
+  createdLiveChannels         ShopLiveChannel[]
+  founderProgramsGranted      FounderMerchantProgram[] @relation("FounderProgramGrantedBy")
+  founderApplicationsReviewed FounderApplication[]     @relation("FounderApplicationReviewedBy")
+  createdPromotionCampaigns   PromotionCampaign[]
+  ownedShops                  Shop[]                   @relation("ShopOwner")
+  shopStaff                   ShopStaff[]
+  inventoryMovements          InventoryMovement[]
+  inventoryAdjustments        InventoryAdjustment[]
+  requestedGovernanceActions  GovernanceActionReview[] @relation("GovernanceActionRequester")
+  reviewedGovernanceActions   GovernanceActionReview[] @relation("GovernanceActionReviewer")
+  createdAt                   DateTime                 @default(now()) @db.Timestamptz(6)
+  updatedAt                   DateTime                 @updatedAt @db.Timestamptz(6)
+  deletedAt                   DateTime?                @db.Timestamptz(6)
 
   @@index([status])
   @@index([countryCode])
@@ -683,6 +690,32 @@ model FounderMerchantProgram {
   @@index([grantedById])
   @@index([deletedAt])
   @@map("founder_merchant_programs")
+}
+
+model FounderApplication {
+  id           String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  merchantName String                   @db.VarChar(160)
+  businessName String                   @db.VarChar(160)
+  businessType String                   @db.VarChar(120)
+  category     String                   @db.VarChar(120)
+  website      String?                  @db.Text
+  facebookPage String?                  @db.Text
+  email        String                   @db.VarChar(320)
+  phone        String                   @db.VarChar(40)
+  motivation   String                   @db.Text
+  status       FounderApplicationStatus @default(PENDING)
+  reviewedBy   String?                  @db.Uuid
+  reviewNotes  String?                  @db.Text
+  reviewer     User?                    @relation("FounderApplicationReviewedBy", fields: [reviewedBy], references: [id], onDelete: SetNull)
+  submittedAt  DateTime                 @default(now()) @db.Timestamptz(6)
+  reviewedAt   DateTime?                @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([email])
+  @@index([businessName])
+  @@index([reviewedBy])
+  @@index([submittedAt])
+  @@map("founder_applications")
 }
 
 model Invoice {

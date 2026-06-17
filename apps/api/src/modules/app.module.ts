@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { AuthModule } from "./auth/auth.module";
 import { CatalogModule } from "./catalog/catalog.module";
 import { CustomersModule } from "./customers/customers.module";
+import { FoundersModule } from "./founders/founders.module";
 import { GlobalCommerceModule } from "./global-commerce/global-commerce.module";
 import { InventoryModule } from "./inventory/inventory.module";
 import { LiveCommerceModule } from "./live-commerce/live-commerce.module";
@@ -21,6 +22,7 @@ import { WorldModule } from "./world/world.module";
     InventoryModule,
     OrdersModule,
     CustomersModule,
+    FoundersModule,
     PromotionsModule,
     SubscriptionsModule,
     LiveCommerceModule,

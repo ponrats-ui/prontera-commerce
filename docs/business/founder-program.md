@@ -46,6 +46,21 @@ Fields:
 - `shopId`
 - `founderExpiresAt`
 
+## Founder Application Platform
+
+Sprint 11A adds the operational Founder Merchant Platform:
+
+```text
+GET /founders/metrics
+POST /founders/applications
+GET /founders/me
+GET /admin/founders
+PATCH /admin/founders/:id/approve
+PATCH /admin/founders/:id/reject
+```
+
+The approval flow activates Founder status, 1 month Pro trial access, Founder District eligibility, and Founder world placement when a matching shop is available.
+
 ## Governance
 
 COM / Ponrat / Founder retains final authority over Founder Merchant program policy, eligibility, and public usage.

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   customersApi,
+  foundersApi,
   inventoryApi,
   ordersApi,
   productsApi,
@@ -10,6 +11,7 @@ import {
 } from "../../lib/api";
 import type {
   Customer,
+  FounderStatusOverview,
   InventoryAlert,
   Order,
   Product,
@@ -29,6 +31,8 @@ export default function DashboardPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [alerts, setAlerts] = useState<InventoryAlert[]>([]);
+  const [founderStatus, setFounderStatus] =
+    useState<FounderStatusOverview | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -51,6 +55,7 @@ export default function DashboardPage() {
         setCustomers(shopCustomers);
         setOrders(shopOrders);
         setAlerts(inventoryAlerts);
+        setFounderStatus(await foundersApi.me().catch(() => null));
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Unable to load dashboard.",
@@ -118,6 +123,33 @@ export default function DashboardPage() {
             title="Open POS"
           />
         ) : null}
+        <section className="panel">
+          <h2>Founder Merchant status</h2>
+          <div className="card">
+            <p className="eyebrow">
+              {founderStatus?.founderStatus ?? "NOT APPLIED"}
+            </p>
+            <h3>
+              {founderStatus?.founderShop
+                ? "Founder Merchant active"
+                : founderStatus?.application
+                  ? "Application under review"
+                  : "Apply for Founder Merchant"}
+            </h3>
+            <p className="muted">
+              Founder merchants receive a badge, 1 month Pro free, Founder
+              District placement, early access, recognition, and priority
+              discovery.
+            </p>
+            <p>
+              {founderStatus?.progress.publicLabel ??
+                "Founder Merchant 100 Program"}
+            </p>
+            <a className="button" href="/founders">
+              View Founder Program
+            </a>
+          </div>
+        </section>
         <section className="panel">
           <h2>Total sales summary</h2>
           <p className="metric-value">
