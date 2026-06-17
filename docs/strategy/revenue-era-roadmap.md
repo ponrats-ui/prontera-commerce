@@ -37,6 +37,17 @@ Sprint 13:
 
 - Merchant Discovery Engine
 
+Features:
+
+- merchant search
+- merchant categories
+- Founder Merchant discovery
+- Official Store discovery
+- featured merchants
+- merchant ranking foundation
+- discovery metrics
+- customer-facing discovery routes
+
 Sprint 14:
 
 - Founder Merchant Program
@@ -96,6 +107,7 @@ References:
 - [Merchant Personas](../growth/merchant-personas.md)
 - [Sprint 11A Founder Merchant Platform](../product/sprint-11a-founder-merchant-platform.md)
 - [Sprint 12A Founder Launch Campaign](../growth/sprint-12a-founder-launch-campaign.md)
+- [Sprint 13 Merchant Discovery Engine](../product/sprint-13-merchant-discovery-engine.md)
 
 ## North Star
 

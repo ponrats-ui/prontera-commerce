@@ -22,7 +22,7 @@ Status: Internal Alpha
 
 Current release: `v0.1.0-core-commerce`
 
-Latest completed sprint: Sprint 11A Founder Merchant Platform
+Latest completed sprint: Sprint 13 Merchant Discovery Engine
 
 Next planned release: `v0.2.0-crm-foundation`
 
@@ -57,6 +57,7 @@ Next planned release: `v0.2.0-crm-foundation`
 - [x] Founder Merchant Platform
 - [x] Founder Launch Campaign
 - [x] Merchant Building System
+- [x] Merchant Discovery Engine
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
 - [x] AI Executive Board Documentation
@@ -190,6 +191,14 @@ Reference:
 - [Merchant Media Network](docs/business/merchant-media-network.md)
 - [Advertising Economy](docs/business/advertising-economy.md)
 
+## Merchant Discovery
+
+Sprint 13 introduces the Merchant Discovery Engine so customers can discover merchants through search, categories, Founder Merchant views, Official Store views, featured placement, ranking signals, and discovery metrics.
+
+Reference:
+
+- [Sprint 13 Merchant Discovery Engine](docs/product/sprint-13-merchant-discovery-engine.md)
+
 ## Founder Merchant Program
 
 The Founder Merchant 100 Program is Prontera Commerce's first official merchant acquisition strategy for the Revenue Era.
@@ -291,6 +300,7 @@ Reference:
 - [Sprint 11A Founder Merchant Platform](docs/product/sprint-11a-founder-merchant-platform.md)
 - [Sprint 12 Merchant Building System](docs/product/sprint-12-merchant-building-system.md)
 - [Sprint 12A Founder Launch Campaign](docs/growth/sprint-12a-founder-launch-campaign.md)
+- [Sprint 13 Merchant Discovery Engine](docs/product/sprint-13-merchant-discovery-engine.md)
 - [World Experience](docs/world/world-experience.md)
 - [Storefront System](docs/world/storefront-system.md)
 - [World Discovery Engine](docs/world/discovery-engine.md)

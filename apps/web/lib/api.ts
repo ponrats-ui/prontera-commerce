@@ -554,6 +554,34 @@ export type WorldShop = {
   rankingScore: number;
 };
 
+export type DiscoveryCategory = {
+  category: string;
+  merchantCount: number;
+  liveCount: number;
+};
+
+export type DiscoveryMetrics = {
+  totalMerchants: number;
+  founderMerchants: number;
+  officialStores: number;
+  featuredMerchants: number;
+  liveMerchants: number;
+  categoryCount: number;
+  discoveryViews: number;
+  searches: number;
+  merchantClicks: number;
+};
+
+export type DiscoveryOverview = {
+  merchants: WorldShop[];
+  categories: DiscoveryCategory[];
+  metrics: DiscoveryMetrics;
+  ranking: {
+    strategy: string;
+    signals: Array<{ signal: string; points: number }>;
+  };
+};
+
 export type MerchantBuilding = {
   id: string;
   shopId: string;
@@ -902,6 +930,53 @@ export const buildingsApi = {
     apiFetch<MerchantBuilding>(`/admin/buildings/${id}`, {
       method: "PATCH",
       body: JSON.stringify(body),
+    }),
+};
+
+export const discoveryApi = {
+  overview: (query?: Record<string, string>) =>
+    apiFetch<DiscoveryOverview>(`/discover${toQuery(query)}`, { token: null }),
+  merchants: (query?: Record<string, string>) =>
+    apiFetch<WorldShop[]>(`/discover/merchants${toQuery(query)}`, {
+      token: null,
+    }),
+  categories: (query?: Record<string, string>) =>
+    apiFetch<DiscoveryCategory[]>(`/discover/categories${toQuery(query)}`, {
+      token: null,
+    }),
+  founders: (query?: Record<string, string>) =>
+    apiFetch<WorldShop[]>(`/discover/founders${toQuery(query)}`, {
+      token: null,
+    }),
+  official: (query?: Record<string, string>) =>
+    apiFetch<WorldShop[]>(`/discover/official${toQuery(query)}`, {
+      token: null,
+    }),
+  featured: (query?: Record<string, string>) =>
+    apiFetch<WorldShop[]>(`/discover/featured${toQuery(query)}`, {
+      token: null,
+    }),
+  metrics: () =>
+    apiFetch<DiscoveryMetrics>("/discover/metrics", { token: null }),
+  track: (body: {
+    eventType:
+      | "DISCOVERY_VIEW"
+      | "MERCHANT_SEARCH"
+      | "MERCHANT_CLICK"
+      | "CATEGORY_FILTER"
+      | "FOUNDER_FILTER"
+      | "OFFICIAL_FILTER"
+      | "FEATURED_FILTER";
+    shopId?: string;
+    searchTerm?: string;
+    category?: string;
+    source?: string;
+    metadata?: Record<string, unknown>;
+  }) =>
+    apiFetch<{ id: string }>("/discover/events", {
+      method: "POST",
+      body: JSON.stringify(body),
+      token: null,
     }),
 };
 

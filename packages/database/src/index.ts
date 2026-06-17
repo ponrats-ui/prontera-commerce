@@ -56,6 +56,8 @@ export type {
   Locale,
   BuildingType,
   MerchantBuilding,
+  MerchantDiscoveryEvent,
+  MerchantDiscoveryEventType,
   Order,
   OrderItem,
   OrderStatus,

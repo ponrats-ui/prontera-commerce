@@ -90,6 +90,16 @@ enum FounderCampaignEventType {
   STORY_INTEREST
 }
 
+enum MerchantDiscoveryEventType {
+  DISCOVERY_VIEW
+  MERCHANT_SEARCH
+  MERCHANT_CLICK
+  CATEGORY_FILTER
+  FOUNDER_FILTER
+  OFFICIAL_FILTER
+  FEATURED_FILTER
+}
+
 enum InvoiceStatus {
   DRAFT
   OPEN
@@ -870,6 +880,7 @@ model Shop {
   liveChannels            ShopLiveChannel[]
   merchantBuildings       MerchantBuilding[]
   worldLocations          MerchantWorldLocation[]
+  discoveryEvents         MerchantDiscoveryEvent[]
   posSessions             POSSession[]
   posShifts               POSShift[]
   paymentGateways         PaymentGatewayConfiguration[]
@@ -1862,6 +1873,25 @@ model MerchantWorldLocation {
   @@index([featured])
   @@index([founderPlacement])
   @@map("merchant_world_locations")
+}
+
+model MerchantDiscoveryEvent {
+  id         String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventType  MerchantDiscoveryEventType
+  shopId     String?                    @db.Uuid
+  searchTerm String?                    @db.VarChar(160)
+  category   String?                    @db.VarChar(80)
+  source     String?                    @db.VarChar(120)
+  metadata   Json?
+  shop       Shop?                      @relation(fields: [shopId], references: [id], onDelete: SetNull)
+  createdAt  DateTime                   @default(now()) @db.Timestamptz(6)
+
+  @@index([eventType])
+  @@index([shopId])
+  @@index([category])
+  @@index([source])
+  @@index([createdAt])
+  @@map("merchant_discovery_events")
 }
 
 model CommerceGate {
