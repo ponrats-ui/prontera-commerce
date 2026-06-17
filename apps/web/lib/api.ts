@@ -227,6 +227,60 @@ export type MerchantSubscriptionOverview = {
   };
 };
 
+export type MerchantOnboardingDistrict = {
+  slug: string;
+  code: string;
+  name: string;
+  category: string;
+  description: string;
+};
+
+export type MerchantOnboardingStatus = {
+  active: boolean;
+  shop?: Shop | null;
+  districts: MerchantOnboardingDistrict[];
+  founderProgram: {
+    title: string;
+    benefits: string[];
+  };
+};
+
+export type MerchantOnboardingPublishInput = {
+  merchantName: string;
+  shopName: string;
+  category: string;
+  logoUrl?: string;
+  bannerUrl?: string;
+  districtSlug: string;
+};
+
+export type MerchantOnboardingPublishResult = {
+  message: string;
+  shop: Shop;
+  building: {
+    id: string;
+    buildingType: string;
+    storefrontTheme: string;
+    xCoordinate: number;
+    yCoordinate: number;
+    isPublished: boolean;
+  };
+  worldLocation: {
+    id: string;
+    city: WorldCity;
+    district: WorldDistrict;
+  };
+  founderProgram: {
+    id: string;
+    isFounderMerchant: boolean;
+  };
+  links: {
+    shop: string;
+    world: string;
+    travel: string;
+  };
+};
+
 export type POSSession = {
   id: string;
   shopId: string;
@@ -574,6 +628,21 @@ export const subscriptionsApi = {
         "shop" | "founderProgram" | "isFounderMerchant" | "founderBenefits"
       >
     >(`/subscriptions/founder${shopId ? `?shopId=${shopId}` : ""}`),
+};
+
+export const merchantOnboardingApi = {
+  start: (body: { merchantName?: string }) =>
+    apiFetch<MerchantOnboardingStatus>("/merchant-onboarding/start", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  status: () =>
+    apiFetch<MerchantOnboardingStatus>("/merchant-onboarding/status"),
+  publish: (body: MerchantOnboardingPublishInput) =>
+    apiFetch<MerchantOnboardingPublishResult>("/merchant-onboarding/publish", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
 };
 
 export const ordersApi = {

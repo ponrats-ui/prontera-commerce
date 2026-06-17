@@ -8,6 +8,7 @@ import { clearAuthSession, getAccessToken, getStoredUser } from "../lib/auth";
 
 const navItems = [
   { href: "/dashboard", label: "Overview" },
+  { href: "/onboarding", label: "Onboarding" },
   { href: "/dashboard/shops", label: "Shops" },
   { href: "/dashboard/customers", label: "Customers" },
   { href: "/dashboard/products", label: "Products" },

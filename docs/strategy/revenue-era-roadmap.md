@@ -10,6 +10,15 @@ Sprint 11:
 
 - Merchant Onboarding World
 
+Features:
+
+- onboarding wizard
+- district selection
+- Founder Merchant Program introduction
+- merchant building creation
+- world location assignment
+- publish-to-world success flow
+
 Sprint 12:
 
 - Merchant Building System

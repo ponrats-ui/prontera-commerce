@@ -22,7 +22,7 @@ Status: Internal Alpha
 
 Current release: `v0.1.0-core-commerce`
 
-Latest completed sprint: Sprint 10 Merchant World Experience Foundation
+Latest completed sprint: Sprint 11 Merchant Onboarding World
 
 Next planned release: `v0.2.0-crm-foundation`
 
@@ -53,6 +53,7 @@ Next planned release: `v0.2.0-crm-foundation`
 - [x] Promotion & Pricing Engine Foundation
 - [x] Merchant Subscription Foundation
 - [x] Merchant World Experience Foundation
+- [x] Merchant Onboarding World
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
 - [x] AI Executive Board Documentation
@@ -192,6 +193,7 @@ Next priorities:
 
 - Promotion & Pricing Engine expansion
 - Merchant Subscription expansion
+- Merchant Onboarding World expansion
 - Sprint 9 Payment Gateway Foundation
 - Sprint 10 Shipping & Fulfillment Foundation
 - Marketplace Storefront
@@ -236,6 +238,7 @@ Reference:
 - [Founder Merchant Program](docs/business/founder-program.md)
 - [Merchant Media Network](docs/business/merchant-media-network.md)
 - [Advertising Economy](docs/business/advertising-economy.md)
+- [Sprint 11 Merchant Onboarding World](docs/product/sprint-11-merchant-onboarding-world.md)
 - [World Experience](docs/world/world-experience.md)
 - [Storefront System](docs/world/storefront-system.md)
 - [World Discovery Engine](docs/world/discovery-engine.md)

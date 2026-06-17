@@ -43,7 +43,7 @@ export default function RegisterPage() {
     try {
       const response = await authApi.register(form);
       setAuthSession(response.accessToken, response.user);
-      router.replace("/dashboard");
+      router.replace("/onboarding");
     } catch (err) {
       setError(authErrorMessage(err));
     } finally {

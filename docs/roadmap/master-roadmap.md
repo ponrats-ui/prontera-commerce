@@ -58,6 +58,15 @@ Sprint 10 adds Merchant World Experience Foundation:
 - Promotion discovery badges
 - Public world portal, map, city, district, and storefront pages
 
+Sprint 11 adds Merchant Onboarding World:
+
+- onboarding wizard
+- initial district selection
+- Starter plan and Founder Merchant Program introduction
+- merchant building creation
+- world location assignment
+- publish-to-world success flow
+
 This phase remains commerce-first. Combat, leveling, equipment, quests, monster systems, and MMORPG mechanics are intentionally excluded.
 
 ## Phase 7: Global Commerce Network

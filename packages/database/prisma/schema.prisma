@@ -303,6 +303,14 @@ enum MerchantBuildingStyle {
   PREMIUM_HALL
 }
 
+enum MerchantBuildingType {
+  CLASSIC_SHOP
+  MODERN_SHOP
+  MARKET_STALL
+  TECH_STORE
+  PREMIUM_HALL
+}
+
 enum StorefrontTheme {
   WARM_MARKET
   HARBOR_TRADE
@@ -748,6 +756,7 @@ model Shop {
   vouchers                Voucher[]
   customerPricingTiers    CustomerPricingTier[]
   liveChannels            ShopLiveChannel[]
+  merchantBuildings       MerchantBuilding[]
   worldLocations          MerchantWorldLocation[]
   posSessions             POSSession[]
   posShifts               POSShift[]
@@ -1627,6 +1636,7 @@ model WorldDistrict {
   sourceGates       CommerceGate[]          @relation("CommerceGateSourceDistrict")
   destinationGates  CommerceGate[]          @relation("CommerceGateDestinationDistrict")
   cityLocations     WorldDistrictLocation[]
+  merchantBuildings MerchantBuilding[]
   merchantLocations MerchantWorldLocation[]
   createdAt         DateTime                @default(now()) @db.Timestamptz(6)
   updatedAt         DateTime                @updatedAt @db.Timestamptz(6)
@@ -1687,6 +1697,25 @@ model WorldDistrictLocation {
   @@index([cityId, displayOrder])
   @@index([districtId])
   @@map("world_district_locations")
+}
+
+model MerchantBuilding {
+  id              String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId          String               @unique @db.Uuid
+  districtId      String               @db.Uuid
+  buildingType    MerchantBuildingType @default(CLASSIC_SHOP)
+  storefrontTheme StorefrontTheme      @default(WARM_MARKET)
+  xCoordinate     Int
+  yCoordinate     Int
+  isPublished     Boolean              @default(false)
+  shop            Shop                 @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  district        WorldDistrict        @relation(fields: [districtId], references: [id], onDelete: Restrict)
+  createdAt       DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime             @updatedAt @db.Timestamptz(6)
+
+  @@index([districtId])
+  @@index([isPublished])
+  @@map("merchant_buildings")
 }
 
 model MerchantWorldLocation {

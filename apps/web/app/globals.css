@@ -175,6 +175,10 @@ h3 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.grid.five-step {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
 .grid.three {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -405,6 +409,7 @@ textarea {
   .grid.two,
   .grid.three,
   .grid.four,
+  .grid.five-step,
   .form-grid.two {
     grid-template-columns: 1fr;
   }

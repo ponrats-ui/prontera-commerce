@@ -12,6 +12,7 @@ import type {
   CommerceGate,
   TravelOverview,
   WorldDistrict,
+  WorldShop,
   WorldZone,
 } from "../../../lib/api";
 
@@ -21,6 +22,7 @@ export default function WorldTravelPage() {
   const [districtId, setDistrictId] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGate, setSelectedGate] = useState<CommerceGate | null>(null);
+  const [shops, setShops] = useState<WorldShop[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const zones = overview?.zones ?? [];
@@ -42,7 +44,11 @@ export default function WorldTravelPage() {
   async function loadTravel(nextSearch = searchTerm) {
     try {
       const data = await worldApi.travel(nextSearch);
+      const worldShops = await worldApi.shops(
+        nextSearch ? { search: nextSearch } : undefined,
+      );
       setOverview(data);
+      setShops(worldShops);
       setZoneId((current) => current || data.zones[0]?.id || "");
     } catch (err) {
       setError(
@@ -162,6 +168,38 @@ export default function WorldTravelPage() {
           <EmptyStateCard
             description="Choose a city or district, then quick travel through the best available Commerce Gate."
             title="Ready to travel"
+          />
+        )}
+      </section>
+
+      <section className="panel" style={{ marginTop: 16 }}>
+        <h2>World Storefronts</h2>
+        {shops.length ? (
+          <div className="grid three">
+            {shops.map((shop) => (
+              <Link
+                className="card"
+                href={`/world/shops/${shop.slug}`}
+                key={shop.id}
+              >
+                <div className="button-row" style={{ marginBottom: 10 }}>
+                  {shop.liveNow ? <span className="badge">LIVE</span> : null}
+                  {shop.isFounderMerchant ? (
+                    <span className="badge warn">Founder</span>
+                  ) : null}
+                </div>
+                <p className="eyebrow">
+                  {shop.city.name} / {shop.district.name}
+                </p>
+                <h3>{shop.name}</h3>
+                <p className="muted">{shop.category}</p>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <EmptyStateCard
+            description="Published merchant buildings will appear here as world storefronts."
+            title="No storefronts published"
           />
         )}
       </section>
