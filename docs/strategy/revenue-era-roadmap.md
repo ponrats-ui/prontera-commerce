@@ -23,6 +23,16 @@ Sprint 12:
 
 - Merchant Building System
 
+Features:
+
+- visible merchant buildings
+- building type and storefront theme foundation
+- merchant building settings
+- official store status
+- founder building decoration
+- live commerce building indicator
+- future advertising hooks
+
 Sprint 13:
 
 - Merchant Discovery Engine

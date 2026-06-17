@@ -55,6 +55,7 @@ Next planned release: `v0.2.0-crm-foundation`
 - [x] Merchant World Experience Foundation
 - [x] Merchant Onboarding World
 - [x] Founder Merchant Platform
+- [x] Merchant Building System
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
 - [x] AI Executive Board Documentation
@@ -210,6 +211,7 @@ Next priorities:
 - Promotion & Pricing Engine expansion
 - Merchant Subscription expansion
 - Merchant Onboarding World expansion
+- Merchant Building System expansion
 - Sprint 9 Payment Gateway Foundation
 - Sprint 10 Shipping & Fulfillment Foundation
 - Marketplace Storefront
@@ -283,6 +285,7 @@ Reference:
 - [Advertising Economy](docs/business/advertising-economy.md)
 - [Sprint 11 Merchant Onboarding World](docs/product/sprint-11-merchant-onboarding-world.md)
 - [Sprint 11A Founder Merchant Platform](docs/product/sprint-11a-founder-merchant-platform.md)
+- [Sprint 12 Merchant Building System](docs/product/sprint-12-merchant-building-system.md)
 - [World Experience](docs/world/world-experience.md)
 - [Storefront System](docs/world/storefront-system.md)
 - [World Discovery Engine](docs/world/discovery-engine.md)

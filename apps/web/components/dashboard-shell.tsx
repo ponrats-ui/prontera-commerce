@@ -11,6 +11,7 @@ const navItems = [
   { href: "/onboarding", label: "Onboarding" },
   { href: "/founders", label: "Founder Program" },
   { href: "/dashboard/shops", label: "Shops" },
+  { href: "/dashboard/building-settings", label: "Building Settings" },
   { href: "/dashboard/customers", label: "Customers" },
   { href: "/dashboard/products", label: "Products" },
   { href: "/dashboard/inventory", label: "Inventory" },

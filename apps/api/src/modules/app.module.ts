@@ -6,6 +6,7 @@ import { FoundersModule } from "./founders/founders.module";
 import { GlobalCommerceModule } from "./global-commerce/global-commerce.module";
 import { InventoryModule } from "./inventory/inventory.module";
 import { LiveCommerceModule } from "./live-commerce/live-commerce.module";
+import { MerchantBuildingsModule } from "./merchant-buildings/merchant-buildings.module";
 import { MerchantOnboardingModule } from "./merchant-onboarding/merchant-onboarding.module";
 import { OrdersModule } from "./orders/orders.module";
 import { PromotionsModule } from "./promotions/promotions.module";
@@ -28,6 +29,7 @@ import { WorldModule } from "./world/world.module";
     LiveCommerceModule,
     WorldModule,
     MerchantOnboardingModule,
+    MerchantBuildingsModule,
   ],
 })
 export class AppModule {}

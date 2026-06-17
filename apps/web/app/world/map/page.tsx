@@ -67,6 +67,41 @@ export default function WorldMapPage() {
       </section>
 
       <section className="panel" style={{ marginTop: 16 }}>
+        <h2>Merchant Buildings</h2>
+        {worldMap?.shops.length ? (
+          <div className="grid three">
+            {worldMap.shops.map((shop) => (
+              <Link
+                className="card"
+                href={`/merchant/${shop.slug}`}
+                key={shop.id}
+              >
+                <div className="button-row" style={{ marginBottom: 8 }}>
+                  {shop.liveNow ? <span className="badge">LIVE</span> : null}
+                  {shop.isFounderMerchant ? (
+                    <span className="badge warn">Founder</span>
+                  ) : null}
+                  {shop.isOfficialStore ? (
+                    <span className="badge">Official</span>
+                  ) : null}
+                </div>
+                <p className="eyebrow">{shop.district.name}</p>
+                <h3>{shop.signText ?? shop.name}</h3>
+                <p className="muted">
+                  {shop.buildingType} / {shop.storefrontTheme}
+                </p>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <EmptyStateCard
+            description="Published merchant buildings appear here after shops enter the world."
+            title="No merchant buildings"
+          />
+        )}
+      </section>
+
+      <section className="panel" style={{ marginTop: 16 }}>
         <h2>District Locations</h2>
         {worldMap?.districts.length ? (
           <div className="table-wrap">

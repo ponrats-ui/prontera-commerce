@@ -317,7 +317,20 @@ enum MerchantBuildingType {
   PREMIUM_HALL
 }
 
+enum BuildingType {
+  SMALL
+  MEDIUM
+  LARGE
+  OFFICIAL
+}
+
 enum StorefrontTheme {
+  CLASSIC
+  MODERN
+  TECH
+  ARTISAN
+  HARBOR
+  WHOLESALE
   WARM_MARKET
   HARBOR_TRADE
   ARTISAN_LIGHT
@@ -1733,20 +1746,31 @@ model WorldDistrictLocation {
 }
 
 model MerchantBuilding {
-  id              String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  shopId          String               @unique @db.Uuid
-  districtId      String               @db.Uuid
-  buildingType    MerchantBuildingType @default(CLASSIC_SHOP)
-  storefrontTheme StorefrontTheme      @default(WARM_MARKET)
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shopId          String          @unique @db.Uuid
+  districtId      String          @db.Uuid
+  buildingType    BuildingType    @default(SMALL)
+  storefrontTheme StorefrontTheme @default(CLASSIC)
+  buildingLevel   Int             @default(1)
+  logoUrl         String?         @db.Text
+  signText        String?         @db.VarChar(160)
+  bannerUrl       String?         @db.Text
+  isFounder       Boolean         @default(false)
+  isOfficialStore Boolean         @default(false)
+  isLive          Boolean         @default(false)
   xCoordinate     Int
   yCoordinate     Int
-  isPublished     Boolean              @default(false)
-  shop            Shop                 @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  district        WorldDistrict        @relation(fields: [districtId], references: [id], onDelete: Restrict)
-  createdAt       DateTime             @default(now()) @db.Timestamptz(6)
-  updatedAt       DateTime             @updatedAt @db.Timestamptz(6)
+  isPublished     Boolean         @default(false)
+  shop            Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  district        WorldDistrict   @relation(fields: [districtId], references: [id], onDelete: Restrict)
+  createdAt       DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime        @updatedAt @db.Timestamptz(6)
 
   @@index([districtId])
+  @@index([buildingType])
+  @@index([isFounder])
+  @@index([isOfficialStore])
+  @@index([isLive])
   @@index([isPublished])
   @@map("merchant_buildings")
 }

@@ -60,6 +60,10 @@ const shopDiscoveryInclude = {
         take: 1,
       },
       founderMerchantProgram: true,
+      merchantBuildings: {
+        include: { district: true },
+        take: 1,
+      },
     },
   },
   city: { include: { region: true } },
@@ -321,8 +325,8 @@ export class WorldDiscoveryService {
         founderProgram.founderExpiresAt >= now);
     const activePromotion = shop.promotionCampaigns.find(
       (campaign) =>
-        (campaign.startsAt === null || campaign.startsAt <= now) &&
-        (campaign.endsAt === null || campaign.endsAt >= now),
+        (campaign.startsAt == null || campaign.startsAt <= now) &&
+        (campaign.endsAt == null || campaign.endsAt >= now),
     );
     const subscription = shop.merchantSubscriptions.find((item) =>
       discoverableSubscriptionStatuses.has(item.status),
@@ -337,6 +341,7 @@ export class WorldDiscoveryService {
       priceCents: product.variants[0]?.priceCents ?? null,
       imageUrl: product.images[0]?.imageUrl ?? null,
     }));
+    const building = shop.merchantBuildings?.[0] ?? null;
     const rankingScore = this.calculateRankingScore({
       liveNow: Boolean(liveChannel),
       isFounderMerchant,
@@ -365,16 +370,24 @@ export class WorldDiscoveryService {
         category: location.district.category,
       },
       buildingStyle: location.buildingStyle,
-      storefrontTheme: location.storefrontTheme,
+      buildingType: building?.buildingType ?? "SMALL",
+      buildingLevel: building?.buildingLevel ?? 1,
+      storefrontTheme: building?.storefrontTheme ?? location.storefrontTheme,
+      signText: building?.signText ?? shop.name,
+      logoUrl: building?.logoUrl ?? shop.logoUrl,
+      bannerUrl: building?.bannerUrl ?? shop.bannerUrl,
       featured: location.featured,
       founderPlacement: location.founderPlacement,
       liveNow: Boolean(liveChannel),
       liveBadge: liveChannel ? "LIVE" : null,
       isFounderMerchant,
+      isOfficialStore: building?.isOfficialStore ?? false,
+      officialStoreBadge: building?.isOfficialStore ? "Official Store" : null,
       founderBadge: isFounderMerchant ? "Founder Merchant" : null,
       promotionBadge: activePromotion
         ? this.promotionBadge(activePromotion.promotionType)
         : null,
+      promotionBanner: activePromotion?.name ?? null,
       campaignBadge: activePromotion?.name ?? null,
       subscriptionTier,
       featuredProducts,

@@ -2,6 +2,25 @@
 
 The Sprint 10 storefront system gives each placed merchant a world location without creating 3D assets or game mechanics.
 
+## Sprint 12 Building Layer
+
+Sprint 12 introduces merchant buildings as the visible identity layer for storefronts.
+
+Buildings support:
+
+- store signs
+- logos
+- banners
+- Founder badges
+- Official Store badges
+- Live Commerce indicators
+- promotion banners
+- future advertising hooks
+
+Reference:
+
+- [Sprint 12 Merchant Building System](../product/sprint-12-merchant-building-system.md)
+
 ## Merchant World Location
 
 `MerchantWorldLocation` connects a shop to:

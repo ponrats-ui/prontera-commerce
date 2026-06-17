@@ -508,14 +508,22 @@ export type WorldShop = {
     category: string;
   };
   buildingStyle: string;
+  buildingType: string;
+  buildingLevel: number;
   storefrontTheme: string;
+  signText?: string | null;
+  logoUrl?: string | null;
+  bannerUrl?: string | null;
   featured: boolean;
   founderPlacement: boolean;
   liveNow: boolean;
   liveBadge?: string | null;
   isFounderMerchant: boolean;
+  isOfficialStore: boolean;
   founderBadge?: string | null;
+  officialStoreBadge?: string | null;
   promotionBadge?: string | null;
+  promotionBanner?: string | null;
   campaignBadge?: string | null;
   subscriptionTier: string;
   featuredProducts: Array<{
@@ -527,6 +535,48 @@ export type WorldShop = {
     imageUrl?: string | null;
   }>;
   rankingScore: number;
+};
+
+export type MerchantBuilding = {
+  id: string;
+  shopId: string;
+  districtId: string;
+  shopName: string;
+  shopSlug: string;
+  description?: string | null;
+  buildingType: string;
+  storefrontTheme: string;
+  buildingLevel: number;
+  logoUrl?: string | null;
+  signText?: string | null;
+  bannerUrl?: string | null;
+  isFounder: boolean;
+  isOfficialStore: boolean;
+  isLive: boolean;
+  liveLabel?: string | null;
+  founderBadge?: string | null;
+  officialStoreBadge?: string | null;
+  promotionBanner?: string | null;
+  xCoordinate: number;
+  yCoordinate: number;
+  isPublished: boolean;
+  featuredProducts: Array<{ id: string; name: string; slug: string }>;
+  visualHooks: {
+    founderDecoration: boolean;
+    founderHighlightFrame: boolean;
+    rooftopBillboard: null;
+    districtSponsorship: null;
+    advertisingZone: null;
+    seasonalDecoration: null;
+  };
+};
+
+export type MerchantBuildingMetrics = {
+  publishedBuildings: number;
+  founderBuildings: number;
+  officialStores: number;
+  liveStores: number;
+  futureHooks: string[];
 };
 
 export type WorldMap = {
@@ -746,6 +796,47 @@ export const foundersApi = {
         body: JSON.stringify(body),
       },
     ),
+};
+
+export const buildingsApi = {
+  list: () => apiFetch<MerchantBuilding[]>("/buildings", { token: null }),
+  metrics: () =>
+    apiFetch<MerchantBuildingMetrics>("/buildings/metrics", { token: null }),
+  merchant: (id: string) =>
+    apiFetch<MerchantBuilding>(`/merchant/${id}`, { token: null }),
+  me: (shopId?: string) =>
+    apiFetch<MerchantBuilding>(
+      `/buildings/me${shopId ? `?shopId=${shopId}` : ""}`,
+    ),
+  updateMe: (body: {
+    shopId: string;
+    storefrontTheme?: string;
+    logoUrl?: string;
+    signText?: string;
+    bannerUrl?: string;
+  }) =>
+    apiFetch<MerchantBuilding>("/buildings/me", {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }),
+  adminList: () => apiFetch<MerchantBuilding[]>("/admin/buildings"),
+  adminUpdate: (
+    id: string,
+    body: {
+      buildingType?: string;
+      storefrontTheme?: string;
+      buildingLevel?: number;
+      logoUrl?: string;
+      signText?: string;
+      bannerUrl?: string;
+      isOfficialStore?: boolean;
+      isPublished?: boolean;
+    },
+  ) =>
+    apiFetch<MerchantBuilding>(`/admin/buildings/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }),
 };
 
 export const ordersApi = {

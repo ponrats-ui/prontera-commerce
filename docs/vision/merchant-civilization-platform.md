@@ -166,6 +166,7 @@ Every merchant can establish a storefront.
 A storefront may include:
 
 - shop identity
+- merchant building
 - building style
 - promotion banners
 - featured products

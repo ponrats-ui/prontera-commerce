@@ -124,11 +124,14 @@ export default function WorldPage() {
 
 function StorefrontCard({ shop }: { shop: WorldShop }) {
   return (
-    <Link className="card" href={`/world/shops/${shop.slug}`}>
+    <Link className="card" href={`/merchant/${shop.slug}`}>
       <div className="button-row" style={{ marginBottom: 10 }}>
         {shop.liveNow ? <span className="badge">LIVE</span> : null}
         {shop.isFounderMerchant ? (
           <span className="badge warn">Founder</span>
+        ) : null}
+        {shop.isOfficialStore ? (
+          <span className="badge">Official Store</span>
         ) : null}
         {shop.promotionBadge ? (
           <span className="badge">{shop.promotionBadge}</span>
@@ -137,12 +140,12 @@ function StorefrontCard({ shop }: { shop: WorldShop }) {
       <p className="eyebrow">
         {shop.city.name} / {shop.district.name}
       </p>
-      <h3>{shop.name}</h3>
+      <h3>{shop.signText ?? shop.name}</h3>
       <p className="muted">{shop.category}</p>
       <p className="muted">
-        {shop.buildingStyle.replace(/_/g, " ")} /{" "}
-        {shop.subscriptionTier.toLowerCase()}
+        {shop.buildingType.toLowerCase()} building / level {shop.buildingLevel}
       </p>
+      {shop.promotionBanner ? <p>{shop.promotionBanner}</p> : null}
     </Link>
   );
 }

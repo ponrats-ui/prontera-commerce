@@ -1,6 +1,6 @@
 import {
+  BuildingType,
   MerchantBuildingStyle,
-  MerchantBuildingType,
   StaffStatus,
   StorefrontTheme,
   SubscriptionPlanType,
@@ -86,8 +86,8 @@ function createTxMock() {
       count: jest.fn().mockResolvedValue(0),
       create: jest.fn().mockResolvedValue({
         id: "building-1",
-        buildingType: MerchantBuildingType.TECH_STORE,
-        storefrontTheme: StorefrontTheme.TECH_BAZAAR,
+        buildingType: BuildingType.MEDIUM,
+        storefrontTheme: StorefrontTheme.TECH,
         isPublished: true,
       }),
     },
@@ -166,7 +166,7 @@ describe("MerchantOnboardingService", () => {
       expect.objectContaining({
         data: expect.objectContaining({
           districtId: "district-tech_bazaar",
-          buildingType: MerchantBuildingType.TECH_STORE,
+          buildingType: BuildingType.MEDIUM,
           isPublished: true,
         }),
       }),

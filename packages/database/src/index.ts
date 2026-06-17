@@ -49,6 +49,8 @@ export type {
   LiveChannelProvider,
   LiveChannelStatus,
   Locale,
+  BuildingType,
+  MerchantBuilding,
   Order,
   OrderItem,
   OrderStatus,
