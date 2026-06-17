@@ -63,6 +63,15 @@ Platform surfaces:
 
 The platform supports public applications, admin review, approval, rejection, notes, Founder benefit activation, and public Founder counters.
 
+Sprint 12A adds the Founder Launch Campaign:
+
+- landing page optimization
+- waitlist capture
+- referral foundation
+- campaign tracking
+- Founder metrics dashboard
+- success story placeholders
+
 ## Merchant Acquisition Channels
 
 - Facebook Groups
@@ -118,5 +127,6 @@ The program should remain Human-in-the-Loop because founder status affects platf
 - [Merchant Acquisition Playbook](./merchant-acquisition-playbook.md)
 - [Merchant Personas](./merchant-personas.md)
 - [Sprint 11A Founder Merchant Platform](../product/sprint-11a-founder-merchant-platform.md)
+- [Sprint 12A Founder Launch Campaign](./sprint-12a-founder-launch-campaign.md)
 - [Revenue Era Roadmap](../strategy/revenue-era-roadmap.md)
 - [Founder Program](../business/founder-program.md)

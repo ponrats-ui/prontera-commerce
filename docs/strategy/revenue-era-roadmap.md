@@ -44,9 +44,14 @@ Sprint 14:
 Features:
 
 - Sprint 11A Founder Merchant Platform
+- Sprint 12A Founder Launch Campaign
 - Founder Merchant 100 Program
 - merchant recruitment playbook
 - founder merchant personas
+- founder landing page optimization
+- founder waitlist
+- referral foundation
+- campaign tracking
 - public Founder landing page
 - Founder application form
 - admin Founder review
@@ -90,6 +95,7 @@ References:
 - [Merchant Acquisition Playbook](../growth/merchant-acquisition-playbook.md)
 - [Merchant Personas](../growth/merchant-personas.md)
 - [Sprint 11A Founder Merchant Platform](../product/sprint-11a-founder-merchant-platform.md)
+- [Sprint 12A Founder Launch Campaign](../growth/sprint-12a-founder-launch-campaign.md)
 
 ## North Star
 

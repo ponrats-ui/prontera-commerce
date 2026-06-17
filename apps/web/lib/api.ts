@@ -329,6 +329,23 @@ export type FounderMetrics = {
   activeFounders: number;
   founderConversionRate: number;
   progressLabel: string;
+  waitlistCount: number;
+  referralCount: number;
+  campaignEvents: number;
+  landingViews: number;
+  applyClicks: number;
+  funnel: {
+    landingViews: number;
+    applyClicks: number;
+    applications: number;
+    waitlistCount: number;
+    referralCount: number;
+  };
+  successStories: Array<{
+    title: string;
+    status: string;
+    summary: string;
+  }>;
 };
 
 export type FounderStatusOverview = {
@@ -764,6 +781,55 @@ export const merchantOnboardingApi = {
 
 export const foundersApi = {
   metrics: () => apiFetch<FounderMetrics>("/founders/metrics", { token: null }),
+  campaign: () =>
+    apiFetch<FounderMetrics>("/founders/campaign", { token: null }),
+  track: (body: {
+    eventType:
+      | "LANDING_VIEW"
+      | "APPLY_CLICK"
+      | "APPLICATION_SUBMITTED"
+      | "WAITLIST_JOINED"
+      | "REFERRAL_CAPTURED"
+      | "STORY_INTEREST";
+    source?: string;
+    campaign?: string;
+    referralCode?: string;
+  }) =>
+    apiFetch<{ id: string }>("/founders/campaign-events", {
+      method: "POST",
+      body: JSON.stringify(body),
+      token: null,
+    }),
+  waitlist: (body: {
+    merchantName: string;
+    businessName: string;
+    email: string;
+    category: string;
+    source?: string;
+    referralCode?: string;
+  }) =>
+    apiFetch<{
+      message: string;
+      entry: { id: string };
+      founderCounter: FounderMetrics;
+    }>("/founders/waitlist", {
+      method: "POST",
+      body: JSON.stringify(body),
+      token: null,
+    }),
+  refer: (body: {
+    referrerEmail: string;
+    referredEmail: string;
+    referralCode?: string;
+  }) =>
+    apiFetch<{
+      message: string;
+      referral: { id: string; referralCode: string };
+    }>("/founders/referrals", {
+      method: "POST",
+      body: JSON.stringify(body),
+      token: null,
+    }),
   apply: (body: FounderApplicationInput) =>
     apiFetch<{
       message: string;

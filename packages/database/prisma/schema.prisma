@@ -75,6 +75,21 @@ enum FounderApplicationStatus {
   REJECTED
 }
 
+enum FounderReferralStatus {
+  PENDING
+  CONVERTED
+  REWARDED
+}
+
+enum FounderCampaignEventType {
+  LANDING_VIEW
+  APPLY_CLICK
+  APPLICATION_SUBMITTED
+  WAITLIST_JOINED
+  REFERRAL_CAPTURED
+  STORY_INTEREST
+}
+
 enum InvoiceStatus {
   DRAFT
   OPEN
@@ -729,6 +744,57 @@ model FounderApplication {
   @@index([reviewedBy])
   @@index([submittedAt])
   @@map("founder_applications")
+}
+
+model FounderWaitlistEntry {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  merchantName String   @db.VarChar(160)
+  businessName String   @db.VarChar(160)
+  email        String   @db.VarChar(320)
+  category     String   @db.VarChar(120)
+  source       String?  @db.VarChar(120)
+  referralCode String?  @db.VarChar(80)
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([email])
+  @@index([category])
+  @@index([source])
+  @@index([referralCode])
+  @@index([createdAt])
+  @@map("founder_waitlist_entries")
+}
+
+model FounderReferral {
+  id            String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  referrerEmail String                @db.VarChar(320)
+  referredEmail String                @db.VarChar(320)
+  referralCode  String                @db.VarChar(80)
+  status        FounderReferralStatus @default(PENDING)
+  createdAt     DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime              @updatedAt @db.Timestamptz(6)
+
+  @@unique([referrerEmail, referredEmail])
+  @@index([referralCode])
+  @@index([status])
+  @@index([createdAt])
+  @@map("founder_referrals")
+}
+
+model FounderCampaignEvent {
+  id           String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventType    FounderCampaignEventType
+  source       String?                  @db.VarChar(120)
+  campaign     String?                  @db.VarChar(120)
+  referralCode String?                  @db.VarChar(80)
+  metadata     Json?
+  createdAt    DateTime                 @default(now()) @db.Timestamptz(6)
+
+  @@index([eventType])
+  @@index([source])
+  @@index([campaign])
+  @@index([referralCode])
+  @@index([createdAt])
+  @@map("founder_campaign_events")
 }
 
 model Invoice {

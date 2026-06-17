@@ -55,6 +55,7 @@ Next planned release: `v0.2.0-crm-foundation`
 - [x] Merchant World Experience Foundation
 - [x] Merchant Onboarding World
 - [x] Founder Merchant Platform
+- [x] Founder Launch Campaign
 - [x] Merchant Building System
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
@@ -197,12 +198,15 @@ It focuses on recruiting the first 100 founder merchants across computer stores,
 
 Sprint 11A adds the operational Founder Merchant Platform for public applications, admin review, Founder benefit activation, dashboard status, and public Founder counters.
 
+Sprint 12A adds the first Founder Launch Campaign with landing page optimization, waitlist capture, referral foundation, campaign tracking, metrics, and success story placeholders.
+
 Reference:
 
 - [Founder Merchant 100 Program](docs/growth/founder-merchant-100-program.md)
 - [Merchant Acquisition Playbook](docs/growth/merchant-acquisition-playbook.md)
 - [Merchant Personas](docs/growth/merchant-personas.md)
 - [Sprint 11A Founder Merchant Platform](docs/product/sprint-11a-founder-merchant-platform.md)
+- [Sprint 12A Founder Launch Campaign](docs/growth/sprint-12a-founder-launch-campaign.md)
 
 ## Roadmap
 
@@ -286,6 +290,7 @@ Reference:
 - [Sprint 11 Merchant Onboarding World](docs/product/sprint-11-merchant-onboarding-world.md)
 - [Sprint 11A Founder Merchant Platform](docs/product/sprint-11a-founder-merchant-platform.md)
 - [Sprint 12 Merchant Building System](docs/product/sprint-12-merchant-building-system.md)
+- [Sprint 12A Founder Launch Campaign](docs/growth/sprint-12a-founder-launch-campaign.md)
 - [World Experience](docs/world/world-experience.md)
 - [Storefront System](docs/world/storefront-system.md)
 - [World Discovery Engine](docs/world/discovery-engine.md)

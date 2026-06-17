@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { FounderCampaignEventType } from "@prisma/client";
 import { Transform } from "class-transformer";
 import {
   IsEmail,
@@ -104,4 +105,98 @@ export class ListFounderApplicationsQueryDto {
   @IsOptional()
   @IsIn(founderApplicationStatuses)
   status?: (typeof founderApplicationStatuses)[number];
+}
+
+export class FounderWaitlistDto {
+  @ApiProperty({ example: "COM" })
+  @Transform(trim)
+  @IsString()
+  @MaxLength(160)
+  merchantName!: string;
+
+  @ApiProperty({ example: "Velora PC" })
+  @Transform(trim)
+  @IsString()
+  @MaxLength(160)
+  businessName!: string;
+
+  @ApiProperty({ example: "merchant@example.com" })
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === "string" ? value.trim().toLowerCase() : value,
+  )
+  @IsEmail()
+  @MaxLength(320)
+  email!: string;
+
+  @ApiProperty({ example: "Computer Store" })
+  @Transform(trim)
+  @IsString()
+  @MaxLength(120)
+  category!: string;
+
+  @ApiPropertyOptional({ example: "facebook" })
+  @Transform(trim)
+  @IsOptional()
+  @IsString()
+  @MaxLength(120)
+  source?: string;
+
+  @ApiPropertyOptional({ example: "FOUNDER-COM" })
+  @Transform(trim)
+  @IsOptional()
+  @IsString()
+  @MaxLength(80)
+  referralCode?: string;
+}
+
+export class FounderReferralDto {
+  @ApiProperty({ example: "founder@example.com" })
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === "string" ? value.trim().toLowerCase() : value,
+  )
+  @IsEmail()
+  @MaxLength(320)
+  referrerEmail!: string;
+
+  @ApiProperty({ example: "friend@example.com" })
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === "string" ? value.trim().toLowerCase() : value,
+  )
+  @IsEmail()
+  @MaxLength(320)
+  referredEmail!: string;
+
+  @ApiPropertyOptional({ example: "FOUNDER-COM" })
+  @Transform(trim)
+  @IsOptional()
+  @IsString()
+  @MaxLength(80)
+  referralCode?: string;
+}
+
+export class FounderCampaignEventDto {
+  @ApiProperty({ enum: FounderCampaignEventType })
+  @IsIn(Object.values(FounderCampaignEventType))
+  eventType!: FounderCampaignEventType;
+
+  @ApiPropertyOptional({ example: "landing" })
+  @Transform(trim)
+  @IsOptional()
+  @IsString()
+  @MaxLength(120)
+  source?: string;
+
+  @ApiPropertyOptional({ example: "founder-launch" })
+  @Transform(trim)
+  @IsOptional()
+  @IsString()
+  @MaxLength(120)
+  campaign?: string;
+
+  @ApiPropertyOptional({ example: "FOUNDER-COM" })
+  @Transform(trim)
+  @IsOptional()
+  @IsString()
+  @MaxLength(80)
+  referralCode?: string;
 }

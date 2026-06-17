@@ -98,7 +98,33 @@ export default function AdminFoundersPage() {
           label="Conversion"
           value={`${metrics?.founderConversionRate ?? 0}%`}
         />
+        <MetricCard label="Waitlist" value={metrics?.waitlistCount ?? 0} />
+        <MetricCard label="Referrals" value={metrics?.referralCount ?? 0} />
+        <MetricCard label="Landing Views" value={metrics?.landingViews ?? 0} />
+        <MetricCard label="Apply Clicks" value={metrics?.applyClicks ?? 0} />
       </div>
+      <section className="panel" style={{ marginTop: 16 }}>
+        <h2>Founder Launch Campaign</h2>
+        <div className="grid five-step">
+          <MetricCard
+            label="Landing"
+            value={metrics?.funnel.landingViews ?? 0}
+          />
+          <MetricCard label="Clicks" value={metrics?.funnel.applyClicks ?? 0} />
+          <MetricCard
+            label="Applications"
+            value={metrics?.funnel.applications ?? 0}
+          />
+          <MetricCard
+            label="Waitlist"
+            value={metrics?.funnel.waitlistCount ?? 0}
+          />
+          <MetricCard
+            label="Referrals"
+            value={metrics?.funnel.referralCount ?? 0}
+          />
+        </div>
+      </section>
       <section className="panel" style={{ marginTop: 16 }}>
         <h2>Review Applications</h2>
         <div className="table-wrap">

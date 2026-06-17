@@ -1,4 +1,8 @@
-import { FounderApplicationStatus, SubscriptionStatus } from "@prisma/client";
+import {
+  FounderApplicationStatus,
+  FounderCampaignEventType,
+  SubscriptionStatus,
+} from "@prisma/client";
 import type { AuthenticatedUser } from "../auth/auth.types";
 import { FoundersService } from "./founders.service";
 
@@ -90,6 +94,27 @@ function createPrismaMock() {
     founderMerchantProgram: {
       count: jest.fn().mockResolvedValue(1),
     },
+    founderWaitlistEntry: {
+      create: jest.fn().mockResolvedValue({
+        id: "waitlist-1",
+        email: "merchant@example.com",
+      }),
+      count: jest.fn().mockResolvedValue(1),
+    },
+    founderReferral: {
+      upsert: jest.fn().mockResolvedValue({
+        id: "referral-1",
+        referralCode: "FOUNDER-COM",
+      }),
+      count: jest.fn().mockResolvedValue(1),
+    },
+    founderCampaignEvent: {
+      create: jest.fn().mockResolvedValue({
+        id: "event-1",
+        eventType: FounderCampaignEventType.APPLICATION_SUBMITTED,
+      }),
+      count: jest.fn().mockResolvedValue(1),
+    },
     shop: {
       findMany: jest.fn().mockResolvedValue([]),
     },
@@ -160,6 +185,33 @@ describe("FoundersService", () => {
     );
   });
 
+  it("captures waitlist and referral activity", async () => {
+    const prisma = createPrismaMock();
+    const service = new FoundersService(prisma as never);
+
+    const waitlist = await service.joinWaitlist({
+      merchantName: "COM",
+      businessName: "Velora PC",
+      email: "merchant@example.com",
+      category: "Computer Store",
+      source: "facebook",
+    });
+    const referral = await service.refer({
+      referrerEmail: "founder@example.com",
+      referredEmail: "friend@example.com",
+    });
+
+    expect(waitlist.entry.id).toBe("waitlist-1");
+    expect(referral.referral.referralCode).toBe("FOUNDER-COM");
+    expect(prisma.founderCampaignEvent.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          eventType: FounderCampaignEventType.REFERRAL_CAPTURED,
+        }),
+      }),
+    );
+  });
+
   it("returns Founder program metrics", async () => {
     const prisma = createPrismaMock();
     const service = new FoundersService(prisma as never);
@@ -168,6 +220,8 @@ describe("FoundersService", () => {
 
     expect(metrics.goal).toBe(100);
     expect(metrics.approvedFounders).toBe(1);
+    expect(metrics.waitlistCount).toBe(1);
+    expect(metrics.referralCount).toBe(1);
     expect(metrics.founderConversionRate).toBe(100);
   });
 });

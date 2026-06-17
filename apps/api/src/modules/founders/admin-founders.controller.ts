@@ -33,6 +33,12 @@ export class AdminFoundersController {
     return this.founders.listApplications(query.status);
   }
 
+  @Get("campaign-metrics")
+  @ApiOperation({ summary: "Get Founder launch campaign metrics" })
+  campaignMetrics() {
+    return this.founders.metrics();
+  }
+
   @Patch(":id/approve")
   @ApiOperation({ summary: "Approve a Founder Merchant application" })
   @ApiBody({ type: ReviewFounderApplicationDto })

@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import {
+  FounderCampaignEventType,
   FounderApplicationStatus,
   PlanStatus,
   Prisma,
@@ -16,6 +17,9 @@ import {
 } from "../subscriptions/subscription-plan-definitions";
 import type {
   CreateFounderApplicationDto,
+  FounderCampaignEventDto,
+  FounderReferralDto,
+  FounderWaitlistDto,
   ReviewFounderApplicationDto,
 } from "./dto/founder-application.dto";
 
@@ -45,8 +49,84 @@ export class FoundersService {
     return {
       message: "Founder Merchant application submitted.",
       application,
+      campaignEvent: await this.track({
+        eventType: FounderCampaignEventType.APPLICATION_SUBMITTED,
+        source: "application",
+        campaign: "founder-launch",
+      }),
       founderCounter: await this.metrics(),
     };
+  }
+
+  async joinWaitlist(dto: FounderWaitlistDto) {
+    const entry = await this.prisma.founderWaitlistEntry.create({
+      data: {
+        merchantName: dto.merchantName,
+        businessName: dto.businessName,
+        email: dto.email,
+        category: dto.category,
+        source: dto.source ?? null,
+        referralCode: dto.referralCode ?? null,
+      },
+    });
+
+    const event: FounderCampaignEventDto = {
+      eventType: FounderCampaignEventType.WAITLIST_JOINED,
+      source: dto.source ?? "waitlist",
+      campaign: "founder-launch",
+    };
+    if (dto.referralCode) event.referralCode = dto.referralCode;
+    await this.track(event);
+
+    return {
+      message: "Founder waitlist joined.",
+      entry,
+      founderCounter: await this.metrics(),
+    };
+  }
+
+  async refer(dto: FounderReferralDto) {
+    const referralCode =
+      dto.referralCode ?? this.createReferralCode(dto.referrerEmail);
+    const referral = await this.prisma.founderReferral.upsert({
+      where: {
+        referrerEmail_referredEmail: {
+          referrerEmail: dto.referrerEmail,
+          referredEmail: dto.referredEmail,
+        },
+      },
+      create: {
+        referrerEmail: dto.referrerEmail,
+        referredEmail: dto.referredEmail,
+        referralCode,
+      },
+      update: {
+        referralCode,
+      },
+    });
+
+    await this.track({
+      eventType: FounderCampaignEventType.REFERRAL_CAPTURED,
+      source: "referral",
+      campaign: "founder-launch",
+      referralCode,
+    });
+
+    return {
+      message: "Founder referral captured.",
+      referral,
+    };
+  }
+
+  async track(dto: FounderCampaignEventDto) {
+    return this.prisma.founderCampaignEvent.create({
+      data: {
+        eventType: dto.eventType,
+        source: dto.source ?? null,
+        campaign: dto.campaign ?? "founder-launch",
+        referralCode: dto.referralCode ?? null,
+      },
+    });
   }
 
   async listApplications(status?: keyof typeof FounderApplicationStatus) {
@@ -114,6 +194,11 @@ export class FoundersService {
       rejectedApplications,
       approvedFounders,
       activeFounders,
+      waitlistCount,
+      referralCount,
+      campaignEvents,
+      landingViews,
+      applyClicks,
     ] = await Promise.all([
       this.prisma.founderApplication.count(),
       this.prisma.founderApplication.count({
@@ -135,6 +220,15 @@ export class FoundersService {
           shop: { status: "ACTIVE", deletedAt: null },
         },
       }),
+      this.prisma.founderWaitlistEntry.count(),
+      this.prisma.founderReferral.count(),
+      this.prisma.founderCampaignEvent.count(),
+      this.prisma.founderCampaignEvent.count({
+        where: { eventType: FounderCampaignEventType.LANDING_VIEW },
+      }),
+      this.prisma.founderCampaignEvent.count({
+        where: { eventType: FounderCampaignEventType.APPLY_CLICK },
+      }),
     ]);
 
     return {
@@ -148,11 +242,43 @@ export class FoundersService {
       rejectedApplications,
       approvedFounders,
       activeFounders,
+      waitlistCount,
+      referralCount,
+      campaignEvents,
+      landingViews,
+      applyClicks,
       founderConversionRate:
         applications === 0
           ? 0
           : Number(((approvedFounders / applications) * 100).toFixed(2)),
       progressLabel: `${approvedFounders} / ${founderGoal}`,
+      funnel: {
+        landingViews,
+        applyClicks,
+        applications,
+        waitlistCount,
+        referralCount,
+      },
+      successStories: [
+        {
+          title: "Computer Shop Founder",
+          status: "Placeholder",
+          summary:
+            "Future story about a local computer shop joining Tech Bazaar.",
+        },
+        {
+          title: "Coffee Shop Founder",
+          status: "Placeholder",
+          summary:
+            "Future story about a cafe building community presence in Prontera.",
+        },
+        {
+          title: "Handmade Creator Founder",
+          status: "Placeholder",
+          summary:
+            "Future story about an artisan using Prontera for identity and discovery.",
+        },
+      ],
     };
   }
 
@@ -383,5 +509,13 @@ export class FoundersService {
 
   private addDays(date: Date, days: number) {
     return new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
+  }
+
+  private createReferralCode(email: string) {
+    const prefix = email
+      .split("@")[0]
+      ?.replace(/[^a-z0-9]/gi, "")
+      .slice(0, 8);
+    return `FOUNDER-${(prefix || "MERCHANT").toUpperCase()}`;
   }
 }

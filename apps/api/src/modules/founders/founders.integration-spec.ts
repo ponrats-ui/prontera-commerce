@@ -1,6 +1,9 @@
 import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
-import { FounderApplicationStatus } from "@prisma/client";
+import {
+  FounderApplicationStatus,
+  FounderCampaignEventType,
+} from "@prisma/client";
 import request from "supertest";
 import type { AuthenticatedUser } from "../auth/auth.types";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
@@ -81,6 +84,24 @@ function createPrismaMock() {
     founderMerchantProgram: {
       count: jest.fn().mockResolvedValue(1),
     },
+    founderWaitlistEntry: {
+      create: jest.fn().mockResolvedValue({ id: "waitlist-1" }),
+      count: jest.fn().mockResolvedValue(1),
+    },
+    founderReferral: {
+      upsert: jest.fn().mockResolvedValue({
+        id: "referral-1",
+        referralCode: "FOUNDER-COM",
+      }),
+      count: jest.fn().mockResolvedValue(1),
+    },
+    founderCampaignEvent: {
+      create: jest.fn().mockResolvedValue({
+        id: "event-1",
+        eventType: FounderCampaignEventType.WAITLIST_JOINED,
+      }),
+      count: jest.fn().mockResolvedValue(1),
+    },
     shop: {
       findMany: jest.fn().mockResolvedValue([]),
     },
@@ -149,6 +170,29 @@ describe("FoundersController integration", () => {
       .expect(200);
 
     expect(response.body).toHaveLength(1);
+  });
+
+  it("captures waitlist and referral campaign activity", async () => {
+    const waitlist = await request(app.getHttpServer())
+      .post("/founders/waitlist")
+      .send({
+        merchantName: "COM",
+        businessName: "Velora PC",
+        email: "merchant@example.com",
+        category: "Computer Store",
+      })
+      .expect(201);
+
+    const referral = await request(app.getHttpServer())
+      .post("/founders/referrals")
+      .send({
+        referrerEmail: "founder@example.com",
+        referredEmail: "friend@example.com",
+      })
+      .expect(201);
+
+    expect(waitlist.body.entry.id).toBe("waitlist-1");
+    expect(referral.body.referral.referralCode).toBe("FOUNDER-COM");
   });
 
   it("approves applications", async () => {
