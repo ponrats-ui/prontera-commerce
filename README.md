@@ -218,6 +218,24 @@ Prontera Commerce uses an AI Founder Council to provide specialized perspectives
 
 Reference: [Prontera AI Founder Council](docs/ai/ai-founder-council.md)
 
+## Vision
+
+Prontera Commerce preserves long-term platform vision documents for the Merchant Civilization Platform, Legacy NPC AI, and future Founder Hall experiences.
+
+Reference: [AI Founder Council NPC System](docs/vision/ai-founder-council-npc-system.md)
+
+## AI Systems
+
+Future AI systems should help merchants learn, operate, grow, and protect their businesses while preserving Human-in-the-Loop governance.
+
+Reference: [AI Documentation](docs/ai/README.md)
+
+## Founder Experience
+
+Founder Hall is a future world-building concept where merchants can visit the AI Founder Council as platform NPC mentors and advisors.
+
+Reference: [AI Founder Council NPC System](docs/vision/ai-founder-council-npc-system.md)
+
 ## Original Art Direction and IP Safety
 
 Prontera Commerce uses an original fantasy commerce art direction. It does not clone or copy Ragnarok, Pixar, Disney, Ghibli, Nintendo, or any existing franchise.
@@ -249,6 +267,7 @@ Reference:
 - [Storefront System](docs/world/storefront-system.md)
 - [World Discovery Engine](docs/world/discovery-engine.md)
 - [Vision Asset Library](docs/vision/README.md)
+- [AI Founder Council NPC System](docs/vision/ai-founder-council-npc-system.md)
 - [Master Roadmap](docs/roadmap/master-roadmap.md)
 - [Founder Principles](docs/architecture/founder-principles.md)
 - [Brand Documentation](docs/brand/README.md)

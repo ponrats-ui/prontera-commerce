@@ -18,6 +18,12 @@ Council members:
 - [Mercury](./mercury-operating-memory.md): Chief Growth Officer
 - [Sentinel](./sentinel-operating-memory.md): Chief Risk & Governance Officer
 
+## AI Founder Council NPC System
+
+[AI Founder Council NPC System](../vision/ai-founder-council-npc-system.md) defines the future vision for the council as permanent NPC mentors inside the Merchant Civilization Platform experience.
+
+This is a vision and world-building document only. The NPCs are fictional platform characters inspired by operational roles; they are not real people, consciousness, or digital replicas of individuals.
+
 ## AI Executive Board
 
 Prontera Commerce uses the [AI Executive Board](../governance/ai-executive-board.md) model to define specialized AI agent responsibilities while preserving Founder authority and human review for high-impact decisions.

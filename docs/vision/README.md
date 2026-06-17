@@ -6,6 +6,7 @@ This folder stores strategic vision assets for Prontera Commerce.
 
 - Vision Carousel v1.0
 - Merchant Civilization Platform narrative
+- AI Founder Council NPC System
 - Investor One Pager
 - Business Model
 - Roadmap
@@ -25,6 +26,7 @@ It combines:
 - Inventory
 - Subscription
 - AI Merchant
+- AI Founder Council NPC System
 - Legacy NPC AI
 - Commerce World
 - Commerce Gate Network
@@ -33,6 +35,7 @@ It combines:
 ## Vision Documents
 
 - [Merchant Civilization Platform](./merchant-civilization-platform.md)
+- [AI Founder Council NPC System](./ai-founder-council-npc-system.md)
 - [Investor One Pager](../investors/investor-one-pager.md)
 - [Prontera Commerce Vision](./prontera-commerce-vision.md)
 - [Legacy NPC AI Vision](./legacy-npc-ai.md)
