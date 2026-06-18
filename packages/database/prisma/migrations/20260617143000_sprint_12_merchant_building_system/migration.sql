@@ -28,7 +28,6 @@ ALTER TABLE "merchant_buildings" ALTER COLUMN "buildingType" TYPE "BuildingType"
   END
 )::"BuildingType";
 ALTER TABLE "merchant_buildings" ALTER COLUMN "buildingType" SET DEFAULT 'SMALL';
-ALTER TABLE "merchant_buildings" ALTER COLUMN "storefrontTheme" SET DEFAULT 'CLASSIC';
 
 UPDATE "merchant_buildings" AS building
 SET

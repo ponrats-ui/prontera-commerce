@@ -36,7 +36,7 @@ CREATE TABLE "merchant_subscriptions" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "shopId" UUID NOT NULL,
     "planId" UUID NOT NULL,
-    "status" "SubscriptionStatus" NOT NULL DEFAULT 'TRIAL',
+    "status" "SubscriptionStatus" NOT NULL,
     "trialStartAt" TIMESTAMPTZ(6),
     "trialEndAt" TIMESTAMPTZ(6),
     "currentPeriodStart" TIMESTAMPTZ(6),
