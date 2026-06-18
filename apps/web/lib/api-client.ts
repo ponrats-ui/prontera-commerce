@@ -4,7 +4,7 @@ import { getAccessToken } from "./auth";
 
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ??
-  "http://localhost:3000";
+  "http://localhost:4000";
 
 type ApiOptions = RequestInit & {
   token?: string | null;

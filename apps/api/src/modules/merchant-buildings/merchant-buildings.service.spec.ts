@@ -90,8 +90,9 @@ describe("MerchantBuildingsService", () => {
   });
 
   it("serializes public merchant profiles", async () => {
+    const prisma = createPrismaMock();
     const service = new MerchantBuildingsService(
-      createPrismaMock() as never,
+      prisma as never,
       { canManageShop: jest.fn().mockResolvedValue(true) } as never,
     );
 
@@ -100,6 +101,13 @@ describe("MerchantBuildingsService", () => {
     expect(profile.signText).toBe("Velora PC");
     expect(profile.founderBadge).toBe("Founder Merchant");
     expect(profile.promotionBanner).toBe("Launch Discount");
+    expect(prisma.merchantBuilding.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          shop: expect.objectContaining({ slug: "velora-pc" }),
+        }),
+      }),
+    );
   });
 
   it("updates merchant building settings", async () => {

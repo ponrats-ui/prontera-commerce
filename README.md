@@ -22,7 +22,7 @@ Status: Internal Alpha
 
 Current release: `v0.1.0-core-commerce`
 
-Latest completed sprint: Sprint 13 Merchant Discovery Engine
+Latest completed sprint: Sprint 13A Buyer World Entry and Sprint 13B Demo World Seed
 
 Next planned release: `v0.2.0-crm-foundation`
 
@@ -58,6 +58,8 @@ Next planned release: `v0.2.0-crm-foundation`
 - [x] Founder Launch Campaign
 - [x] Merchant Building System
 - [x] Merchant Discovery Engine
+- [x] Buyer World Entry
+- [x] Demo World Seed
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
 - [x] AI Executive Board Documentation
@@ -199,6 +201,17 @@ Reference:
 
 - [Sprint 13 Merchant Discovery Engine](docs/product/sprint-13-merchant-discovery-engine.md)
 
+## Buyer World Entry
+
+Buyers can now enter Prontera without an account, choose a starter avatar, explore a two-dimensional Merchant City, visit merchant buildings, view products, see live and promotion signals, and travel through Commerce Gates.
+
+Start locally at `/play`.
+
+Reference:
+
+- [Sprint 13A Buyer World Entry](docs/product/sprint-13a-buyer-world-entry.md)
+- [Sprint 13B Demo World Seed](docs/product/sprint-13b-demo-world-seed.md)
+
 ## Founder Merchant Program
 
 The Founder Merchant 100 Program is Prontera Commerce's first official merchant acquisition strategy for the Revenue Era.
@@ -301,6 +314,8 @@ Reference:
 - [Sprint 12 Merchant Building System](docs/product/sprint-12-merchant-building-system.md)
 - [Sprint 12A Founder Launch Campaign](docs/growth/sprint-12a-founder-launch-campaign.md)
 - [Sprint 13 Merchant Discovery Engine](docs/product/sprint-13-merchant-discovery-engine.md)
+- [Sprint 13A Buyer World Entry](docs/product/sprint-13a-buyer-world-entry.md)
+- [Sprint 13B Demo World Seed](docs/product/sprint-13b-demo-world-seed.md)
 - [World Experience](docs/world/world-experience.md)
 - [Storefront System](docs/world/storefront-system.md)
 - [World Discovery Engine](docs/world/discovery-engine.md)

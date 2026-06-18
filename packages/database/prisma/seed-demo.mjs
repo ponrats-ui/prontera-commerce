@@ -430,6 +430,492 @@ async function upsertDemoOrder(shopId, userId, productId, variantId) {
   });
 }
 
+async function upsertDemoWorld(user, demoShop, demoProduct) {
+  const region = await prisma.worldRegion.upsert({
+    where: { slug: "central-trade-region" },
+    update: {
+      name: "Central Trade Region",
+      description: "The first connected region of the Prontera commerce world.",
+      status: "ACTIVE",
+      displayOrder: 1,
+    },
+    create: {
+      name: "Central Trade Region",
+      slug: "central-trade-region",
+      description: "The first connected region of the Prontera commerce world.",
+      status: "ACTIVE",
+      displayOrder: 1,
+    },
+  });
+
+  const city = await prisma.worldCity.upsert({
+    where: { slug: "merchant-city" },
+    update: {
+      regionId: region.id,
+      name: "Merchant City",
+      description:
+        "The buyer entry city where shops become places and commerce becomes exploration.",
+      status: "ACTIVE",
+    },
+    create: {
+      regionId: region.id,
+      name: "Merchant City",
+      slug: "merchant-city",
+      description:
+        "The buyer entry city where shops become places and commerce becomes exploration.",
+      status: "ACTIVE",
+    },
+  });
+
+  const zone = await prisma.worldZone.upsert({
+    where: { code: "MERCHANT_WORLD" },
+    update: {
+      name: "Merchant World",
+      description:
+        "The connected city and district network for buyer discovery.",
+      status: "ACTIVE",
+      sortOrder: 1,
+    },
+    create: {
+      code: "MERCHANT_WORLD",
+      name: "Merchant World",
+      description:
+        "The connected city and district network for buyer discovery.",
+      status: "ACTIVE",
+      sortOrder: 1,
+    },
+  });
+
+  const districtDefinitions = [
+    {
+      code: "CENTRAL_MARKET",
+      name: "Central Market District",
+      description: "The welcoming center of Merchant City for everyday goods.",
+      category: "GENERAL",
+      sortOrder: 0,
+      coordinateX: 50,
+      coordinateY: 48,
+    },
+    {
+      code: "TECH_BAZAAR",
+      name: "Tech Bazaar",
+      description: "Technology shops, equipment, and digital tools.",
+      category: "TECH",
+      sortOrder: 1,
+      coordinateX: 72,
+      coordinateY: 34,
+    },
+    {
+      code: "ARTISAN_VALLEY",
+      name: "Artisan Valley",
+      description: "Independent makers, coffee, craft, and local stories.",
+      category: "ARTISAN",
+      sortOrder: 2,
+      coordinateX: 28,
+      coordinateY: 38,
+    },
+    {
+      code: "HARBOR_DISTRICT",
+      name: "Harbor District",
+      description: "Regional trade, supplies, logistics, and imported goods.",
+      category: "HARBOR",
+      sortOrder: 3,
+      coordinateX: 20,
+      coordinateY: 72,
+    },
+  ];
+
+  const districts = new Map();
+  for (const definition of districtDefinitions) {
+    const existing = await prisma.worldDistrict.findFirst({
+      where: { zoneId: zone.id, code: definition.code },
+    });
+    const district = existing
+      ? await prisma.worldDistrict.update({
+          where: { id: existing.id },
+          data: {
+            name: definition.name,
+            description: definition.description,
+            category: definition.category,
+            sortOrder: definition.sortOrder,
+          },
+        })
+      : await prisma.worldDistrict.create({
+          data: {
+            zoneId: zone.id,
+            code: definition.code,
+            name: definition.name,
+            description: definition.description,
+            category: definition.category,
+            sortOrder: definition.sortOrder,
+          },
+        });
+
+    const districtLocation = await prisma.worldDistrictLocation.findFirst({
+      where: { districtId: district.id, cityId: city.id },
+    });
+    if (districtLocation) {
+      await prisma.worldDistrictLocation.update({
+        where: { id: districtLocation.id },
+        data: {
+          coordinateX: definition.coordinateX,
+          coordinateY: definition.coordinateY,
+          displayOrder: definition.sortOrder,
+        },
+      });
+    } else {
+      await prisma.worldDistrictLocation.create({
+        data: {
+          districtId: district.id,
+          cityId: city.id,
+          coordinateX: definition.coordinateX,
+          coordinateY: definition.coordinateY,
+          displayOrder: definition.sortOrder,
+        },
+      });
+    }
+    districts.set(definition.code, district);
+  }
+
+  const central = districts.get("CENTRAL_MARKET");
+  await upsertWorldPlacement({
+    shop: demoShop,
+    city,
+    district: central,
+    buildingType: "SMALL",
+    storefrontTheme: "CLASSIC",
+    buildingStyle: "CLASSIC_SHOP",
+    signText: "Demo General Store",
+    xCoordinate: 48,
+    yCoordinate: 52,
+    featured: true,
+    isLive: true,
+  });
+
+  const promotion =
+    (await prisma.promotionCampaign.findFirst({
+      where: {
+        shopId: demoShop.id,
+        name: "Welcome to Merchant City",
+        deletedAt: null,
+      },
+    })) ??
+    (await prisma.promotionCampaign.create({
+      data: {
+        shopId: demoShop.id,
+        name: "Welcome to Merchant City",
+        description: "A demo launch offer for first-time world visitors.",
+        promotionType: "PERCENT_DISCOUNT",
+        status: "ACTIVE",
+        priority: 100,
+        stackable: false,
+        createdById: user.id,
+      },
+    }));
+
+  const promotionRule = await prisma.promotionRule.findFirst({
+    where: { campaignId: promotion.id, targetProductId: demoProduct.id },
+  });
+  if (!promotionRule) {
+    await prisma.promotionRule.create({
+      data: {
+        campaignId: promotion.id,
+        discountPercent: 10,
+        targetProductId: demoProduct.id,
+      },
+    });
+  }
+
+  const liveChannel = await prisma.shopLiveChannel.findFirst({
+    where: {
+      shopId: demoShop.id,
+      title: "Merchant City Welcome Live",
+      deletedAt: null,
+    },
+  });
+  if (liveChannel) {
+    await prisma.shopLiveChannel.update({
+      where: { id: liveChannel.id },
+      data: {
+        status: "LIVE",
+        startsAt: new Date(),
+        endsAt: null,
+      },
+    });
+  } else {
+    await prisma.shopLiveChannel.create({
+      data: {
+        shopId: demoShop.id,
+        provider: "YOUTUBE",
+        title: "Merchant City Welcome Live",
+        description: "Demo live-commerce signal for the buyer world.",
+        videoUrl: "https://www.youtube.com/watch?v=prontera-demo",
+        embedUrl: "https://www.youtube.com/embed/prontera-demo",
+        status: "LIVE",
+        startsAt: new Date(),
+        createdById: user.id,
+      },
+    });
+  }
+
+  const optionalStores = [
+    {
+      name: "Tech Bazaar Keyboard Store",
+      slug: "tech-bazaar-keyboard-store",
+      description: "Mechanical keyboards and creator workstations.",
+      districtCode: "TECH_BAZAAR",
+      productName: "Demo Mechanical Keyboard",
+      productSlug: "demo-mechanical-keyboard",
+      sku: "DEMO-KEYBOARD",
+      priceCents: 8900,
+      buildingType: "MEDIUM",
+      storefrontTheme: "TECH",
+      buildingStyle: "TECH_STORE",
+      xCoordinate: 70,
+      yCoordinate: 38,
+      isOfficialStore: true,
+    },
+    {
+      name: "Artisan Coffee House",
+      slug: "artisan-coffee-house",
+      description: "Small-batch coffee and the stories behind every roast.",
+      districtCode: "ARTISAN_VALLEY",
+      productName: "Demo Artisan Roast",
+      productSlug: "demo-artisan-roast",
+      sku: "DEMO-COFFEE",
+      priceCents: 1800,
+      buildingType: "SMALL",
+      storefrontTheme: "ARTISAN",
+      buildingStyle: "MARKET_STALL",
+      xCoordinate: 30,
+      yCoordinate: 42,
+      isFounder: true,
+    },
+    {
+      name: "Harbor Supply Shop",
+      slug: "harbor-supply-shop",
+      description:
+        "Reliable supplies for merchants moving goods across regions.",
+      districtCode: "HARBOR_DISTRICT",
+      productName: "Demo Cargo Crate",
+      productSlug: "demo-cargo-crate",
+      sku: "DEMO-CRATE",
+      priceCents: 2400,
+      buildingType: "LARGE",
+      storefrontTheme: "HARBOR",
+      buildingStyle: "PREMIUM_HALL",
+      xCoordinate: 24,
+      yCoordinate: 70,
+    },
+  ];
+
+  for (const definition of optionalStores) {
+    const shop = await upsertWorldShop(user.id, definition);
+    await upsertWorldPlacement({
+      shop,
+      city,
+      district: districts.get(definition.districtCode),
+      buildingType: definition.buildingType,
+      storefrontTheme: definition.storefrontTheme,
+      buildingStyle: definition.buildingStyle,
+      signText: definition.name,
+      xCoordinate: definition.xCoordinate,
+      yCoordinate: definition.yCoordinate,
+      isFounder: definition.isFounder ?? false,
+      isOfficialStore: definition.isOfficialStore ?? false,
+      featured: definition.isFounder ?? false,
+    });
+
+    if (definition.isFounder) {
+      await prisma.founderMerchantProgram.upsert({
+        where: { shopId: shop.id },
+        update: {
+          isFounderMerchant: true,
+          founderExpiresAt: null,
+        },
+        create: {
+          shopId: shop.id,
+          isFounderMerchant: true,
+          founderGrantedAt: new Date(),
+          benefits: {
+            founderBadge: true,
+            priorityPlacement: true,
+          },
+        },
+      });
+    }
+  }
+
+  const existingGate = await prisma.commerceGate.findFirst({
+    where: { title: "Central Market Warp Gate" },
+  });
+  if (!existingGate) {
+    await prisma.commerceGate.create({
+      data: {
+        sourceZoneId: zone.id,
+        destinationZoneId: zone.id,
+        sourceDistrictId: central.id,
+        destinationDistrictId: districts.get("TECH_BAZAAR").id,
+        title: "Central Market Warp Gate",
+        description: "Fast travel from Central Market to Tech Bazaar.",
+        gateType: "DISTRICT_GATE",
+        status: "ACTIVE",
+      },
+    });
+  }
+}
+
+async function upsertWorldShop(ownerId, definition) {
+  const existing = await prisma.shop.findFirst({
+    where: { slug: definition.slug, deletedAt: null },
+  });
+  const shop = existing
+    ? await prisma.shop.update({
+        where: { id: existing.id },
+        data: {
+          ownerId,
+          name: definition.name,
+          description: definition.description,
+          status: "ACTIVE",
+          isPublic: true,
+        },
+      })
+    : await prisma.shop.create({
+        data: {
+          ownerId,
+          name: definition.name,
+          slug: definition.slug,
+          description: definition.description,
+          status: "ACTIVE",
+          isPublic: true,
+          countryCode: "US",
+          localeCode: "en-US",
+          currencyCode: "USD",
+          preferredLocale: "en-US",
+          preferredCurrency: "USD",
+          timeZone: "America/New_York",
+        },
+      });
+
+  const category =
+    (await prisma.category.findFirst({
+      where: { shopId: shop.id, slug: "featured-goods", deletedAt: null },
+    })) ??
+    (await prisma.category.create({
+      data: {
+        shopId: shop.id,
+        name: "Featured Goods",
+        slug: "featured-goods",
+        status: "ACTIVE",
+      },
+    }));
+  const product =
+    (await prisma.product.findFirst({
+      where: { shopId: shop.id, sku: definition.sku, deletedAt: null },
+    })) ??
+    (await prisma.product.create({
+      data: {
+        shopId: shop.id,
+        categoryId: category.id,
+        sku: definition.sku,
+        name: definition.productName,
+        slug: definition.productSlug,
+        description: `A featured product from ${definition.name}.`,
+        status: "ACTIVE",
+      },
+    }));
+  const variant = await prisma.productVariant.findFirst({
+    where: {
+      productId: product.id,
+      sku: `${definition.sku}-STD`,
+      deletedAt: null,
+    },
+  });
+  if (!variant) {
+    await prisma.productVariant.create({
+      data: {
+        productId: product.id,
+        sku: `${definition.sku}-STD`,
+        name: "Standard",
+        priceCents: definition.priceCents,
+        currency: "USD",
+        status: "ACTIVE",
+        inventoryCount: 20,
+        isDefault: true,
+      },
+    });
+  }
+  return shop;
+}
+
+async function upsertWorldPlacement({
+  shop,
+  city,
+  district,
+  buildingType,
+  storefrontTheme,
+  buildingStyle,
+  signText,
+  xCoordinate,
+  yCoordinate,
+  featured = false,
+  isFounder = false,
+  isOfficialStore = false,
+  isLive = false,
+}) {
+  await prisma.merchantBuilding.upsert({
+    where: { shopId: shop.id },
+    update: {
+      districtId: district.id,
+      buildingType,
+      storefrontTheme,
+      buildingLevel: 1,
+      signText,
+      isFounder,
+      isOfficialStore,
+      isLive,
+      xCoordinate,
+      yCoordinate,
+      isPublished: true,
+    },
+    create: {
+      shopId: shop.id,
+      districtId: district.id,
+      buildingType,
+      storefrontTheme,
+      buildingLevel: 1,
+      signText,
+      isFounder,
+      isOfficialStore,
+      isLive,
+      xCoordinate,
+      yCoordinate,
+      isPublished: true,
+    },
+  });
+
+  await prisma.merchantWorldLocation.upsert({
+    where: { shopId: shop.id },
+    update: {
+      cityId: city.id,
+      districtId: district.id,
+      buildingStyle,
+      storefrontTheme,
+      featured,
+      founderPlacement: isFounder,
+    },
+    create: {
+      shopId: shop.id,
+      cityId: city.id,
+      districtId: district.id,
+      buildingStyle,
+      storefrontTheme,
+      featured,
+      founderPlacement: isFounder,
+    },
+  });
+}
+
 async function main() {
   await upsertFoundationData();
   const user = await upsertDemoUser();
@@ -437,6 +923,7 @@ async function main() {
   const { product, variant } = await upsertCatalog(shop.id);
   await upsertInventory(shop.id, variant.id, user.id);
   await upsertDemoOrder(shop.id, user.id, product.id, variant.id);
+  await upsertDemoWorld(user, shop, product);
 
   console.log("Demo seed complete.");
   console.log(`Email: ${demoUser.email}`);

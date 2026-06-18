@@ -108,13 +108,14 @@ export class MerchantBuildingsService {
   }
 
   async getMerchantProfile(id: string) {
+    const shopIdentity = isUuid(id) ? { id } : { slug: id };
     const building = await this.prisma.merchantBuilding.findFirst({
       where: {
         isPublished: true,
         shop: {
           status: ShopStatus.ACTIVE,
           deletedAt: null,
-          OR: [{ id }, { slug: id }],
+          ...shopIdentity,
         },
       },
       include: buildingInclude,
@@ -303,4 +304,10 @@ export class MerchantBuildingsService {
       updatedAt: building.updatedAt,
     };
   }
+}
+
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    value,
+  );
 }

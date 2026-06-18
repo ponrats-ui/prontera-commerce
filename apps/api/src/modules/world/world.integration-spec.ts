@@ -235,4 +235,18 @@ describe("WorldController (integration)", () => {
       expect.objectContaining({ regions: 1, cities: 1, shops: 1 }),
     );
   });
+
+  it("returns the public world overview", async () => {
+    jest
+      .spyOn(app.get(WorldDiscoveryService), "listShops")
+      .mockResolvedValue([worldShop] as never);
+
+    const response = await request(app.getHttpServer())
+      .get("/world")
+      .expect(200);
+
+    expect(response.body.totals).toEqual(
+      expect.objectContaining({ cities: 1, shops: 1 }),
+    );
+  });
 });

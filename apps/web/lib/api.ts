@@ -508,6 +508,7 @@ export type WorldCity = {
 
 export type WorldShop = {
   id: string;
+  ownerId: string;
   name: string;
   slug: string;
   description?: string | null;
@@ -1037,6 +1038,8 @@ export const liveCommerceApi = {
 };
 
 export const worldApi = {
+  overview: (query?: Record<string, string>) =>
+    apiFetch<WorldMap>(`/world${toQuery(query)}`, { token: null }),
   regions: () => apiFetch<WorldRegion[]>("/world/regions", { token: null }),
   cities: () => apiFetch<WorldCity[]>("/world/cities", { token: null }),
   city: (slug: string) =>

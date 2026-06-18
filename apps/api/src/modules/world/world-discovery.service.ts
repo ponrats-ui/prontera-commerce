@@ -353,6 +353,7 @@ export class WorldDiscoveryService {
 
     return {
       id: shop.id,
+      ownerId: shop.ownerId,
       name: shop.name,
       slug: shop.slug,
       description: shop.description,

@@ -55,6 +55,22 @@ Customers do not browse endless product grids. They explore districts, discover 
 
 Commerce becomes exploration, but the purpose remains real business value.
 
+## Buyer World Entry
+
+The Merchant Civilization must be understandable to buyers before it becomes visually complex.
+
+The first world entry is a public two-dimensional experience:
+
+- Buyers enter through Prontera.
+- They choose a lightweight starter identity.
+- Merchant City acts as the first commerce destination.
+- Districts organize commercial communities.
+- Shops appear as buildings rather than anonymous product listings.
+- Live commerce and promotions become visible city signals.
+- Commerce Gates connect districts and future cities.
+
+This foundation is intentionally not a game system. It establishes the spatial language of merchant discovery before future three-dimensional environments, social presence, or richer world interactions are considered.
+
 ## World Map
 
 The Prontera World is organized into commerce regions, cities, and districts.

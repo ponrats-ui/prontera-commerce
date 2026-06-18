@@ -36,6 +36,8 @@ Features:
 Sprint 13:
 
 - Merchant Discovery Engine
+- Sprint 13A Buyer World Entry
+- Sprint 13B Demo World Seed
 
 Features:
 
@@ -47,6 +49,11 @@ Features:
 - merchant ranking foundation
 - discovery metrics
 - customer-facing discovery routes
+- public `/play` and `/town` world entry
+- starter avatar selection
+- two-dimensional Merchant City
+- buyer-facing storefront visits
+- seeded shops, products, promotions, live signals, and Warp Gate
 
 Sprint 14:
 
@@ -108,6 +115,8 @@ References:
 - [Sprint 11A Founder Merchant Platform](../product/sprint-11a-founder-merchant-platform.md)
 - [Sprint 12A Founder Launch Campaign](../growth/sprint-12a-founder-launch-campaign.md)
 - [Sprint 13 Merchant Discovery Engine](../product/sprint-13-merchant-discovery-engine.md)
+- [Sprint 13A Buyer World Entry](../product/sprint-13a-buyer-world-entry.md)
+- [Sprint 13B Demo World Seed](../product/sprint-13b-demo-world-seed.md)
 
 ## North Star
 

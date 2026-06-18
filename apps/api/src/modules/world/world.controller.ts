@@ -29,6 +29,12 @@ export class WorldController {
     private readonly worldDiscoveryService: WorldDiscoveryService,
   ) {}
 
+  @Get()
+  @ApiOperation({ summary: "Get the public commerce world overview" })
+  overview(@Query() query: WorldSearchQueryDto) {
+    return this.worldDiscoveryService.getMap(query);
+  }
+
   @Get("regions")
   @ApiOperation({ summary: "List world regions" })
   listRegions() {
