@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { EmptyStateCard, ErrorMessage } from "../../../../components/ui";
+import { MerchantBuildingFacade } from "../../../../components/merchant-building-facade";
 import { getStoredUser } from "../../../../lib/auth";
 import { worldApi } from "../../../../lib/api";
 import type { WorldShop } from "../../../../lib/api";
@@ -34,16 +35,8 @@ export default function TownShopPage() {
       {shop ? (
         <>
           <section className="storefront-hero">
-            <div
-              className={`storefront-building theme-${shop.storefrontTheme.toLowerCase().replace(/_/g, "-")}`}
-            >
-              <div className="storefront-roof" />
-              <div className="storefront-sign">
-                {shop.signText ?? shop.name}
-              </div>
-              <div className="storefront-window left" />
-              <div className="storefront-window right" />
-              <div className="storefront-door" />
+            <div className="storefront-building">
+              <MerchantBuildingFacade shop={shop} storefront />
             </div>
             <div className="storefront-copy">
               <div className="world-badge-row">

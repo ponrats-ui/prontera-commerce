@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BUYER_AVATAR_KEY, getBuyerAvatar } from "../lib/buyer-world";
+import { WorldCharacter } from "./world-character";
 
 const links = [
   { href: "/town", label: "World" },
@@ -38,8 +39,11 @@ export function BuyerWorldNav() {
         ))}
       </nav>
       <Link className="avatar-chip" href="/play">
-        <span>{avatar.mark}</span>
-        <small>{avatar.name}</small>
+        <WorldCharacter character={avatar} compact />
+        <small>
+          {avatar.name}
+          <span>{avatar.class}</span>
+        </small>
       </Link>
     </header>
   );

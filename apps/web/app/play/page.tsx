@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BuyerWorldNav } from "../../components/buyer-world-nav";
+import { WorldCharacter } from "../../components/world-character";
 import {
   BUYER_AVATAR_KEY,
-  buyerAvatars,
+  buyerCharacters,
   type BuyerAvatarId,
 } from "../../lib/buyer-world";
 
@@ -16,7 +17,7 @@ export default function PlayPage() {
     const stored = window.localStorage.getItem(
       BUYER_AVATAR_KEY,
     ) as BuyerAvatarId | null;
-    if (buyerAvatars.some((avatar) => avatar.id === stored)) {
+    if (buyerCharacters.some((avatar) => avatar.id === stored)) {
       setSelected(stored ?? "adventurer");
     }
   }, []);
@@ -68,24 +69,28 @@ export default function PlayPage() {
         <section className="world-section avatar-section">
           <div className="section-heading">
             <p className="world-kicker">No account required</p>
-            <h2>Choose your starter avatar</h2>
+            <h2>Choose who enters the city</h2>
             <p>
-              Your choice stays on this device and becomes your identity while
-              exploring the first buyer world.
+              Each traveler has a distinct class, title, and original world
+              sprite. Your character stays on this device.
             </p>
           </div>
           <div className="avatar-grid">
-            {buyerAvatars.map((avatar) => (
+            {buyerCharacters.map((character) => (
               <button
-                aria-pressed={selected === avatar.id}
-                className={`avatar-option ${selected === avatar.id ? "selected" : ""}`}
-                key={avatar.id}
-                onClick={() => chooseAvatar(avatar.id)}
+                aria-pressed={selected === character.id}
+                className={`avatar-option ${selected === character.id ? "selected" : ""}`}
+                key={character.id}
+                onClick={() => chooseAvatar(character.id)}
                 type="button"
               >
-                <span className="avatar-portrait">{avatar.mark}</span>
-                <strong>{avatar.name}</strong>
-                <small>{avatar.description}</small>
+                <span className="character-stage">
+                  <WorldCharacter character={character} />
+                </span>
+                <span className="character-class">{character.class}</span>
+                <strong>{character.name}</strong>
+                <em>{character.title}</em>
+                <small>{character.description}</small>
               </button>
             ))}
           </div>

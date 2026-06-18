@@ -1,16 +1,12 @@
 import Link from "next/link";
 import type { WorldDistrict, WorldShop } from "../lib/api";
+import { MerchantBuildingFacade } from "./merchant-building-facade";
 
 export function MerchantBuildingCard({ shop }: { shop: WorldShop }) {
   return (
     <Link className="merchant-building-card" href={`/town/shop/${shop.slug}`}>
-      <div
-        className={`building-visual theme-${shop.storefrontTheme.toLowerCase().replace(/_/g, "-")}`}
-      >
-        <div className="building-roof" />
-        <div className="building-sign">{shop.signText ?? shop.name}</div>
-        <div className="building-window" />
-        <div className="building-door" />
+      <div className="building-visual">
+        <MerchantBuildingFacade shop={shop} />
       </div>
       <div className="building-card-copy">
         <div className="world-badge-row">

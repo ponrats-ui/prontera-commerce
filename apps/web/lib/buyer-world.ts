@@ -1,37 +1,78 @@
 export const BUYER_AVATAR_KEY = "prontera_buyer_avatar";
 
-export const buyerAvatars = [
+export type BuyerCharacter = {
+  id: "adventurer" | "merchant" | "creator" | "explorer";
+  name: string;
+  class: "Adventurer" | "Merchant" | "Creator" | "Explorer";
+  sprite: string;
+  title: string;
+  description: string;
+  level: number | null;
+  reputation: number | null;
+  mark: string;
+};
+
+export const buyerCharacters = [
   {
     id: "adventurer",
-    name: "Adventurer",
+    name: "Ari",
+    class: "Adventurer",
+    sprite: "suntrail-adventurer",
+    title: "Curious Wayfinder",
+    description:
+      "Follows lively streets and always finds something unexpected.",
+    level: null,
+    reputation: null,
     mark: "A",
-    description: "Curious, ready, and always looking for the next district.",
   },
   {
     id: "merchant",
-    name: "Merchant",
-    mark: "M",
+    name: "Milo",
+    class: "Merchant",
+    sprite: "brassbell-merchant",
+    title: "Friendly Trader",
     description:
-      "Trade-minded and interested in shops, deals, and new partners.",
+      "Notices a good storefront, a fair deal, and a promising idea.",
+    level: null,
+    reputation: null,
+    mark: "M",
   },
   {
     id: "creator",
-    name: "Creator",
-    mark: "C",
+    name: "Cora",
+    class: "Creator",
+    sprite: "blueink-creator",
+    title: "Market Maker",
     description:
-      "Drawn to artisan stories, original products, and live commerce.",
+      "Seeks original products, artisan stories, and live creativity.",
+    level: null,
+    reputation: null,
+    mark: "C",
   },
   {
     id: "explorer",
-    name: "Explorer",
-    mark: "E",
+    name: "Elio",
+    class: "Explorer",
+    sprite: "greenway-explorer",
+    title: "Gate Seeker",
     description:
-      "Follows gates, city routes, and merchants beyond the main square.",
+      "Knows every side road and wonders what lies beyond each gate.",
+    level: null,
+    reputation: null,
+    mark: "E",
   },
-] as const;
+] as const satisfies readonly BuyerCharacter[];
 
-export type BuyerAvatarId = (typeof buyerAvatars)[number]["id"];
+// Kept as an alias for existing buyer-world consumers.
+export const buyerAvatars = buyerCharacters;
 
-export function getBuyerAvatar(id?: string | null) {
-  return buyerAvatars.find((avatar) => avatar.id === id) ?? buyerAvatars[0];
+export type BuyerAvatarId = (typeof buyerCharacters)[number]["id"];
+
+export function getBuyerCharacter(id?: string | null) {
+  return (
+    buyerCharacters.find((character) => character.id === id) ??
+    buyerCharacters[0]
+  );
 }
+
+export const getBuyerAvatar = getBuyerCharacter;

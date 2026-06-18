@@ -67,6 +67,36 @@ Sprint 11 adds Merchant Onboarding World:
 - world location assignment
 - publish-to-world success flow
 
+Sprint 14 adds Character and Walkable Town Foundation:
+
+- playable starter character data and original sprite identities
+- smooth keyboard, click, touch, and on-screen town movement
+- locally persistent Merchant City position
+- handcrafted town scenery and landmarks
+- recognizable merchant facade types
+- proximity-based merchant building discovery
+- direct transition from city exploration into buyer storefronts
+
+Sprint 15 adds Merchant Place Experience:
+
+- merchant NPC profiles and character presentation
+- shop interior scenes
+- merchant-approved AI context builder
+- mock AI shopkeeper foundation
+
+Sprint 16 expands the Commerce World Map:
+
+- connected commerce regions
+- locked future destinations
+- Warp Gate regional travel
+
+Sprint 17 adds the first Social Commerce World layer:
+
+- merchant follows and favorite shops
+- reputation and reviews
+- guild and commerce friend foundations
+- visitor and follower signals
+
 This phase remains commerce-first. Combat, leveling, equipment, quests, monster systems, and MMORPG mechanics are intentionally excluded.
 
 ## Phase 7: Global Commerce Network

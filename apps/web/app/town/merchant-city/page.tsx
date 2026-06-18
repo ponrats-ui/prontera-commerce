@@ -6,6 +6,7 @@ import {
   DistrictTile,
   MerchantBuildingCard,
 } from "../../../components/buyer-world";
+import { WalkableCity } from "../../../components/walkable-city";
 import { EmptyStateCard, ErrorMessage } from "../../../components/ui";
 import { worldApi } from "../../../lib/api";
 import type { CommerceGate, WorldMap } from "../../../lib/api";
@@ -68,28 +69,7 @@ export default function MerchantCityPage() {
         </div>
       </section>
 
-      <section className="city-map" aria-label="Merchant City 2D map">
-        <div className="map-label north">North Trade Road</div>
-        <div className="map-label center">Central Market Square</div>
-        <div className="map-canal" />
-        <div className="map-road horizontal" />
-        <div className="map-road vertical" />
-        <div className="map-landmark guild">Merchant Guild</div>
-        <div className="map-landmark fountain">Market Fountain</div>
-        <Link className="map-landmark gate" href="/world/travel">
-          Warp Gate
-        </Link>
-        {shops.slice(0, 4).map((shop, index) => (
-          <Link
-            className={`map-shop map-shop-${index + 1}`}
-            href={`/town/shop/${shop.slug}`}
-            key={shop.id}
-          >
-            <span>{shop.liveNow ? "LIVE" : shop.buildingType}</span>
-            <strong>{shop.signText ?? shop.name}</strong>
-          </Link>
-        ))}
-      </section>
+      <WalkableCity shops={shops} />
 
       <section className="world-section">
         <div className="section-heading with-action">

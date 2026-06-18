@@ -937,6 +937,93 @@ textarea {
   overflow: hidden;
 }
 
+.walkable-city-section {
+  margin-top: 30px;
+}
+
+.walkable-city-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.walkable-city-toolbar h2 {
+  margin-bottom: 8px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.walkable-city-toolbar p:last-child {
+  margin-bottom: 0;
+  color: #6b6a65;
+}
+
+.walk-status {
+  min-width: 210px;
+  border: 1px solid #bcb7aa;
+  border-radius: 8px;
+  background: #fffdf7;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.walk-status strong,
+.walk-status small {
+  display: block;
+}
+
+.walk-status small {
+  margin-top: 2px;
+  color: #6b6a65;
+}
+
+.mini-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #d65d45;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-weight: 850;
+}
+
+.walkable-city-map {
+  margin-top: 0;
+  cursor: crosshair;
+  touch-action: manipulation;
+  outline: none;
+  box-shadow: inset 0 0 0 5px rgb(255 253 247 / 32%);
+}
+
+.walkable-city-map:focus-visible {
+  outline: 3px solid #126b62;
+  outline-offset: 3px;
+}
+
+.map-grass-detail {
+  position: absolute;
+  width: 130px;
+  height: 68px;
+  border-radius: 50%;
+  background: #96b97d;
+  opacity: 0.7;
+}
+
+.map-grass-detail.grass-one {
+  top: 4%;
+  right: 28%;
+}
+
+.map-grass-detail.grass-two {
+  left: 33%;
+  bottom: 17%;
+}
+
 .map-road {
   position: absolute;
   background: #e6dcc3;
@@ -1042,6 +1129,22 @@ textarea {
   color: #a53e2c;
 }
 
+.map-shop {
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.map-shop:hover,
+.map-shop.is-nearby {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 0 rgb(79 83 72 / 20%);
+}
+
+.map-shop.is-nearby {
+  outline: 4px solid #fff3b0;
+}
+
 .map-shop-1 {
   left: 18%;
   top: 33%;
@@ -1063,6 +1166,201 @@ textarea {
   right: 23%;
   bottom: 18%;
   background: #c9ad77;
+}
+
+.town-avatar {
+  width: 48px;
+  height: 72px;
+  position: absolute;
+  z-index: 12;
+  transform: translate(-50%, -62%);
+  display: grid;
+  justify-items: center;
+  pointer-events: none;
+  transition:
+    left 140ms linear,
+    top 140ms linear;
+}
+
+.avatar-shadow {
+  width: 34px;
+  height: 12px;
+  position: absolute;
+  bottom: 7px;
+  border-radius: 50%;
+  background: rgb(41 52 39 / 25%);
+}
+
+.avatar-body {
+  width: 34px;
+  height: 42px;
+  position: relative;
+  margin-top: 10px;
+  border: 2px solid #493f38;
+  border-radius: 14px 14px 10px 10px;
+  background: #d65d45;
+  box-shadow: inset 0 -12px 0 rgb(73 63 56 / 14%);
+}
+
+.avatar-head {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: -20px;
+  left: 0;
+  border: 2px solid #493f38;
+  border-radius: 50% 50% 45% 45%;
+  background: #f2c9a5;
+  display: grid;
+  place-items: center;
+  color: #493f38;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.town-avatar small {
+  position: absolute;
+  bottom: -10px;
+  border: 1px solid #6b6a65;
+  border-radius: 999px;
+  background: #fffdf7;
+  padding: 2px 7px;
+  color: #493f38;
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.avatar-merchant .avatar-body,
+.mini-avatar.avatar-merchant {
+  background: #c69a42;
+}
+
+.avatar-creator .avatar-body,
+.mini-avatar.avatar-creator {
+  background: #4b657a;
+}
+
+.avatar-explorer .avatar-body,
+.mini-avatar.avatar-explorer {
+  background: #126b62;
+}
+
+.facing-west .avatar-body {
+  transform: rotate(-3deg);
+}
+
+.facing-east .avatar-body {
+  transform: rotate(3deg);
+}
+
+.facing-north .avatar-head {
+  color: transparent;
+  background: #6f4b38;
+}
+
+.town-avatar.is-walking .avatar-body {
+  animation: town-avatar-step 260ms ease-out;
+}
+
+@keyframes town-avatar-step {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.nearby-shop-prompt {
+  min-width: 180px;
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  z-index: 14;
+  transform: translateX(-50%);
+  border: 2px solid #493f38;
+  border-radius: 8px;
+  background: #fffdf7;
+  padding: 10px 12px;
+  display: grid;
+  gap: 3px;
+  text-align: center;
+  box-shadow: 0 6px 0 rgb(73 63 56 / 18%);
+}
+
+.nearby-shop-prompt span {
+  color: #6b6a65;
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.nearby-shop-prompt a {
+  margin-top: 4px;
+  border-radius: 5px;
+  background: #126b62;
+  color: #ffffff;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.movement-pad {
+  width: 152px;
+  margin: 16px 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  grid-template-rows: repeat(2, 44px);
+  gap: 6px;
+}
+
+.movement-pad button,
+.movement-pad span {
+  border: 1px solid #88857c;
+  border-radius: 8px;
+  background: #fffdf7;
+  display: grid;
+  place-items: center;
+  color: #493f38;
+  font-weight: 900;
+}
+
+.movement-pad button {
+  cursor: pointer;
+}
+
+.movement-pad button:hover {
+  border-color: #126b62;
+  background: #e8f1e2;
+}
+
+.move-north {
+  grid-column: 2;
+}
+
+.move-west {
+  grid-column: 1;
+}
+
+.move-east {
+  grid-column: 3;
+}
+
+.move-south {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.movement-pad span {
+  grid-column: 2;
+  grid-row: 2;
+  width: 18px;
+  height: 18px;
+  place-self: center;
+  z-index: 2;
+  border: 0;
+  border-radius: 50%;
+  background: #126b62;
+  color: #ffffff;
+  font-size: 8px;
+  pointer-events: none;
 }
 
 .district-grid {
@@ -1503,6 +1801,15 @@ textarea {
     flex-direction: column;
   }
 
+  .walkable-city-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .walk-status {
+    width: 100%;
+  }
+
   .city-stat-grid {
     width: 100%;
     min-width: 0;
@@ -1581,6 +1888,10 @@ textarea {
     height: 620px;
   }
 
+  .walkable-city-map {
+    height: 560px;
+  }
+
   .map-shop {
     width: 112px;
     min-height: 82px;
@@ -1624,5 +1935,1231 @@ textarea {
 
   .world-search {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Living Commerce World Foundation */
+.world-character {
+  --character-scale: 1;
+  width: calc(62px * var(--character-scale));
+  height: calc(84px * var(--character-scale));
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+.character-ground-shadow {
+  width: 70%;
+  height: 13%;
+  position: absolute;
+  left: 15%;
+  bottom: 1%;
+  border-radius: 50%;
+  background: rgb(49 57 45 / 22%);
+}
+
+.character-legs {
+  width: 42%;
+  height: 26%;
+  position: absolute;
+  left: 29%;
+  bottom: 9%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.character-legs span {
+  width: 38%;
+  border-radius: 0 0 5px 5px;
+  background: #544a43;
+  box-shadow: inset 0 -5px 0 #292f39;
+  transform-origin: top;
+}
+
+.character-torso {
+  width: 57%;
+  height: 38%;
+  position: absolute;
+  left: 21.5%;
+  bottom: 27%;
+  z-index: 2;
+  border: 2px solid #554a42;
+  border-radius: 15px 15px 10px 10px;
+  background: #d96b50;
+  box-shadow:
+    inset 0 -10px 0 rgb(66 55 47 / 14%),
+    0 2px 0 rgb(255 255 255 / 25%);
+}
+
+.character-satchel {
+  width: 24%;
+  height: 42%;
+  position: absolute;
+  right: -18%;
+  bottom: 5%;
+  border: 2px solid #554a42;
+  border-radius: 4px;
+  background: #b98845;
+}
+
+.character-head {
+  width: 55%;
+  height: 43%;
+  position: absolute;
+  left: 22.5%;
+  top: 2%;
+  z-index: 3;
+  border: 2px solid #554a42;
+  border-radius: 48% 48% 43% 43%;
+  background: #f0c4a0;
+}
+
+.character-hair {
+  position: absolute;
+  inset: -3px -2px 52%;
+  border-radius: 50% 50% 35% 25%;
+  background: #674838;
+}
+
+.character-face {
+  position: absolute;
+  inset: 47% 20% auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.character-face i {
+  width: 3px;
+  height: 5px;
+  border-radius: 50%;
+  background: #4d4038;
+}
+
+.character-hat {
+  position: absolute;
+  left: -12%;
+  right: -12%;
+  top: -12%;
+  height: 30%;
+  border: 2px solid #554a42;
+  border-radius: 50% 50% 15% 15%;
+  background: #d96b50;
+  transform: rotate(-3deg);
+}
+
+.sprite-brassbell-merchant .character-torso,
+.sprite-brassbell-merchant .character-hat {
+  background: #d1a347;
+}
+
+.sprite-brassbell-merchant .character-hat {
+  left: -20%;
+  right: -20%;
+  top: -18%;
+  height: 34%;
+  border-radius: 8px 8px 45% 45%;
+}
+
+.sprite-blueink-creator .character-torso,
+.sprite-blueink-creator .character-hat {
+  background: #58758c;
+}
+
+.sprite-blueink-creator .character-satchel {
+  background: #d86b52;
+}
+
+.sprite-blueink-creator .character-hat {
+  left: 56%;
+  right: -18%;
+  top: -14%;
+  height: 34%;
+  border-radius: 50%;
+}
+
+.sprite-greenway-explorer .character-torso,
+.sprite-greenway-explorer .character-hat {
+  background: #24796b;
+}
+
+.sprite-greenway-explorer .character-hat {
+  left: -18%;
+  right: -18%;
+  top: -16%;
+  height: 30%;
+  border-radius: 50% 50% 20% 20%;
+}
+
+.world-character.is-moving .character-torso {
+  animation: character-bob 320ms ease-in-out infinite;
+}
+
+.world-character.is-moving .character-legs span:first-child {
+  animation: character-step-left 320ms ease-in-out infinite;
+}
+
+.world-character.is-moving .character-legs span:last-child {
+  animation: character-step-right 320ms ease-in-out infinite;
+}
+
+.world-character.facing-west {
+  transform: rotate(-1deg);
+}
+
+.world-character.facing-east {
+  transform: rotate(1deg);
+}
+
+.world-character.facing-north .character-face {
+  display: none;
+}
+
+.world-character.facing-north .character-hair {
+  inset: -3px -2px 18%;
+}
+
+.world-character.is-compact {
+  --character-scale: 0.48;
+}
+
+@keyframes character-bob {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes character-step-left {
+  50% {
+    transform: rotate(13deg) translateY(-2px);
+  }
+}
+
+@keyframes character-step-right {
+  50% {
+    transform: rotate(-13deg) translateY(2px);
+  }
+}
+
+.avatar-chip > .world-character {
+  width: 30px;
+  height: 41px;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.avatar-chip small span {
+  display: block;
+  color: #817d73;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.character-stage {
+  width: 100%;
+  min-height: 132px;
+  border-radius: 50% 50% 12px 12px;
+  background:
+    radial-gradient(circle at 50% 75%, #d9eacb 0 31%, transparent 32%),
+    linear-gradient(#cce6ed 0 54%, #9fc486 55%);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.character-stage .world-character {
+  --character-scale: 1.22;
+  margin-top: 22px;
+}
+
+.avatar-option {
+  min-height: 330px;
+  align-content: start;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.avatar-option:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 0 rgb(74 66 58 / 10%);
+}
+
+.avatar-option.selected {
+  box-shadow: 0 0 0 4px rgb(18 107 98 / 12%);
+}
+
+.character-class {
+  color: #126b62;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.avatar-option strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 23px;
+}
+
+.avatar-option em {
+  color: #795c35;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+}
+
+.merchant-facade {
+  --facade-wall: #efbd70;
+  --facade-roof: #a84d42;
+  --facade-trim: #fff0c8;
+  width: 100%;
+  height: 100%;
+  min-height: 210px;
+  position: relative;
+  border: 3px solid #51483f;
+  border-bottom: 0;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 48%,
+      rgb(81 72 63 / 8%) 49% 51%,
+      transparent 52%
+    ),
+    var(--facade-wall);
+  color: #302a26;
+}
+
+.facade-roof {
+  height: 38px;
+  position: absolute;
+  left: -12px;
+  right: -12px;
+  top: -24px;
+  z-index: 4;
+  border: 3px solid #51483f;
+  border-radius: 9px 9px 2px 2px;
+  background: var(--facade-roof);
+  transform: perspective(80px) rotateX(8deg);
+}
+
+.facade-roof i {
+  width: 3px;
+  height: 100%;
+  position: absolute;
+  background: rgb(81 72 63 / 22%);
+}
+
+.facade-roof i:nth-child(1) {
+  left: 25%;
+}
+
+.facade-roof i:nth-child(2) {
+  left: 50%;
+}
+
+.facade-roof i:nth-child(3) {
+  left: 75%;
+}
+
+.facade-chimney {
+  width: 20px;
+  height: 34px;
+  position: absolute;
+  right: 12%;
+  top: -45px;
+  border: 3px solid #51483f;
+  background: #d7a462;
+}
+
+.facade-sign {
+  min-height: 38px;
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 25px;
+  z-index: 5;
+  border: 2px solid #51483f;
+  border-radius: 4px;
+  background: var(--facade-trim);
+  padding: 6px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.facade-awning {
+  height: 22px;
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 78px;
+  z-index: 3;
+  border: 2px solid #51483f;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--facade-roof) 0 20px,
+    var(--facade-trim) 20px 40px
+  );
+  transform: perspective(50px) rotateX(-9deg);
+}
+
+.facade-window {
+  width: 42%;
+  height: 68px;
+  position: absolute;
+  left: 9%;
+  bottom: 20px;
+  border: 3px solid #51483f;
+  background: #9dcbd0;
+  box-shadow: inset 0 -16px 0 rgb(255 255 255 / 24%);
+}
+
+.facade-window::before,
+.facade-window::after {
+  content: "";
+  position: absolute;
+  background: #51483f;
+}
+
+.facade-window::before {
+  width: 3px;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+}
+
+.facade-window::after {
+  height: 3px;
+  left: 0;
+  right: 0;
+  top: 50%;
+}
+
+.facade-window i {
+  width: 30px;
+  height: 15px;
+  position: absolute;
+  left: calc(50% - 15px);
+  bottom: 0;
+  border-radius: 50% 50% 3px 3px;
+  background: #78a85e;
+}
+
+.facade-door {
+  width: 28%;
+  max-width: 58px;
+  height: 86px;
+  position: absolute;
+  right: 10%;
+  bottom: 0;
+  border: 3px solid #51483f;
+  border-bottom: 0;
+  border-radius: 30px 30px 0 0;
+  background: #426774;
+}
+
+.facade-door::after {
+  content: "";
+  width: 5px;
+  height: 5px;
+  position: absolute;
+  right: 8px;
+  top: 48%;
+  border-radius: 50%;
+  background: #f4d06c;
+}
+
+.facade-upper-window {
+  display: none;
+}
+
+.facade-decoration {
+  width: 24px;
+  height: 18px;
+  position: absolute;
+  bottom: 0;
+  z-index: 5;
+  border: 2px solid #51483f;
+  border-radius: 4px 4px 0 0;
+  background: #a96b4d;
+}
+
+.facade-decoration::before {
+  content: "";
+  width: 28px;
+  height: 22px;
+  position: absolute;
+  left: -4px;
+  bottom: 9px;
+  border-radius: 50% 50% 40% 40%;
+  background: #6fa35b;
+}
+
+.decoration-left {
+  left: 3%;
+}
+
+.decoration-right {
+  right: 2%;
+}
+
+.facade-live {
+  position: absolute;
+  top: -15px;
+  left: -7px;
+  z-index: 8;
+  border: 2px solid #fffdf7;
+  border-radius: 999px;
+  background: #b42318;
+  color: #ffffff;
+  padding: 4px 7px;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.facade-coffee-house {
+  --facade-wall: #dba77f;
+  --facade-roof: #6f4a3a;
+  --facade-trim: #f5dfc3;
+}
+
+.facade-coffee-house .facade-chimney::after {
+  content: "";
+  width: 18px;
+  height: 10px;
+  position: absolute;
+  top: -14px;
+  left: 7px;
+  border: 3px solid #8d8178;
+  border-radius: 50%;
+  opacity: 0.55;
+}
+
+.facade-harbor-supply {
+  --facade-wall: #e69a78;
+  --facade-roof: #39778f;
+  --facade-trim: #f7e7c7;
+}
+
+.facade-harbor-supply .facade-decoration::before {
+  width: 23px;
+  height: 23px;
+  left: -2px;
+  bottom: 2px;
+  border: 4px solid #efe3c5;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.facade-tech-shop {
+  --facade-wall: #83b7b2;
+  --facade-roof: #405f73;
+  --facade-trim: #dff2ed;
+}
+
+.facade-tech-shop .facade-sign {
+  letter-spacing: 0.04em;
+  box-shadow: 0 0 10px #d9fff5;
+}
+
+.facade-artisan-workshop {
+  --facade-wall: #e5a074;
+  --facade-roof: #925c75;
+  --facade-trim: #ffe7c7;
+}
+
+.facade-artisan-workshop .facade-awning {
+  border-radius: 50% 50% 2px 2px;
+}
+
+.facade-restaurant {
+  --facade-wall: #d9b76d;
+  --facade-roof: #9b493c;
+  --facade-trim: #fff0c4;
+}
+
+.merchant-facade.is-compact {
+  min-height: 120px;
+  border-width: 2px;
+}
+
+.merchant-facade.is-compact .facade-roof {
+  height: 25px;
+  left: -6px;
+  right: -6px;
+  top: -17px;
+  border-width: 2px;
+}
+
+.merchant-facade.is-compact .facade-chimney {
+  width: 12px;
+  height: 21px;
+  top: -29px;
+  border-width: 2px;
+}
+
+.merchant-facade.is-compact .facade-sign {
+  top: 15px;
+  min-height: 29px;
+  padding: 3px;
+  font-size: 8px;
+}
+
+.merchant-facade.is-compact .facade-awning {
+  top: 52px;
+  height: 13px;
+  border-width: 1px;
+  background-size: 24px 100%;
+}
+
+.merchant-facade.is-compact .facade-window {
+  height: 42px;
+  bottom: 9px;
+  border-width: 2px;
+}
+
+.merchant-facade.is-compact .facade-door {
+  height: 51px;
+  border-width: 2px;
+}
+
+.merchant-facade.is-compact .facade-decoration {
+  display: none;
+}
+
+.merchant-facade.is-storefront {
+  min-height: 390px;
+}
+
+.merchant-facade.is-storefront .facade-roof {
+  height: 62px;
+  top: -35px;
+}
+
+.merchant-facade.is-storefront .facade-sign {
+  top: 55px;
+  min-height: 60px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+}
+
+.merchant-facade.is-storefront .facade-awning {
+  top: 142px;
+  height: 34px;
+}
+
+.merchant-facade.is-storefront .facade-window {
+  height: 130px;
+  bottom: 28px;
+}
+
+.merchant-facade.is-storefront .facade-door {
+  width: 24%;
+  max-width: none;
+  height: 165px;
+}
+
+.building-visual {
+  height: 230px;
+  border: 0;
+  background: transparent;
+}
+
+.storefront-building {
+  min-height: 410px;
+  border: 0;
+  background: transparent;
+}
+
+.walkable-city-map {
+  height: 680px;
+  border: 4px solid #706354;
+  border-radius: 18px;
+  background: #a7cd8b;
+  cursor: crosshair;
+  box-shadow:
+    inset 0 0 0 5px #dcebbf,
+    0 10px 0 rgb(78 66 52 / 12%);
+  user-select: none;
+}
+
+.town-ground {
+  position: absolute;
+  border-radius: 50%;
+  background: #92bd78;
+  opacity: 0.8;
+}
+
+.town-ground-one {
+  width: 34%;
+  height: 25%;
+  right: -6%;
+  top: 4%;
+}
+
+.town-ground-two {
+  width: 29%;
+  height: 24%;
+  left: -4%;
+  bottom: 12%;
+}
+
+.town-road {
+  position: absolute;
+  z-index: 1;
+  border: 2px solid #c5b88f;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 46px,
+      rgb(133 112 78 / 12%) 47px 49px
+    ),
+    #e8ddbd;
+}
+
+.road-horizontal {
+  left: -2%;
+  right: -2%;
+  top: 48%;
+  height: 104px;
+}
+
+.road-vertical {
+  top: -2%;
+  bottom: -2%;
+  left: 45%;
+  width: 112px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 46px,
+      rgb(133 112 78 / 12%) 47px 49px
+    ),
+    #e8ddbd;
+}
+
+.town-plaza {
+  width: 220px;
+  height: 190px;
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  z-index: 2;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border: 3px solid #b5a77f;
+  border-radius: 28px;
+  background:
+    linear-gradient(
+      45deg,
+      transparent 48%,
+      rgb(126 104 75 / 11%) 49% 51%,
+      transparent 52%
+    ),
+    #ded0aa;
+  background-size: 30px 30px;
+}
+
+.town-canal {
+  height: 52px;
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  bottom: 7%;
+  z-index: 2;
+  border-top: 5px solid #d7e3d2;
+  border-bottom: 5px solid #d7e3d2;
+  background:
+    repeating-linear-gradient(
+      -12deg,
+      transparent 0 42px,
+      rgb(255 255 255 / 18%) 43px 47px
+    ),
+    #70afbd;
+}
+
+.town-bridge {
+  width: 120px;
+  height: 70px;
+  position: absolute;
+  left: calc(50% - 60px);
+  bottom: 5.5%;
+  z-index: 3;
+  border: 3px solid #6e5b47;
+  border-radius: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    #bb8c58 0 13px,
+    #8d6847 14px 16px
+  );
+  display: grid;
+  place-items: center;
+  color: #fff8e6;
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.town-label {
+  position: absolute;
+  z-index: 8;
+  border: 2px solid #65594d;
+  border-radius: 5px;
+  background: #fff8e6;
+  padding: 5px 9px;
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.town-label.north {
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.town-landmark {
+  position: absolute;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.merchant-guild {
+  width: 150px;
+  height: 112px;
+  left: 7%;
+  top: 9%;
+  border: 3px solid #5f5043;
+  border-radius: 7px;
+  background: #deb06b;
+  box-shadow: inset 0 -20px 0 rgb(107 78 48 / 10%);
+}
+
+.guild-roof {
+  height: 38px;
+  position: absolute;
+  left: -14px;
+  right: -14px;
+  top: -27px;
+  border: 3px solid #5f5043;
+  border-radius: 50% 50% 4px 4px;
+  background: #2f756b;
+}
+
+.merchant-guild small {
+  color: #725b3d;
+}
+
+.market-fountain {
+  width: 116px;
+  height: 116px;
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%, -50%);
+  border: 4px solid #5d777b;
+  border-radius: 50%;
+  background: #8ac2ca;
+  box-shadow:
+    inset 0 0 0 12px #c2dede,
+    0 3px 0 #756b59;
+}
+
+.market-fountain span {
+  width: 28px;
+  height: 44px;
+  border-radius: 50% 50% 8px 8px;
+  background: #dce8dd;
+}
+
+.market-fountain strong {
+  position: absolute;
+  bottom: -23px;
+  border: 1px solid #65594d;
+  border-radius: 4px;
+  background: #fff8e6;
+  padding: 3px 6px;
+  font-size: 9px;
+}
+
+.commerce-gate {
+  width: 112px;
+  height: 105px;
+  right: 7%;
+  bottom: 9%;
+  color: #ffffff;
+}
+
+.commerce-gate span {
+  position: absolute;
+  inset: 0;
+  border: 15px solid #435e78;
+  border-bottom-width: 7px;
+  border-radius: 56px 56px 8px 8px;
+  background: radial-gradient(
+    circle at 50% 65%,
+    #c9f3e5 0 12%,
+    #6fc4bd 34%,
+    #4d7ba1 70%
+  );
+  box-shadow: 0 0 18px rgb(111 196 189 / 50%);
+}
+
+.commerce-gate strong {
+  z-index: 2;
+  margin-top: 47px;
+  font-size: 10px;
+}
+
+.town-tree {
+  width: 48px;
+  height: 64px;
+  position: absolute;
+  z-index: 4;
+  border-radius: 48% 52% 43% 45%;
+  background:
+    radial-gradient(circle at 30% 35%, #add58c 0 20%, transparent 21%), #5e9b62;
+  border: 3px solid #426e49;
+  box-shadow: inset -8px -8px 0 rgb(51 102 62 / 18%);
+}
+
+.town-tree i {
+  width: 9px;
+  height: 25px;
+  position: absolute;
+  left: calc(50% - 4px);
+  bottom: -21px;
+  border: 2px solid #674e38;
+  background: #98704c;
+}
+
+.tree-1 {
+  left: 2%;
+  top: 34%;
+}
+.tree-2 {
+  left: 35%;
+  top: 10%;
+}
+.tree-3 {
+  right: 26%;
+  top: 7%;
+}
+.tree-4 {
+  right: 3%;
+  top: 44%;
+}
+.tree-5 {
+  left: 35%;
+  bottom: 13%;
+}
+.tree-6 {
+  right: 29%;
+  bottom: 14%;
+}
+
+.town-lamp {
+  width: 7px;
+  height: 42px;
+  position: absolute;
+  z-index: 6;
+  border: 2px solid #51483f;
+  background: #59616b;
+}
+
+.town-lamp::before {
+  content: "";
+  width: 20px;
+  height: 22px;
+  position: absolute;
+  left: -8px;
+  top: -17px;
+  border: 2px solid #51483f;
+  border-radius: 50% 50% 5px 5px;
+  background: #ffe6a2;
+  box-shadow: 0 0 12px #ffe6a2;
+}
+
+.lamp-1 {
+  left: 40%;
+  top: 38%;
+}
+.lamp-2 {
+  right: 39%;
+  top: 38%;
+}
+.lamp-3 {
+  left: 40%;
+  bottom: 23%;
+}
+.lamp-4 {
+  right: 39%;
+  bottom: 23%;
+}
+
+.town-banner {
+  width: 31px;
+  height: 54px;
+  position: absolute;
+  z-index: 5;
+  border: 2px solid #6c4939;
+  border-radius: 3px 3px 14px 14px;
+  background: #d85f4c;
+  color: #ffe9b4;
+  display: grid;
+  place-items: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 900;
+}
+
+.banner-1 {
+  left: 36%;
+  top: 28%;
+}
+.banner-2 {
+  right: 34%;
+  top: 28%;
+}
+.banner-3 {
+  right: 13%;
+  top: 5%;
+}
+
+.market-stall {
+  width: 82px;
+  height: 53px;
+  position: absolute;
+  z-index: 5;
+  border: 3px solid #5f5043;
+  border-radius: 4px;
+  background: #d79a62;
+  display: grid;
+  place-items: end center;
+}
+
+.market-stall span {
+  height: 20px;
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  top: -15px;
+  border: 2px solid #5f5043;
+  border-radius: 5px 5px 2px 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    #e56b58 0 14px,
+    #ffe2ae 14px 28px
+  );
+}
+
+.market-stall small {
+  padding-bottom: 4px;
+  font-size: 8px;
+  font-weight: 850;
+}
+
+.stall-one {
+  left: 30%;
+  top: 56%;
+}
+
+.stall-two {
+  right: 29%;
+  top: 56%;
+}
+
+.town-shop {
+  width: 152px;
+  height: 120px;
+  position: absolute;
+  z-index: 6;
+  transition:
+    transform 180ms ease,
+    filter 180ms ease;
+}
+
+.town-shop:hover,
+.town-shop.is-nearby {
+  transform: translateY(-7px);
+  filter: drop-shadow(0 8px 0 rgb(68 58 47 / 20%));
+}
+
+.town-shop.is-nearby .merchant-facade {
+  outline: 5px solid #ffe89c;
+  outline-offset: 4px;
+}
+
+.town-shop-1 {
+  left: 16%;
+  top: 31%;
+}
+.town-shop-2 {
+  right: 15%;
+  top: 19%;
+}
+.town-shop-3 {
+  left: 15%;
+  bottom: 18%;
+}
+.town-shop-4 {
+  right: 17%;
+  bottom: 18%;
+}
+
+.player-character {
+  position: absolute;
+  z-index: 12;
+  transform: translate(-50%, -72%);
+  display: grid;
+  justify-items: center;
+  pointer-events: none;
+}
+
+.player-character > small {
+  margin-top: -6px;
+  border: 1px solid #65594d;
+  border-radius: 999px;
+  background: #fff8e6;
+  padding: 2px 7px;
+  color: #473d35;
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.walk-status > .world-character {
+  margin: -3px 1px -5px -2px;
+}
+
+.nearby-shop-prompt {
+  z-index: 15;
+}
+
+.town-control-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.town-control-row > p {
+  margin-top: 18px;
+  color: #6b6a65;
+  font-size: 12px;
+}
+
+.movement-pad {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 980px) {
+  .walkable-city-map {
+    height: 650px;
+  }
+
+  .town-shop {
+    width: 132px;
+    height: 112px;
+  }
+
+  .merchant-guild {
+    width: 125px;
+  }
+
+  .market-stall {
+    display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .avatar-option {
+    min-height: 310px;
+  }
+
+  .walkable-city-map {
+    height: 610px;
+    border-width: 3px;
+    border-radius: 13px;
+  }
+
+  .town-shop {
+    width: 108px;
+    height: 104px;
+  }
+
+  .town-shop-1 {
+    left: 5%;
+    top: 31%;
+  }
+
+  .town-shop-2 {
+    right: 4%;
+    top: 19%;
+  }
+
+  .town-shop-3 {
+    left: 4%;
+    bottom: 19%;
+  }
+
+  .town-shop-4 {
+    right: 5%;
+    bottom: 19%;
+  }
+
+  .merchant-guild {
+    width: 103px;
+    height: 88px;
+    left: 4%;
+    font-size: 11px;
+  }
+
+  .market-fountain {
+    width: 88px;
+    height: 88px;
+  }
+
+  .commerce-gate {
+    width: 80px;
+    height: 87px;
+    right: 4%;
+  }
+
+  .town-tree {
+    width: 34px;
+    height: 45px;
+  }
+
+  .tree-2,
+  .tree-4,
+  .banner-3 {
+    display: none;
+  }
+
+  .town-lamp {
+    transform: scale(0.78);
+  }
+
+  .town-control-row {
+    align-items: center;
+  }
+
+  .town-control-row > p {
+    max-width: 170px;
+  }
+
+  .storefront-building {
+    min-height: 330px;
+  }
+
+  .merchant-facade.is-storefront {
+    min-height: 320px;
+  }
+
+  .merchant-facade.is-storefront .facade-window {
+    height: 95px;
+  }
+
+  .merchant-facade.is-storefront .facade-door {
+    height: 125px;
   }
 }
