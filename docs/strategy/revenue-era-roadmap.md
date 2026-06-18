@@ -95,6 +95,38 @@ Features:
 - Warp Gate Ads
 - Featured Merchant Placements
 
+## Buyer World Expansion Track
+
+Buyer World sprint numbering is a parallel product track and does not replace
+the Revenue Era sequence above.
+
+Current Buyer World milestones:
+
+- Sprint 13: Buyer World Entry and Demo World Seed
+- Sprint 14: Living Commerce World Foundation
+- Sprint 15: Living Citizens and AI Merchant Foundation
+- Sprint 16: World Expansion and Regional Commerce Network
+
+Sprint 16 World Expansion adds:
+
+- visual `/world-map`
+- Merchant City as the starting region
+- Harbor Kingdom
+- Tech Republic
+- Artisan Valley
+- Creator Island
+- Industrial District
+- animated Warp Gate travel
+- regional leadership and lore
+- regional merchant discovery
+- reputation display foundation
+- Founder Monument
+- dynamic world statistics
+
+The world layer supports merchant discovery, Founder recognition, live
+commerce, and future regional media opportunities without turning Merchant OS
+into game software.
+
 ## Success Metrics
 
 - 100 Founder Merchants
@@ -117,6 +149,8 @@ References:
 - [Sprint 13 Merchant Discovery Engine](../product/sprint-13-merchant-discovery-engine.md)
 - [Sprint 13A Buyer World Entry](../product/sprint-13a-buyer-world-entry.md)
 - [Sprint 13B Demo World Seed](../product/sprint-13b-demo-world-seed.md)
+- [World Expansion Roadmap](../world/world-expansion-roadmap.md)
+- [Regional Commerce Network](../world/regional-commerce-network.md)
 
 ## North Star
 

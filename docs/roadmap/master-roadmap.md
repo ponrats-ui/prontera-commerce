@@ -89,9 +89,13 @@ Sprint 15 adds Merchant Place Experience:
 
 Sprint 16 expands the Commerce World Map:
 
-- connected commerce regions
+- visual world atlas and six connected commerce regions
+- region-specific architecture, economy, leadership, and lore
+- animated Warp Gate regional travel and arrival scenes
+- regional merchant discovery
+- display-only reputation foundation
+- Founder Monument and dynamic world statistics
 - locked future destinations
-- Warp Gate regional travel
 
 Sprint 17 adds the first Social Commerce World layer:
 

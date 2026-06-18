@@ -211,12 +211,20 @@ The living world foundation adds playable characters, smooth town movement,
 populated city citizens, memorable merchant owners, shop interior scenes, and a
 governed mock AI shopkeeper built for future provider integration.
 
+Sprint 16 expands Merchant City into a connected regional commerce network.
+Buyers can open `/world-map`, travel through animated Warp Gates, meet regional
+leaders, discover merchants by regional economy, and visit the Founder
+Monument.
+
 Reference:
 
 - [Sprint 13A Buyer World Entry](docs/product/sprint-13a-buyer-world-entry.md)
 - [Sprint 13B Demo World Seed](docs/product/sprint-13b-demo-world-seed.md)
 - [Sprint 14 Living Commerce World Foundation](docs/product/sprint-14-living-commerce-world-foundation.md)
 - [Sprint 15 Living Citizens and AI Merchant Foundation](docs/product/sprint-15-living-citizens-ai-merchant.md)
+- [World Expansion Roadmap](docs/world/world-expansion-roadmap.md)
+- [Regional Commerce Network](docs/world/regional-commerce-network.md)
+- [Buyer World Experience Roadmap](docs/vision/buyer-world-experience-roadmap.md)
 
 ## Founder Merchant Program
 
