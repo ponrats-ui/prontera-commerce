@@ -14,9 +14,14 @@ import {
   getBuyerCharacter,
   type BuyerAvatarId,
 } from "../lib/buyer-world";
+import {
+  createPlayerCharacter,
+  merchantCityCitizens,
+} from "../lib/living-world";
 import type { WorldShop } from "../lib/api";
 import { MerchantBuildingFacade } from "./merchant-building-facade";
 import { WorldCharacter } from "./world-character";
+import { WorldCitizen } from "./world-citizen";
 
 const POSITION_KEY = "prontera_buyer_position_merchant_city";
 const MOVE_SPEED = 18;
@@ -227,6 +232,10 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
   }
 
   const character = getBuyerCharacter(avatarId);
+  const player = createPlayerCharacter(avatarId, {
+    positionX: position.x,
+    positionY: position.y,
+  });
 
   return (
     <section className="walkable-city-section">
@@ -241,9 +250,11 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
         <div className="walk-status" aria-live="polite">
           <WorldCharacter character={character} compact />
           <div>
-            <strong>{character.name}</strong>
+            <strong>{player.name}</strong>
             <small>
-              {nearbyShop ? `Near ${nearbyShop.name}` : character.title}
+              {nearbyShop
+                ? `Near ${nearbyShop.name}`
+                : `${player.class} · ${player.title}`}
             </small>
           </div>
         </div>
@@ -304,6 +315,8 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
           <span />
           <small>Fresh Goods</small>
         </div>
+        <span className="town-bird bird-one">⌁</span>
+        <span className="town-bird bird-two">⌁</span>
 
         {shops.slice(0, 4).map((shop, index) => (
           <Link
@@ -317,16 +330,29 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
           </Link>
         ))}
 
+        {merchantCityCitizens.map((citizen, index) => (
+          <WorldCitizen citizen={citizen} index={index} key={citizen.id} />
+        ))}
+
         <div
           className="player-character"
-          style={{ left: `${position.x}%`, top: `${position.y}%` }}
+          data-player-id={player.id}
+          style={{
+            left: `${player.positionX}%`,
+            top: `${player.positionY}%`,
+          }}
         >
           <WorldCharacter
             character={character}
             direction={direction}
             moving={moving}
           />
-          <small>{character.name}</small>
+          <span className="player-nameplate">
+            <strong>{player.name}</strong>
+            <small>
+              {player.class} · {player.title}
+            </small>
+          </span>
         </div>
 
         {nearbyShop ? (

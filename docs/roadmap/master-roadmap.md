@@ -79,10 +79,13 @@ Sprint 14 adds Character and Walkable Town Foundation:
 
 Sprint 15 adds Merchant Place Experience:
 
-- merchant NPC profiles and character presentation
-- shop interior scenes
-- merchant-approved AI context builder
-- mock AI shopkeeper foundation
+- local player entity with visible name, class, title, and position
+- six Merchant City citizens with roles, routes, and greetings
+- named merchant owners with stories, personality, and reputation
+- composed shop interior scenes
+- merchant-approved AI context and prompt builder
+- provider-neutral mock AI shopkeeper
+- lightweight ambient city effects
 
 Sprint 16 expands the Commerce World Map:
 

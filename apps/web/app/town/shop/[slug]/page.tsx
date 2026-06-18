@@ -5,9 +5,11 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { EmptyStateCard, ErrorMessage } from "../../../../components/ui";
 import { MerchantBuildingFacade } from "../../../../components/merchant-building-facade";
+import { ShopInterior } from "../../../../components/shop-interior";
 import { getStoredUser } from "../../../../lib/auth";
 import { worldApi } from "../../../../lib/api";
 import type { WorldShop } from "../../../../lib/api";
+import { getMerchantIdentity } from "../../../../lib/living-world";
 
 export default function TownShopPage() {
   const params = useParams<{ slug: string }>();
@@ -29,10 +31,12 @@ export default function TownShopPage() {
       );
   }, [params.slug]);
 
+  const merchant = shop ? getMerchantIdentity(shop) : null;
+
   return (
     <main className="town-content">
       <ErrorMessage message={error} />
-      {shop ? (
+      {shop && merchant ? (
         <>
           <section className="storefront-hero">
             <div className="storefront-building">
@@ -55,6 +59,13 @@ export default function TownShopPage() {
               </p>
               <h1>{shop.name}</h1>
               <p>{shop.description ?? "A merchant storefront in Prontera."}</p>
+              <div className="storefront-owner-line">
+                <strong>{merchant.merchantName}</strong>
+                <span>{merchant.merchantTitle}</span>
+                <small>
+                  {merchant.merchantReputation.toFixed(1)} reputation
+                </small>
+              </div>
               <div className="button-row">
                 <Link className="world-button" href="/town/merchant-city/shops">
                   Return to shops
@@ -71,66 +82,7 @@ export default function TownShopPage() {
             </div>
           </section>
 
-          <section className="world-section">
-            <div className="section-heading">
-              <p className="world-kicker">Inside the shop</p>
-              <h2>Featured Products</h2>
-            </div>
-            {shop.featuredProducts.length ? (
-              <div className="product-shelf">
-                {shop.featuredProducts.map((product) => (
-                  <article key={product.id}>
-                    <div className="product-object">
-                      <span>{product.name.slice(0, 1)}</span>
-                    </div>
-                    <p className="eyebrow">{product.category}</p>
-                    <h3>{product.name}</h3>
-                    <strong>
-                      {product.priceCents == null
-                        ? "Ask merchant"
-                        : `$${(product.priceCents / 100).toFixed(2)}`}
-                    </strong>
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <EmptyStateCard
-                description="This merchant is preparing the product shelf."
-                title="Products coming soon"
-              />
-            )}
-          </section>
-
-          <section className="world-section split-world-section">
-            <div className="shop-signal-panel live-panel">
-              <p className="world-kicker">Live Commerce</p>
-              <h2>{shop.liveNow ? "This store is live now" : "Live room"}</h2>
-              <p>
-                {shop.liveNow
-                  ? "The merchant is broadcasting from Merchant City. The demo world displays the live signal without requiring buyer login."
-                  : "Follow this storefront to see its next live commerce session."}
-              </p>
-              <span
-                className={
-                  shop.liveNow ? "signal-status active" : "signal-status"
-                }
-              >
-                {shop.liveNow ? "Broadcast active" : "Currently offline"}
-              </span>
-            </div>
-            <div className="shop-signal-panel promotion-panel">
-              <p className="world-kicker">Promotion</p>
-              <h2>{shop.campaignBadge ?? "Merchant offer space"}</h2>
-              <p>
-                {shop.promotionBanner
-                  ? `${shop.promotionBanner} is visible as a discovery signal. Checkout remains the final pricing authority.`
-                  : "This storefront is ready to display an active campaign or voucher."}
-              </p>
-              <span className="signal-status">
-                {shop.promotionBadge ?? "No active offer"}
-              </span>
-            </div>
-          </section>
+          <ShopInterior merchant={merchant} shop={shop} />
         </>
       ) : (
         <EmptyStateCard

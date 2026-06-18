@@ -1,6 +1,10 @@
-import type { BuyerCharacter } from "../lib/buyer-world";
-
 type CharacterDirection = "north" | "south" | "east" | "west";
+
+export type WorldCharacterIdentity = {
+  name: string;
+  class: string;
+  sprite: string;
+};
 
 export function WorldCharacter({
   character,
@@ -8,7 +12,7 @@ export function WorldCharacter({
   moving = false,
   compact = false,
 }: {
-  character: BuyerCharacter;
+  character: WorldCharacterIdentity;
   direction?: CharacterDirection;
   moving?: boolean;
   compact?: boolean;

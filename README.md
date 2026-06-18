@@ -207,10 +207,16 @@ Buyers can now enter Prontera without an account, choose a starter avatar, explo
 
 Start locally at `/play`.
 
+The living world foundation adds playable characters, smooth town movement,
+populated city citizens, memorable merchant owners, shop interior scenes, and a
+governed mock AI shopkeeper built for future provider integration.
+
 Reference:
 
 - [Sprint 13A Buyer World Entry](docs/product/sprint-13a-buyer-world-entry.md)
 - [Sprint 13B Demo World Seed](docs/product/sprint-13b-demo-world-seed.md)
+- [Sprint 14 Living Commerce World Foundation](docs/product/sprint-14-living-commerce-world-foundation.md)
+- [Sprint 15 Living Citizens and AI Merchant Foundation](docs/product/sprint-15-living-citizens-ai-merchant.md)
 
 ## Founder Merchant Program
 
