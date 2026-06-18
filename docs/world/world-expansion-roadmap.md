@@ -66,11 +66,16 @@ world is already complete.
 
 ### Sprint 17: Social Commerce World
 
-- Follow merchant
-- Favorite destinations
-- Reviews and reputation
-- Commerce friends and guild foundations
-- Visitor and follower signals
+- Commerce Square community homepage
+- Commerce friends and relationship state
+- Followed merchants and favorite destinations
+- Merchant and customer reputation foundations
+- Guild halls and rankings
+- Commerce event schedule and attendance
+- Daily civilization life
+- Messenger previews
+- Founder Hall and AI Founder Council
+- Social AI Town Guide
 
 ### Sprint 18: Regional Progression
 

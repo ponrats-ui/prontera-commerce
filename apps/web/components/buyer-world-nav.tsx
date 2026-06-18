@@ -6,11 +6,11 @@ import { BUYER_AVATAR_KEY, getBuyerAvatar } from "../lib/buyer-world";
 import { WorldCharacter } from "./world-character";
 
 const links = [
+  { href: "/commerce-square", label: "Commerce Square" },
   { href: "/world-map", label: "World Map" },
   { href: "/world/merchant-city", label: "Merchant City" },
-  { href: "/discover", label: "Discover" },
-  { href: "/discover/founders", label: "Founder Stores" },
-  { href: "/world-map", label: "Warp Gate" },
+  { href: "/guilds", label: "Guilds" },
+  { href: "/events", label: "Events" },
 ];
 
 export function BuyerWorldNav() {

@@ -47,6 +47,10 @@ Warp Gates connect regions with distinct culture and economic identity.
 Future social and reputation systems let buyers build relationships with
 merchants and places.
 
+Sprint 17 establishes this layer through Commerce Square, commerce friends,
+merchant following, favorite destinations, guilds, events, customer and merchant
+reputation, messenger previews, Founder Hall, and social AI guidance.
+
 ## Regional Experience Principles
 
 - Every region must be visually identifiable before reading its name.
@@ -81,6 +85,6 @@ Avoid:
 - Sprint 14: Walk through the city
 - Sprint 15: Meet citizens and merchants
 - Sprint 16: Travel across regions
-- Sprint 17: Build social relationships
+- Sprint 17: Build social relationships and civilization foundations
 - Sprint 18: Earn regional belonging
 - Sprint 19: Participate in world events

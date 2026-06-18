@@ -216,6 +216,11 @@ Buyers can open `/world-map`, travel through animated Warp Gates, meet regional
 leaders, discover merchants by regional economy, and visit the Founder
 Monument.
 
+Sprint 17 adds the social civilization foundation. `/commerce-square` becomes
+the community homepage with commerce friends, merchant follows and favorites,
+guild halls, customer and merchant reputation, commerce events, daily life,
+messenger previews, Founder Hall, and a disclosed AI Town Guide.
+
 Reference:
 
 - [Sprint 13A Buyer World Entry](docs/product/sprint-13a-buyer-world-entry.md)
@@ -225,6 +230,11 @@ Reference:
 - [World Expansion Roadmap](docs/world/world-expansion-roadmap.md)
 - [Regional Commerce Network](docs/world/regional-commerce-network.md)
 - [Buyer World Experience Roadmap](docs/vision/buyer-world-experience-roadmap.md)
+- [Social Commerce Civilization](docs/social/social-commerce-civilization.md)
+- [Guild System](docs/social/guild-system.md)
+- [Merchant Reputation System](docs/social/merchant-reputation-system.md)
+- [Customer Reputation System](docs/social/customer-reputation-system.md)
+- [Commerce Square](docs/social/commerce-square.md)
 
 ## Founder Merchant Program
 

@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { EmptyStateCard, ErrorMessage } from "../../../../components/ui";
 import { MerchantBuildingFacade } from "../../../../components/merchant-building-facade";
+import { MerchantRelationshipActions } from "../../../../components/merchant-relationship-actions";
 import { ShopInterior } from "../../../../components/shop-interior";
 import { getStoredUser } from "../../../../lib/auth";
 import { worldApi } from "../../../../lib/api";
@@ -66,6 +67,10 @@ export default function TownShopPage() {
                   {merchant.merchantReputation.toFixed(1)} reputation
                 </small>
               </div>
+              <MerchantRelationshipActions
+                merchantName={merchant.merchantName}
+                shopSlug={shop.slug}
+              />
               <div className="button-row">
                 <Link className="world-button" href="/town/merchant-city/shops">
                   Return to shops

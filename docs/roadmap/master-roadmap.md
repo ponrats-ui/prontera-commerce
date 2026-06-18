@@ -99,10 +99,14 @@ Sprint 16 expands the Commerce World Map:
 
 Sprint 17 adds the first Social Commerce World layer:
 
-- merchant follows and favorite shops
-- reputation and reviews
-- guild and commerce friend foundations
-- visitor and follower signals
+- Commerce Square social homepage
+- commerce friends and lightweight messenger history
+- merchant follows and favorite destinations
+- merchant and customer reputation foundations
+- guild halls, rankings, and announcements
+- commerce event schedule and attendance
+- daily life and discovery prompts
+- Founder Hall and social AI guidance
 
 This phase remains commerce-first. Combat, leveling, equipment, quests, monster systems, and MMORPG mechanics are intentionally excluded.
 
