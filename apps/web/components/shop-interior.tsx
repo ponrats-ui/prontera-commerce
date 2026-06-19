@@ -25,6 +25,10 @@ export function ShopInterior({
       </div>
 
       <div className="shop-interior-scene">
+        <div className="store-welcome-card">
+          <span>{merchant.merchantArchetype}</span>
+          <strong>{merchant.welcomeMessage}</strong>
+        </div>
         <div className="interior-wall-detail" />
         <div className="interior-window">
           <span />
@@ -98,9 +102,12 @@ export function ShopInterior({
           <h2>{merchant.merchantName}</h2>
           <h3>{merchant.merchantTitle}</h3>
           <p>{merchant.merchantStory}</p>
+          <blockquote>{merchant.favoriteQuote}</blockquote>
           <span className="merchant-personality">
-            Known for being {merchant.personality}.
+            {merchant.merchantArchetype} · Known for being{" "}
+            {merchant.personality}.
           </span>
+          <p className="merchant-backstory">{merchant.backstory}</p>
         </article>
         <AiMerchantWidget merchant={merchant} shop={shop} />
       </div>

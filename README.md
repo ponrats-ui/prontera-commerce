@@ -20,11 +20,11 @@ Reference: [Merchant Civilization Platform](docs/vision/merchant-civilization-pl
 
 Status: Internal Alpha
 
-Current release: `v0.1.0-core-commerce`
+Current release: `v1.0.0-commerce-civilization-alpha`
 
-Latest completed sprint: Sprint 13A Buyer World Entry and Sprint 13B Demo World Seed
+Latest completed sprint: Sprint 17A Immersion & Living World Enhancement
 
-Next planned release: `v0.2.0-crm-foundation`
+Next planned release: Sprint 18 Regional Belonging Foundation
 
 ## Completed Modules
 
@@ -60,6 +60,11 @@ Next planned release: `v0.2.0-crm-foundation`
 - [x] Merchant Discovery Engine
 - [x] Buyer World Entry
 - [x] Demo World Seed
+- [x] Living Commerce World Foundation
+- [x] Living Citizens & AI Merchant Foundation
+- [x] Regional Commerce Network
+- [x] Social Commerce Civilization Foundation
+- [x] Immersion & Living World Enhancement
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
 - [x] AI Executive Board Documentation
@@ -159,6 +164,7 @@ postgresql://prontera:prontera_password@localhost:5432/prontera_commerce?schema=
 
 - `v0.1.0-core-commerce`: Core Commerce Engine foundation complete.
 - `v0.2.0-crm-foundation`: Planned Customer & CRM release milestone.
+- `v1.0.0-commerce-civilization-alpha`: Commerce World, regional network, social civilization, and living-world immersion alpha.
 
 ## Current Milestone
 

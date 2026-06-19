@@ -51,6 +51,11 @@ Sprint 17 establishes this layer through Commerce Square, commerce friends,
 merchant following, favorite destinations, guilds, events, customer and merchant
 reputation, messenger previews, Founder Hall, and social AI guidance.
 
+Sprint 17A strengthens immersion without expanding the economy or social system:
+local player presence persists, NPCs carry daily-life intent, Merchant City gains
+lightweight ambience and discovery moments, and merchants receive stronger
+personality, quotes, archetypes, and welcome experiences.
+
 ## Regional Experience Principles
 
 - Every region must be visually identifiable before reading its name.
@@ -86,5 +91,6 @@ Avoid:
 - Sprint 15: Meet citizens and merchants
 - Sprint 16: Travel across regions
 - Sprint 17: Build social relationships and civilization foundations
+- Sprint 17A: Make the world feel alive through ambience and character presence
 - Sprint 18: Earn regional belonging
 - Sprint 19: Participate in world events

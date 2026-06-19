@@ -11,6 +11,7 @@ export function WorldCitizen({
   return (
     <div
       className={`world-citizen citizen-route-${citizen.route}`}
+      data-activity={citizen.dailySchedule.join(" / ")}
       style={
         {
           "--citizen-x": `${citizen.location.positionX}%`,
@@ -20,6 +21,10 @@ export function WorldCitizen({
       }
     >
       <span className="citizen-speech">{citizen.greeting}</span>
+      <span className="citizen-activity">
+        <strong>{citizen.currentActivity}</strong>
+        <small>Next: {citizen.destination}</small>
+      </span>
       <WorldCharacter
         character={{
           name: citizen.name,

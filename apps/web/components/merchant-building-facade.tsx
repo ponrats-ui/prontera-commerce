@@ -44,6 +44,8 @@ export function MerchantBuildingFacade({
       } ${storefront ? "is-storefront" : ""}`}
       role="img"
     >
+      <span className="facade-seasonal garland-left" />
+      <span className="facade-seasonal garland-right" />
       <span className="facade-chimney" />
       <span className="facade-roof">
         <i />
@@ -51,14 +53,20 @@ export function MerchantBuildingFacade({
         <i />
       </span>
       <span className="facade-upper-window" />
-      <span className="facade-sign">{shop.signText ?? shop.name}</span>
+      <span className="facade-sign">
+        <small>{kind.replace(/-/g, " ")}</small>
+        {shop.signText ?? shop.name}
+      </span>
       <span className="facade-awning" />
       <span className="facade-window">
         <i />
       </span>
       <span className="facade-door" />
+      <span className="facade-lantern lantern-left" />
+      <span className="facade-lantern lantern-right" />
       <span className="facade-decoration decoration-left" />
       <span className="facade-decoration decoration-right" />
+      <span className="facade-window-box" />
       {shop.liveNow ? <span className="facade-live">LIVE</span> : null}
     </div>
   );

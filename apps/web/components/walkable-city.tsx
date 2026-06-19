@@ -15,8 +15,10 @@ import {
   type BuyerAvatarId,
 } from "../lib/buyer-world";
 import {
+  cityAmbientLines,
   createPlayerCharacter,
   merchantCityCitizens,
+  merchantCityDiscoveryMoments,
 } from "../lib/living-world";
 import type { WorldShop } from "../lib/api";
 import { MerchantBuildingFacade } from "./merchant-building-facade";
@@ -24,6 +26,7 @@ import { WorldCharacter } from "./world-character";
 import { WorldCitizen } from "./world-citizen";
 
 const POSITION_KEY = "prontera_buyer_position_merchant_city";
+const PLAYER_PROFILE_KEY = "prontera_player_character_profile";
 const MOVE_SPEED = 18;
 
 const shopPositions = [
@@ -35,6 +38,19 @@ const shopPositions = [
 
 type Position = { x: number; y: number };
 type Direction = "north" | "south" | "east" | "west";
+type LocalPlayerProfile = {
+  name: string;
+  class: string;
+  title: string;
+  avatarId: BuyerAvatarId;
+};
+
+const defaultPlayerProfile: LocalPlayerProfile = {
+  name: "Ponrat",
+  class: "Merchant",
+  title: "Founder Merchant",
+  avatarId: "merchant",
+};
 
 const movementControls = [
   { direction: "north", key: "arrowup", label: "↑" },
@@ -60,7 +76,9 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
   const lastFrameRef = useRef<number | null>(null);
   const [position, setPosition] = useState<Position>(positionRef.current);
   const [direction, setDirection] = useState<Direction>("south");
-  const [avatarId, setAvatarId] = useState<BuyerAvatarId>("adventurer");
+  const [avatarId, setAvatarId] = useState<BuyerAvatarId>("merchant");
+  const [playerProfile, setPlayerProfile] =
+    useState<LocalPlayerProfile>(defaultPlayerProfile);
   const [moving, setMoving] = useState(false);
 
   const updatePosition = useCallback((next: Position) => {
@@ -70,7 +88,30 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
   }, []);
 
   useEffect(() => {
-    setAvatarId(getBuyerCharacter(localStorage.getItem(BUYER_AVATAR_KEY)).id);
+    const storedAvatar = localStorage.getItem(BUYER_AVATAR_KEY);
+    const selectedAvatar = storedAvatar
+      ? getBuyerCharacter(storedAvatar).id
+      : defaultPlayerProfile.avatarId;
+    setAvatarId(selectedAvatar);
+
+    try {
+      const storedProfile = JSON.parse(
+        localStorage.getItem(PLAYER_PROFILE_KEY) ?? "null",
+      ) as LocalPlayerProfile | null;
+      if (storedProfile?.name && storedProfile?.class && storedProfile?.title) {
+        setPlayerProfile({
+          name: storedProfile.name,
+          class: storedProfile.class,
+          title: storedProfile.title,
+          avatarId: getBuyerCharacter(storedProfile.avatarId).id,
+        });
+      } else {
+        setPlayerProfile({ ...defaultPlayerProfile, avatarId: selectedAvatar });
+      }
+    } catch {
+      localStorage.removeItem(PLAYER_PROFILE_KEY);
+      setPlayerProfile({ ...defaultPlayerProfile, avatarId: selectedAvatar });
+    }
 
     try {
       const stored = JSON.parse(
@@ -90,6 +131,13 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
     }, 180);
     return () => window.clearTimeout(timer);
   }, [position]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      PLAYER_PROFILE_KEY,
+      JSON.stringify({ ...playerProfile, avatarId }),
+    );
+  }, [avatarId, playerProfile]);
 
   useEffect(() => {
     const movementKeys = new Set([
@@ -232,10 +280,14 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
   }
 
   const character = getBuyerCharacter(avatarId);
-  const player = createPlayerCharacter(avatarId, {
-    positionX: position.x,
-    positionY: position.y,
-  });
+  const player = createPlayerCharacter(
+    avatarId,
+    {
+      positionX: position.x,
+      positionY: position.y,
+    },
+    playerProfile,
+  );
 
   return (
     <section className="walkable-city-section">
@@ -276,6 +328,10 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
         <div className="town-canal" />
         <div className="town-bridge">Market Bridge</div>
         <div className="town-label north">North Market Road</div>
+        <div className="town-time-card">
+          <span>Morning bell</span>
+          <strong>Market Road is waking up</strong>
+        </div>
 
         <div className="town-landmark merchant-guild">
           <span className="guild-roof" />
@@ -296,8 +352,19 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
             <i />
           </span>
         ))}
+        {[1, 2, 3, 4, 5, 6].map((flower) => (
+          <span
+            className={`town-flower flower-${flower}`}
+            key={`flower-${flower}`}
+          />
+        ))}
         {[1, 2, 3, 4].map((lamp) => (
           <span className={`town-lamp lamp-${lamp}`} key={`lamp-${lamp}`} />
+        ))}
+        {[1, 2].map((bench) => (
+          <span className={`town-bench bench-${bench}`} key={`bench-${bench}`}>
+            <i />
+          </span>
         ))}
         {[1, 2, 3].map((banner) => (
           <span
@@ -315,6 +382,23 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
           <span />
           <small>Fresh Goods</small>
         </div>
+        <div className="market-crowd ambience-one">
+          <span />
+          <span />
+          <span />
+        </div>
+        <div className="market-crowd ambience-two">
+          <span />
+          <span />
+        </div>
+        {cityAmbientLines.map((line, index) => (
+          <span
+            className={`ambient-line ambient-line-${index + 1}`}
+            key={line}
+          >
+            {line}
+          </span>
+        ))}
         <span className="town-bird bird-one">⌁</span>
         <span className="town-bird bird-two">⌁</span>
 
@@ -362,6 +446,18 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
             <Link href={`/town/shop/${nearbyShop.slug}`}>Enter shop</Link>
           </div>
         ) : null}
+
+        <div className="discovery-moment-board" aria-label="City discoveries">
+          {merchantCityDiscoveryMoments.map((moment) => (
+            <article
+              className={`discovery-moment is-${moment.tone}`}
+              key={moment.id}
+            >
+              <span>{moment.source}</span>
+              <strong>{moment.message}</strong>
+            </article>
+          ))}
+        </div>
       </div>
 
       <div className="town-control-row">

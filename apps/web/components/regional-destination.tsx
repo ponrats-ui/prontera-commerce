@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { WorldMap } from "../lib/api";
+import { merchantCityDiscoveryMoments } from "../lib/living-world";
 import { worldApi } from "../lib/api";
 import { getRegionShops, type CommerceRegion } from "../lib/regional-world";
 import { MerchantBuildingFacade } from "./merchant-building-facade";
@@ -88,6 +89,21 @@ export function RegionalDestination({ region }: { region: CommerceRegion }) {
 
       {region.slug === "merchant-city" ? <FounderMonument /> : null}
 
+      <section className="regional-discovery-strip">
+        <div>
+          <p className="world-kicker">Discovery moments</p>
+          <h2>What people are talking about in {region.name}</h2>
+        </div>
+        <div className="regional-notice-row">
+          {regionalDiscovery(region).map((notice) => (
+            <article key={notice.id}>
+              <span>{notice.source}</span>
+              <strong>{notice.message}</strong>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="regional-merchant-section" id="regional-merchants">
         <div className="section-heading">
           <p className="world-kicker">Regional merchant discovery</p>
@@ -127,6 +143,30 @@ export function RegionalDestination({ region }: { region: CommerceRegion }) {
       </section>
     </main>
   );
+}
+
+function regionalDiscovery(region: CommerceRegion) {
+  if (region.slug === "merchant-city") return merchantCityDiscoveryMoments;
+
+  return [
+    {
+      id: `${region.slug}-leader-tip`,
+      source: region.leader.name,
+      message: region.leader.greeting,
+    },
+    {
+      id: `${region.slug}-travel-story`,
+      source: "Regional Story",
+      message: `${region.shortName} is known for ${region.specialties
+        .slice(0, 2)
+        .join(" and ")} destinations.`,
+    },
+    {
+      id: `${region.slug}-market-note`,
+      source: "Market Notice",
+      message: `${region.activityValue.toLocaleString()} ${region.activityLabel.toLowerCase()} are shaping today's trade rhythm.`,
+    },
+  ];
 }
 
 function RegionalLandscape({ region }: { region: CommerceRegion }) {
