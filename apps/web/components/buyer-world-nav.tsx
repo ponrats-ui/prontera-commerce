@@ -7,6 +7,7 @@ import { WorldCharacter } from "./world-character";
 
 const links = [
   { href: "/commerce-square", label: "Commerce Square" },
+  { href: "/world/journey", label: "Your Journey" },
   { href: "/world-map", label: "World Map" },
   { href: "/world/merchant-city", label: "Merchant City" },
   { href: "/guilds", label: "Guilds" },

@@ -56,6 +56,10 @@ local player presence persists, NPCs carry daily-life intent, Merchant City gain
 lightweight ambience and discovery moments, and merchants receive stronger
 personality, quotes, archetypes, and welcome experiences.
 
+Sprint 17B adds the emotional attachment layer: merchant journeys, dreams,
+challenges, journals, follow-story actions, local buyer memory, regional lore,
+contextual NPC memory, and Founder Hall museum/timeline foundations.
+
 ## Regional Experience Principles
 
 - Every region must be visually identifiable before reading its name.
@@ -92,5 +96,6 @@ Avoid:
 - Sprint 16: Travel across regions
 - Sprint 17: Build social relationships and civilization foundations
 - Sprint 17A: Make the world feel alive through ambience and character presence
+- Sprint 17B: Give merchants, places, and buyer memories emotional weight
 - Sprint 18: Earn regional belonging
 - Sprint 19: Participate in world events

@@ -66,7 +66,8 @@ export type CivilizationFeedItem = {
     | "world"
     | "guild"
     | "live"
-    | "event";
+    | "event"
+    | "journal";
   source: string;
   title: string;
   body: string;
@@ -263,6 +264,15 @@ export const commerceEvents: CommerceEvent[] = [
 ];
 
 export const civilizationFeed: CivilizationFeedItem[] = [
+  {
+    id: "feed-luna-journal",
+    type: "journal",
+    source: "Luna's Journal",
+    title: "Luna saved a quiet table for returning visitors",
+    body: "Her morning note says the house blend tastes like caramel and a brave first day.",
+    time: "Just now",
+    href: "/town/shop/artisan-coffee-house",
+  },
   {
     id: "feed-coffee",
     type: "event",

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { WorldMap } from "../lib/api";
 import { merchantCityDiscoveryMoments } from "../lib/living-world";
+import { getRegionStory } from "../lib/merchant-soul";
 import { worldApi } from "../lib/api";
 import { getRegionShops, type CommerceRegion } from "../lib/regional-world";
 import { MerchantBuildingFacade } from "./merchant-building-facade";
@@ -24,6 +25,7 @@ export function RegionalDestination({ region }: { region: CommerceRegion }) {
     () => getRegionShops(region, world?.shops ?? []),
     [region, world],
   );
+  const story = getRegionStory(region.slug);
 
   return (
     <main className={`regional-destination region-${region.palette}`}>
@@ -61,6 +63,12 @@ export function RegionalDestination({ region }: { region: CommerceRegion }) {
       </section>
 
       <section className="regional-identity-grid">
+        <article className="regional-story-card">
+          <p className="world-kicker">Regional story</p>
+          <h2>{story.epithet}</h2>
+          <p>{story.lore}</p>
+          <blockquote>{story.localSaying}</blockquote>
+        </article>
         <article>
           <p className="world-kicker">Regional economy</p>
           <h2>What moves here</h2>
@@ -74,6 +82,7 @@ export function RegionalDestination({ region }: { region: CommerceRegion }) {
           <p className="world-kicker">Culture & place</p>
           <h2>{region.architecture}</h2>
           <p>{region.climate}</p>
+          <p>{story.memory}</p>
         </article>
         <article>
           <p className="world-kicker">Your reputation</p>

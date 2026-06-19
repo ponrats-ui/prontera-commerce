@@ -7,6 +7,7 @@ import { BuyerWorldNav } from "./buyer-world-nav";
 
 const links = [
   ["/commerce-square", "Square"],
+  ["/world/journey", "Journey"],
   ["/friends", "Friends"],
   ["/following", "Following"],
   ["/guilds", "Guilds"],

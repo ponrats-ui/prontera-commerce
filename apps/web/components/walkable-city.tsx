@@ -21,6 +21,7 @@ import {
   merchantCityDiscoveryMoments,
 } from "../lib/living-world";
 import type { WorldShop } from "../lib/api";
+import { useMerchantMemory } from "../lib/social-state";
 import { MerchantBuildingFacade } from "./merchant-building-facade";
 import { WorldCharacter } from "./world-character";
 import { WorldCitizen } from "./world-citizen";
@@ -80,6 +81,7 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
   const [playerProfile, setPlayerProfile] =
     useState<LocalPlayerProfile>(defaultPlayerProfile);
   const [moving, setMoving] = useState(false);
+  const { memory, rememberNpcConversation } = useMerchantMemory();
 
   const updatePosition = useCallback((next: Position) => {
     const safe = { x: clamp(next.x), y: clamp(next.y) };
@@ -331,6 +333,20 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
         <div className="town-time-card">
           <span>Morning bell</span>
           <strong>Market Road is waking up</strong>
+        </div>
+        <div className="npc-memory-card">
+          <span>Town memory</span>
+          <strong>
+            {memory.lastVisitedShop
+              ? `Welcome back. ${memory.lastVisitedShop.replace(
+                  /-/g,
+                  " ",
+                )} remembers your visit.`
+              : "Welcome in. The city is ready to remember your first visit."}
+          </strong>
+          <button onClick={rememberNpcConversation} type="button">
+            Talk to citizens
+          </button>
         </div>
 
         <div className="town-landmark merchant-guild">

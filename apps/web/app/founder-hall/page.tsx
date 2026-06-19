@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SocialShell } from "../../components/social-shell";
 import { WorldCharacter } from "../../components/world-character";
+import { alphaContributors, founderTimeline } from "../../lib/merchant-soul";
 import {
   aiFounderCouncil,
   founderContributors,
@@ -55,6 +56,26 @@ export default function FounderHallPage() {
           </div>
         </section>
 
+        <section className="founder-museum-section">
+          <div>
+            <p className="world-kicker">Founder Museum</p>
+            <h2>Timeline of the first roads</h2>
+            <p>
+              A permanent archive for the moments that made Prontera feel like
+              a civilization instead of a catalogue.
+            </p>
+          </div>
+          <div className="founder-timeline">
+            {founderTimeline.map((entry) => (
+              <article key={entry.title}>
+                <span>{entry.year}</span>
+                <h3>{entry.title}</h3>
+                <p>{entry.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <section className="founder-council-section">
           <div>
             <p className="world-kicker">AI Founder Council</p>
@@ -81,13 +102,12 @@ export default function FounderHallPage() {
         </section>
 
         <section className="hall-recognition-wall">
+          <p className="world-kicker">Milestone Wall</p>
           <h2>What the Hall remembers</h2>
           <div>
-            <span>Founder Merchants</span>
-            <span>Founder Customers</span>
-            <span>Community Leaders</span>
-            <span>World Contributors</span>
-            <span>Trusted Guilds</span>
+            {alphaContributors.map((contributor) => (
+              <span key={contributor}>{contributor}</span>
+            ))}
           </div>
         </section>
       </main>

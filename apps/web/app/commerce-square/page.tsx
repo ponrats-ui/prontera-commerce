@@ -8,6 +8,7 @@ import { SocialAiGuide } from "../../components/social-ai-guide";
 import { SocialShell } from "../../components/social-shell";
 import type { WorldMap } from "../../lib/api";
 import { worldApi } from "../../lib/api";
+import { getMerchantSoul, merchantJournals } from "../../lib/merchant-soul";
 import {
   civilizationFeed,
   commerceEvents,
@@ -16,6 +17,7 @@ import {
 import {
   claimDailyVisit,
   hasClaimedDailyVisit,
+  useMerchantMemory,
   useSocialState,
 } from "../../lib/social-state";
 
@@ -23,6 +25,7 @@ export default function CommerceSquarePage() {
   const [world, setWorld] = useState<WorldMap | null>(null);
   const [claimed, setClaimed] = useState(false);
   const { state } = useSocialState();
+  const { memory } = useMerchantMemory();
   const guildSpotlight = guilds[1] ?? guilds[0];
   const nextEvent = commerceEvents[0];
 
@@ -40,6 +43,10 @@ export default function CommerceSquarePage() {
       world?.shops[0] ??
       null,
     [world],
+  );
+  const featuredSoul = featured ? getMerchantSoul(featured) : null;
+  const followedJournals = merchantJournals.filter((entry) =>
+    memory.storyFollowing.includes(entry.merchantSlug),
   );
 
   return (
@@ -114,14 +121,22 @@ export default function CommerceSquarePage() {
             </Link>
           </article>
           <article>
-            <p className="world-kicker">Daily discovery</p>
-            <h2>Meet a maker</h2>
+            <p className="world-kicker">Your Journey</p>
+            <h2>
+              {memory.firstShopVisited
+                ? "A memory is forming"
+                : "Begin a memory"}
+            </h2>
             <p>
-              Visit one merchant story and learn why that person opened their
-              shop.
+              {memory.firstShopVisited
+                ? `Your first remembered shop is ${memory.firstShopVisited.replace(
+                    /-/g,
+                    " ",
+                  )}.`
+                : "Visit one merchant story and learn why that person opened their shop."}
             </p>
-            <Link className="world-text-link" href="/following">
-              Find a familiar merchant
+            <Link className="world-text-link" href="/world/journey">
+              Open your journey
             </Link>
           </article>
         </section>
@@ -160,7 +175,7 @@ export default function CommerceSquarePage() {
                   <MerchantBuildingFacade compact shop={featured} />
                 </div>
                 <h2>{featured.name}</h2>
-                <p>{featured.description}</p>
+                <p>{featuredSoul?.dream ?? featured.description}</p>
                 <Link
                   className="world-button primary"
                   href={`/town/shop/${featured.slug}`}
@@ -169,6 +184,21 @@ export default function CommerceSquarePage() {
                 </Link>
               </article>
             ) : null}
+            <article className="square-list-card merchant-journal-preview">
+              <p className="world-kicker">Merchant journals</p>
+              <h2>Notes from people you follow</h2>
+              {(followedJournals.length
+                ? followedJournals
+                : merchantJournals.slice(0, 2)
+              ).map((entry) => (
+                <Link href={entry.href} key={entry.id}>
+                  <small>
+                    {entry.merchantName} · {entry.type}
+                  </small>
+                  <strong>{entry.title}</strong>
+                </Link>
+              ))}
+            </article>
             {guildSpotlight ? (
               <article className="square-list-card">
                 <p className="world-kicker">Guild activity</p>
