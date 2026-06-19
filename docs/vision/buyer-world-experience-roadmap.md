@@ -60,6 +60,11 @@ Sprint 17B adds the emotional attachment layer: merchant journeys, dreams,
 challenges, journals, follow-story actions, local buyer memory, regional lore,
 contextual NPC memory, and Founder Hall museum/timeline foundations.
 
+Sprint 17C upgrades immersion and interaction: Merchant City gains a
+pseudo-isometric 2.5D treatment with layered buildings and shopkeeper NPCs,
+while storefronts gain a real AI shopkeeper architecture with optional OpenAI
+provider support and contextual mock fallback.
+
 ## Regional Experience Principles
 
 - Every region must be visually identifiable before reading its name.
@@ -97,5 +102,6 @@ Avoid:
 - Sprint 17: Build social relationships and civilization foundations
 - Sprint 17A: Make the world feel alive through ambience and character presence
 - Sprint 17B: Give merchants, places, and buyer memories emotional weight
+- Sprint 17C: Upgrade the town to 2.5D and make shopkeepers conversational
 - Sprint 18: Earn regional belonging
 - Sprint 19: Participate in world events

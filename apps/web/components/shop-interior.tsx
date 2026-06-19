@@ -1,6 +1,7 @@
 import type { WorldShop } from "../lib/api";
 import type { MerchantIdentity } from "../lib/living-world";
 import { AiMerchantWidget } from "./ai-merchant-widget";
+import { MerchantBuildingFacade } from "./merchant-building-facade";
 import { WorldCharacter } from "./world-character";
 
 export function ShopInterior({
@@ -15,7 +16,7 @@ export function ShopInterior({
       <div className="interior-heading">
         <div>
           <p className="world-kicker">Inside {shop.name}</p>
-          <h2>A shop with a person behind it</h2>
+          <h2>Walk in, meet the merchant, ask the AI shopkeeper</h2>
         </div>
         <div className="store-reputation">
           <strong>{merchant.merchantReputation.toFixed(1)}</strong>
@@ -24,7 +25,10 @@ export function ShopInterior({
         </div>
       </div>
 
-      <div className="shop-interior-scene">
+      <div className="shop-interior-scene is-2-5d-interior">
+        <div className="interior-depth-ceiling" />
+        <div className="interior-side-wall left" />
+        <div className="interior-side-wall right" />
         <div className="store-welcome-card">
           <span>{merchant.merchantArchetype}</span>
           <strong>{merchant.welcomeMessage}</strong>
@@ -49,6 +53,9 @@ export function ShopInterior({
         <div className="interior-counter">
           <span className="counter-top" />
           <span className="counter-panel" />
+        </div>
+        <div className="interior-building-mini">
+          <MerchantBuildingFacade compact shop={shop} />
         </div>
         <div className="interior-merchant">
           <span className="merchant-greeting">{merchant.greeting}</span>

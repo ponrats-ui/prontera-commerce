@@ -17,6 +17,7 @@ import {
 import {
   cityAmbientLines,
   createPlayerCharacter,
+  getMerchantIdentity,
   merchantCityCitizens,
   merchantCityDiscoveryMoments,
 } from "../lib/living-world";
@@ -295,10 +296,11 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
     <section className="walkable-city-section">
       <div className="walkable-city-toolbar">
         <div>
-          <p className="world-kicker">Living town</p>
-          <h2>Take a walk through Merchant City</h2>
+          <p className="world-kicker">2.5D living town</p>
+          <h2>Walk into Merchant City</h2>
           <p>
-            Follow the road, discover a storefront, and wander at your pace.
+            Follow the cobblestone road, meet shopkeepers, and step into a
+            merchant building.
           </p>
         </div>
         <div className="walk-status" aria-live="polite">
@@ -315,8 +317,8 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
       </div>
 
       <div
-        aria-label="Walkable Merchant City map"
-        className="city-map walkable-city-map"
+        aria-label="2.5D walkable Merchant City map"
+        className="city-map walkable-city-map is-2-5d"
         onClick={walkTo}
         ref={mapRef}
         role="application"
@@ -324,6 +326,9 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
       >
         <div className="town-ground town-ground-one" />
         <div className="town-ground town-ground-two" />
+        <div className="iso-plaza-shadow" />
+        <div className="iso-path iso-path-main" />
+        <div className="iso-path iso-path-cross" />
         <div className="town-road road-horizontal" />
         <div className="town-road road-vertical" />
         <div className="town-plaza" />
@@ -332,7 +337,7 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
         <div className="town-label north">North Market Road</div>
         <div className="town-time-card">
           <span>Morning bell</span>
-          <strong>Market Road is waking up</strong>
+          <strong>Cobblestones are warm</strong>
         </div>
         <div className="npc-memory-card">
           <span>Town memory</span>
@@ -418,17 +423,35 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
         <span className="town-bird bird-one">⌁</span>
         <span className="town-bird bird-two">⌁</span>
 
-        {shops.slice(0, 4).map((shop, index) => (
-          <Link
-            className={`town-shop town-shop-${index + 1} ${
-              nearbyShop?.id === shop.id ? "is-nearby" : ""
-            }`}
-            href={`/town/shop/${shop.slug}`}
-            key={shop.id}
-          >
-            <MerchantBuildingFacade compact shop={shop} />
-          </Link>
-        ))}
+        {shops.slice(0, 4).map((shop, index) => {
+          const merchant = getMerchantIdentity(shop);
+          return (
+            <div
+              className={`town-shop-cluster town-shop-${index + 1}`}
+              key={shop.id}
+            >
+              <Link
+                className={`town-shop ${
+                  nearbyShop?.id === shop.id ? "is-nearby" : ""
+                }`}
+                href={`/town/shop/${shop.slug}`}
+              >
+                <MerchantBuildingFacade compact shop={shop} />
+              </Link>
+              <div className="shopkeeper-npc">
+                <span>{merchant.merchantName}</span>
+                <WorldCharacter
+                  character={{
+                    name: merchant.merchantName,
+                    class: merchant.merchantTitle,
+                    sprite: merchant.merchantAvatar,
+                  }}
+                  compact
+                />
+              </div>
+            </div>
+          );
+        })}
 
         {merchantCityCitizens.map((citizen, index) => (
           <WorldCitizen citizen={citizen} index={index} key={citizen.id} />

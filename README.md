@@ -22,7 +22,7 @@ Status: Internal Alpha
 
 Current release: `v1.0.0-commerce-civilization-alpha`
 
-Latest completed sprint: Sprint 17B Merchant Soul & Emotional Attachment System
+Latest completed sprint: Sprint 17C Real AI Shopkeeper & 2.5D Town Upgrade
 
 Next planned release: Sprint 18 Regional Belonging Foundation
 
@@ -66,6 +66,7 @@ Next planned release: Sprint 18 Regional Belonging Foundation
 - [x] Social Commerce Civilization Foundation
 - [x] Immersion & Living World Enhancement
 - [x] Merchant Soul & Emotional Attachment System
+- [x] Real AI Shopkeeper & 2.5D Town Upgrade
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
 - [x] AI Executive Board Documentation

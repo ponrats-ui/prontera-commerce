@@ -1,18 +1,22 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 import {
-  askAiMerchant,
   buildAiMerchantContext,
+  respondInMockMode,
   type AiMerchantMessage,
+  type AiMerchantResult,
 } from "../lib/ai-merchant";
 import type { WorldShop } from "../lib/api";
 import type { MerchantIdentity } from "../lib/living-world";
+import { WorldCharacter } from "./world-character";
 
 const quickQuestions = [
   "What do you recommend?",
-  "Do you have discounts?",
-  "Who owns this shop?",
+  "Do you have any promotion?",
+  "How much does it cost?",
+  "Tell me about this shop.",
+  "Is there a live room?",
 ];
 
 export function AiMerchantWidget({
@@ -22,17 +26,14 @@ export function AiMerchantWidget({
   shop: WorldShop;
   merchant: MerchantIdentity;
 }) {
-  const context = useMemo(
-    () => buildAiMerchantContext(shop, merchant),
-    [merchant, shop],
-  );
   const [draft, setDraft] = useState("");
   const [waiting, setWaiting] = useState(false);
+  const [provider, setProvider] = useState<AiMerchantResult["provider"]>("mock");
   const [messages, setMessages] = useState<AiMerchantMessage[]>([
     {
       id: "welcome",
       role: "merchant",
-      content: `${merchant.greeting} I am the shop's disclosed AI assistant, currently running in mock mode.`,
+      content: `${merchant.welcomeMessage} I am ${merchant.merchantName}'s disclosed AI shopkeeper. Ask me about products, prices, promotions, live commerce, or the story behind this place.`,
     },
   ]);
 
@@ -50,8 +51,18 @@ export function AiMerchantWidget({
       },
     ]);
 
-    const result = await askAiMerchant(context, cleanQuestion);
-    window.setTimeout(() => {
+    const context = buildAiMerchantContext(shop, merchant, cleanQuestion);
+
+    try {
+      const response = await fetch("/api/ai-shopkeeper", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ context }),
+      });
+
+      if (!response.ok) throw new Error("AI shopkeeper route failed");
+      const result = (await response.json()) as AiMerchantResult;
+      setProvider(result.provider);
       setMessages((current) => [
         ...current,
         {
@@ -60,8 +71,19 @@ export function AiMerchantWidget({
           content: result.response,
         },
       ]);
+    } catch {
+      setProvider("mock");
+      setMessages((current) => [
+        ...current,
+        {
+          id: `merchant-${Date.now()}`,
+          role: "merchant",
+          content: respondInMockMode(context),
+        },
+      ]);
+    } finally {
       setWaiting(false);
-    }, 350);
+    }
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -70,11 +92,24 @@ export function AiMerchantWidget({
   }
 
   return (
-    <section className="ai-merchant-widget">
-      <div className="ai-merchant-heading">
+    <section className="ai-merchant-widget ai-shopkeeper-console">
+      <div className="ai-shopkeeper-profile">
+        <div className="ai-shopkeeper-portrait">
+          <WorldCharacter
+            character={{
+              name: merchant.merchantName,
+              class: merchant.merchantTitle,
+              sprite: merchant.merchantAvatar,
+            }}
+          />
+        </div>
         <div>
-          <p className="world-kicker">AI shopkeeper · Mock mode</p>
-          <h2>Ask {merchant.merchantName}&apos;s assistant</h2>
+          <p className="world-kicker">
+            AI shopkeeper · {provider === "openai" ? "Live AI" : "Mock fallback"}
+          </p>
+          <h2>{merchant.merchantName}</h2>
+          <span>{merchant.merchantTitle}</span>
+          <small>{shop.name}</small>
         </div>
         <span className="ai-disclosure">AI</span>
       </div>
@@ -93,7 +128,7 @@ export function AiMerchantWidget({
         {waiting ? (
           <div className="chat-message merchant thinking">
             <small>{merchant.merchantName}&apos;s AI</small>
-            <p>Checking the merchant&apos;s published shelf…</p>
+            <p>Reading the shelf, promotion board, and merchant story...</p>
           </div>
         ) : null}
       </div>
@@ -117,7 +152,7 @@ export function AiMerchantWidget({
           <input
             disabled={waiting}
             onChange={(event) => setDraft(event.target.value)}
-            placeholder="Ask about products, offers, or the merchant"
+            placeholder="Ask for a recommendation, story, price, or promotion"
             value={draft}
           />
         </label>
@@ -126,12 +161,12 @@ export function AiMerchantWidget({
           disabled={waiting}
           type="submit"
         >
-          Ask
+          Send
         </button>
       </form>
       <p className="ai-boundary-note">
-        This assistant uses published shop information only. Prices, checkout,
-        refunds, and policy exceptions remain under merchant control.
+        Uses published store, product, promotion, region, and merchant context.
+        If `OPENAI_API_KEY` is unavailable, Prontera uses contextual mock mode.
       </p>
     </section>
   );
