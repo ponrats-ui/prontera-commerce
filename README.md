@@ -22,9 +22,9 @@ Status: Internal Alpha
 
 Current release: `v1.0.0-commerce-civilization-alpha`
 
-Latest completed sprint: Sprint 18A Merchant Soul System
+Latest completed sprint: Sprint 18B Township-style World UI Rebuild
 
-Next planned release: Sprint 18B Regional Belonging Foundation
+Next planned release: Sprint 18C Regional Belonging Foundation
 
 ## Completed Modules
 
@@ -68,6 +68,7 @@ Next planned release: Sprint 18B Regional Belonging Foundation
 - [x] Merchant Soul & Emotional Attachment System
 - [x] Real AI Shopkeeper & 2.5D Town Upgrade
 - [x] Merchant Soul System & Emotional World Layer
+- [x] Township-style Game HUD & Isometric World UI
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
 - [x] AI Executive Board Documentation
@@ -223,6 +224,11 @@ governed mock AI shopkeeper built for future provider integration.
 Sprint 18A deepens the soul layer with MerchantSoul profiles, personality-aware
 AI shopkeeper responses, civilian NPC dialogue, regional lore, ambient
 storytelling objects, and Founder Museum exhibits.
+
+Sprint 18B rebuilds Merchant City as a Township-style game screen: the
+traditional town top navigation is removed, a fixed game HUD frames the
+experience, buildings live on a single isometric canvas, and building/shop
+clicks open in-place interaction dialogs instead of navigating away.
 
 Reference:
 

@@ -426,6 +426,10 @@ textarea {
   overflow-x: hidden;
 }
 
+.buyer-world-shell.is-game-shell {
+  background: #9ed7ee;
+}
+
 .world-nav {
   min-height: 68px;
   padding: 10px clamp(16px, 4vw, 56px);
@@ -8506,6 +8510,931 @@ textarea {
 
   .merchant-milestone-grid,
   .founder-exhibit-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Sprint 18B: Township-style game HUD rebuild */
+.township-game-page {
+  min-height: 100svh;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 18%, rgb(255 255 255 / 52%), transparent 22%),
+    linear-gradient(#9ed7ee 0 48%, #87c889 49% 100%);
+  color: #3c342d;
+  isolation: isolate;
+}
+
+.township-game-page button {
+  font: inherit;
+}
+
+.game-top-hud,
+.game-bottom-hud,
+.game-side-panel,
+.building-dialog {
+  border: 3px solid rgb(84 70 54 / 24%);
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 88%), rgb(255 247 218 / 88%)),
+    #fff7dc;
+  box-shadow:
+    0 12px 0 rgb(98 72 42 / 14%),
+    0 22px 38px rgb(45 63 47 / 18%);
+  backdrop-filter: blur(12px);
+}
+
+.game-top-hud {
+  min-height: 74px;
+  position: fixed;
+  top: 14px;
+  left: 16px;
+  right: 16px;
+  z-index: 50;
+  border-radius: 26px;
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: minmax(180px, 0.7fr) minmax(260px, 1.3fr) auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.founder-hud-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.founder-hud-card .world-character {
+  --character-scale: 0.58;
+  width: 54px;
+  height: 54px;
+  border: 2px solid #f0b94e;
+  border-radius: 18px;
+  background: #ffedb5;
+}
+
+.founder-hud-card strong,
+.game-side-panel h2,
+.building-dialog h2 {
+  display: block;
+  color: #3d3128;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.founder-hud-card span {
+  color: #7f633f;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.game-resource-bar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.resource-pill,
+.game-top-actions button,
+.game-bottom-hud button,
+.merchant-dialog-actions button,
+.civic-dialog-actions button {
+  border: 2px solid rgb(94 74 50 / 18%);
+  border-radius: 999px;
+  background: #fffdf4;
+  color: #4f4134;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgb(89 68 43 / 12%);
+}
+
+.resource-pill {
+  min-width: 122px;
+  padding: 8px 12px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.resource-pill i {
+  grid-row: 1 / 3;
+  font-style: normal;
+}
+
+.resource-pill small,
+.game-panel-kicker,
+.game-task span,
+.game-signal span,
+.merchant-dialog-owner span,
+.merchant-recommendation-card span,
+.merchant-story-dialog-card span {
+  color: #906b3b;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.resource-pill strong {
+  line-height: 1.1;
+}
+
+.game-top-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.game-top-actions button {
+  min-width: 48px;
+  min-height: 42px;
+  padding: 8px 12px;
+  background: #fff2b8;
+}
+
+.game-side-panel {
+  position: fixed;
+  top: 108px;
+  z-index: 40;
+  width: min(278px, 24vw);
+  border-radius: 24px;
+  padding: 18px;
+  display: grid;
+  gap: 12px;
+}
+
+.game-left-panel {
+  left: 16px;
+}
+
+.game-right-panel {
+  right: 16px;
+}
+
+.game-side-panel h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.game-task,
+.game-signal {
+  border: 2px solid rgb(115 91 58 / 14%);
+  border-radius: 18px;
+  background: rgb(255 253 244 / 82%);
+  padding: 12px;
+  display: grid;
+  gap: 4px;
+}
+
+.game-task strong,
+.game-signal strong {
+  color: #4d4339;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.game-daily-missions {
+  border-radius: 18px;
+  background: #e9f7d3;
+  padding: 12px;
+  display: grid;
+  gap: 6px;
+  color: #516a35;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.game-daily-missions strong {
+  color: #3d5825;
+}
+
+.township-world-stage {
+  min-height: 100svh;
+  padding: 108px 320px 118px;
+  display: grid;
+  place-items: center;
+}
+
+.township-camera {
+  width: min(1040px, 100%);
+  aspect-ratio: 16 / 10;
+  position: relative;
+  transition:
+    transform 420ms ease,
+    filter 420ms ease;
+  transform-origin: center;
+}
+
+.township-camera.is-zoomed {
+  transform: scale(1.08);
+  filter: saturate(1.05);
+}
+
+.township-ground {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 5px solid rgb(92 72 51 / 20%);
+  border-radius: 42px;
+  background:
+    radial-gradient(circle at 50% 45%, rgb(255 242 177 / 32%), transparent 28%),
+    linear-gradient(135deg, rgb(255 255 255 / 22%) 0 15%, transparent 15%),
+    #9ccf7d;
+  box-shadow:
+    inset 0 -26px 0 rgb(83 125 62 / 14%),
+    0 28px 0 rgb(60 89 55 / 20%),
+    0 36px 60px rgb(50 76 61 / 32%);
+}
+
+.iso-tile,
+.iso-road,
+.iso-water,
+.iso-field,
+.iso-fountain {
+  position: absolute;
+  display: block;
+  transform: rotateX(58deg) rotateZ(45deg);
+  transform-origin: center;
+}
+
+.iso-tile {
+  width: 330px;
+  height: 330px;
+  border-radius: 28px;
+  background: rgb(235 211 143 / 38%);
+  box-shadow: inset 0 0 0 8px rgb(255 255 255 / 16%);
+}
+
+.tile-one {
+  left: 32%;
+  top: 16%;
+}
+
+.tile-two {
+  left: 15%;
+  top: 48%;
+  width: 260px;
+  height: 260px;
+}
+
+.tile-three {
+  right: 8%;
+  top: 43%;
+  width: 300px;
+  height: 300px;
+}
+
+.iso-road {
+  z-index: 2;
+  border-radius: 999px;
+  background:
+    repeating-linear-gradient(90deg, #d4b16f 0 18px, #c39a5b 19px 23px);
+  box-shadow: 0 5px 0 rgb(105 79 46 / 18%);
+}
+
+.road-main {
+  left: 26%;
+  top: 43%;
+  width: 520px;
+  height: 74px;
+}
+
+.road-cross {
+  left: 45%;
+  top: 22%;
+  width: 72px;
+  height: 430px;
+}
+
+.road-harbor {
+  left: 18%;
+  top: 66%;
+  width: 360px;
+  height: 54px;
+}
+
+.iso-water {
+  left: -4%;
+  bottom: -2%;
+  width: 390px;
+  height: 160px;
+  border-radius: 999px;
+  background: #63bad5;
+  box-shadow: inset 0 12px 0 rgb(255 255 255 / 20%);
+  transform: rotate(-8deg);
+}
+
+.iso-fountain {
+  left: 48%;
+  top: 48%;
+  z-index: 8;
+  width: 74px;
+  height: 74px;
+  border: 8px solid #d7c58c;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #eaffff 0 22%, #68c3dd 24% 58%, #c9b36f 60%);
+  animation: fountainPulse 2.6s ease-in-out infinite;
+}
+
+.iso-field {
+  z-index: 1;
+  border-radius: 28px;
+  background:
+    repeating-linear-gradient(90deg, #b8d975 0 18px, #a8cc68 19px 28px);
+}
+
+.field-one {
+  right: 9%;
+  top: 15%;
+  width: 190px;
+  height: 110px;
+}
+
+.field-two {
+  left: 9%;
+  top: 26%;
+  width: 180px;
+  height: 100px;
+}
+
+.game-tree {
+  position: absolute;
+  z-index: 7;
+  width: 38px;
+  height: 52px;
+  border-radius: 50% 50% 45% 45%;
+  background:
+    radial-gradient(circle at 50% 26%, #d9f49a 0 24%, transparent 25%),
+    #4ea94f;
+  box-shadow:
+    inset 0 -8px 0 rgb(43 103 42 / 22%),
+    0 8px 0 rgb(67 79 38 / 16%);
+}
+
+.game-tree::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  bottom: -11px;
+  width: 9px;
+  height: 18px;
+  border-radius: 5px;
+  background: #8b5b32;
+}
+
+.game-tree-1 { left: 12%; top: 18%; }
+.game-tree-2 { left: 23%; top: 20%; }
+.game-tree-3 { right: 19%; top: 18%; }
+.game-tree-4 { right: 9%; top: 33%; }
+.game-tree-5 { left: 10%; bottom: 18%; }
+.game-tree-6 { left: 42%; bottom: 9%; }
+.game-tree-7 { right: 9%; bottom: 16%; }
+.game-tree-8 { right: 29%; bottom: 10%; }
+
+.township-building {
+  position: absolute;
+  z-index: 12;
+  width: 150px;
+  min-height: 130px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  display: grid;
+  justify-items: center;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition:
+    transform 240ms ease,
+    filter 240ms ease;
+}
+
+.township-building:hover,
+.township-building.is-selected {
+  transform: translate(-50%, -56%) scale(1.08);
+  filter: drop-shadow(0 16px 0 rgb(74 57 36 / 18%));
+}
+
+.township-building.is-selected::before {
+  content: "";
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  bottom: 14px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgb(255 232 86 / 64%);
+  box-shadow: 0 0 26px rgb(255 221 71 / 72%);
+  animation: selectedGlow 1.6s ease-in-out infinite;
+}
+
+.township-building .merchant-facade {
+  width: 142px;
+  height: 112px;
+}
+
+.building-lg {
+  width: 180px;
+}
+
+.building-lg .civic-building {
+  transform: scale(1.12);
+}
+
+.building-label {
+  position: relative;
+  z-index: 4;
+  max-width: 148px;
+  margin-top: -2px;
+  border: 2px solid rgb(84 68 49 / 20%);
+  border-radius: 999px;
+  background: #fff8d9;
+  padding: 5px 10px;
+  color: #4a3a2c;
+  font-size: 11px;
+  font-weight: 950;
+  box-shadow: 0 4px 0 rgb(89 68 43 / 12%);
+}
+
+.civic-building {
+  width: 138px;
+  height: 116px;
+  position: relative;
+  display: block;
+  filter: drop-shadow(0 10px 0 rgb(74 57 36 / 12%));
+}
+
+.civic-building i,
+.civic-building em,
+.civic-building b {
+  position: absolute;
+  display: grid;
+  place-items: center;
+}
+
+.civic-building i {
+  left: 12px;
+  right: 12px;
+  bottom: 8px;
+  height: 70px;
+  border: 4px solid #5b4a3a;
+  border-radius: 16px 16px 8px 8px;
+  background: #ffd978;
+}
+
+.civic-building em {
+  left: 0;
+  right: 0;
+  top: 11px;
+  height: 46px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  border-radius: 8px;
+  background: #e96954;
+}
+
+.civic-building b {
+  left: 50%;
+  bottom: 27px;
+  width: 38px;
+  height: 40px;
+  border: 3px solid #5b4a3a;
+  border-radius: 12px 12px 4px 4px;
+  background: #fff3bd;
+  color: #7d5730;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
+.building-harbor .civic-building i { background: #8bd0de; }
+.building-guild .civic-building i { background: #c7a5ee; }
+.building-founder-hall .civic-building i { background: #ffe39a; }
+.building-market .civic-building i { background: #ffb86f; }
+
+.game-citizen {
+  position: absolute;
+  z-index: 16;
+  display: grid;
+  justify-items: center;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: citizenBob 3.4s ease-in-out infinite;
+}
+
+.game-citizen .world-character {
+  --character-scale: 0.42;
+}
+
+.game-citizen small {
+  margin-top: -8px;
+  border: 1px solid rgb(84 68 49 / 20%);
+  border-radius: 999px;
+  background: rgb(255 253 244 / 82%);
+  padding: 3px 7px;
+  color: #4d4035;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.game-bottom-hud {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  z-index: 60;
+  width: min(760px, calc(100% - 26px));
+  border-radius: 28px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  transform: translateX(-50%);
+}
+
+.game-bottom-hud button {
+  min-height: 62px;
+  border-radius: 22px;
+  padding: 7px;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 3px;
+  background: #fffdf4;
+}
+
+.game-bottom-hud button.active {
+  border-color: #f0b94e;
+  background: #fff0a8;
+}
+
+.game-bottom-hud span {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.game-bottom-hud strong {
+  font-size: 10px;
+}
+
+.building-dialog-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 96px 18px 100px;
+  background: rgb(48 67 57 / 16%);
+  pointer-events: none;
+}
+
+.building-dialog {
+  width: min(980px, 100%);
+  max-height: min(760px, calc(100svh - 132px));
+  overflow: auto;
+  position: relative;
+  border-radius: 30px;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 22px;
+  pointer-events: auto;
+}
+
+.dialog-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  border: 2px solid rgb(84 68 49 / 20%);
+  border-radius: 50%;
+  background: #fff3bd;
+  color: #6b5133;
+  font-size: 26px;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.dialog-portrait {
+  min-height: 210px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 25%, rgb(255 255 255 / 54%), transparent 32%),
+    #dff4ce;
+  display: grid;
+  place-items: center;
+}
+
+.dialog-portrait .world-character {
+  --character-scale: 1.12;
+}
+
+.dialog-main {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.dialog-main h2 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 48px);
+}
+
+.dialog-main > p {
+  margin: 0;
+  color: #66594c;
+  line-height: 1.55;
+}
+
+.merchant-dialog-owner {
+  border-radius: 18px;
+  background: #fff6cf;
+  padding: 12px 14px;
+  display: grid;
+  gap: 3px;
+}
+
+.merchant-dialog-owner strong {
+  color: #3d3128;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+}
+
+.merchant-dialog-owner em {
+  color: #745734;
+  font-style: normal;
+}
+
+.merchant-dialog-actions,
+.civic-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.merchant-dialog-actions button,
+.civic-dialog-actions button {
+  padding: 10px 13px;
+  background: #fffdf4;
+}
+
+.merchant-dialog-actions button.active {
+  border-color: #f0b94e;
+  background: #fff0a8;
+}
+
+.merchant-dialog-content {
+  display: grid;
+  gap: 12px;
+}
+
+.building-dialog .ai-merchant-widget {
+  margin: 0;
+  border-radius: 22px;
+  box-shadow: none;
+}
+
+.goods-board {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.goods-board article,
+.merchant-recommendation-card,
+.merchant-story-dialog-card {
+  border: 2px solid rgb(94 74 50 / 14%);
+  border-radius: 18px;
+  background: #fffdf4;
+  padding: 14px;
+}
+
+.goods-board article {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.goods-board article > span {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #ffd978;
+  display: grid;
+  place-items: center;
+  color: #765331;
+  font-weight: 950;
+}
+
+.goods-board strong,
+.merchant-story-dialog-card h3 {
+  display: block;
+  color: #3d3128;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.goods-board small {
+  color: #7d6d5e;
+}
+
+.goods-board em {
+  color: #126b62;
+  font-style: normal;
+  font-weight: 950;
+}
+
+.merchant-recommendation-card p,
+.merchant-story-dialog-card p {
+  color: #66594c;
+  line-height: 1.6;
+}
+
+.game-error-toast {
+  position: fixed;
+  top: 98px;
+  left: 50%;
+  z-index: 90;
+  border-radius: 999px;
+  background: #ffe0d8;
+  padding: 10px 16px;
+  color: #8b3529;
+  font-weight: 900;
+  transform: translateX(-50%);
+}
+
+@keyframes selectedGlow {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.94);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes citizenBob {
+  0%,
+  100% {
+    transform: translate(-50%, -50%);
+  }
+
+  50% {
+    transform: translate(-50%, calc(-50% - 4px));
+  }
+}
+
+@keyframes fountainPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(255 255 255 / 0%);
+  }
+
+  50% {
+    box-shadow: 0 0 22px 8px rgb(255 255 255 / 48%);
+  }
+}
+
+@media (max-width: 1180px) {
+  .township-world-stage {
+    padding-inline: 250px;
+  }
+
+  .game-side-panel {
+    width: min(228px, 25vw);
+  }
+}
+
+@media (max-width: 940px) {
+  .township-game-page {
+    overflow: auto;
+    min-height: 100svh;
+    padding-bottom: 96px;
+  }
+
+  .game-top-hud {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    border-radius: 0 0 24px 24px;
+    grid-template-columns: 1fr auto;
+  }
+
+  .game-resource-bar {
+    grid-column: 1 / -1;
+    justify-content: start;
+  }
+
+  .resource-pill {
+    min-width: 104px;
+  }
+
+  .game-side-panel {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: min(100% - 24px, 720px);
+    margin: 12px auto;
+  }
+
+  .township-world-stage {
+    min-height: auto;
+    padding: 12px;
+  }
+
+  .township-camera {
+    width: min(100%, 760px);
+    min-height: 620px;
+    aspect-ratio: auto;
+  }
+
+  .township-camera.is-zoomed {
+    transform: none;
+  }
+
+  .building-dialog-layer {
+    align-items: end;
+    padding: 18px 12px 92px;
+  }
+
+  .building-dialog {
+    grid-template-columns: 1fr;
+    max-height: calc(100svh - 118px);
+  }
+
+  .dialog-portrait {
+    min-height: 150px;
+  }
+}
+
+@media (max-width: 620px) {
+  .game-top-hud {
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .founder-hud-card .world-character {
+    width: 46px;
+    height: 46px;
+  }
+
+  .resource-pill {
+    min-width: calc(50% - 5px);
+    padding: 7px 9px;
+  }
+
+  .game-top-actions button {
+    min-width: 42px;
+  }
+
+  .township-camera {
+    min-height: 560px;
+  }
+
+  .township-building {
+    width: 116px;
+  }
+
+  .township-building .merchant-facade {
+    width: 112px;
+    height: 98px;
+  }
+
+  .building-label {
+    max-width: 112px;
+    font-size: 9px;
+  }
+
+  .civic-building {
+    transform: scale(0.84);
+  }
+
+  .game-citizen small {
+    display: none;
+  }
+
+  .game-bottom-hud {
+    bottom: 8px;
+    width: calc(100% - 16px);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-radius: 22px;
+  }
+
+  .game-bottom-hud button {
+    min-height: 50px;
+    border-radius: 16px;
+  }
+
+  .goods-board {
     grid-template-columns: 1fr;
   }
 }
