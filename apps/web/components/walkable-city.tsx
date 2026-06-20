@@ -17,10 +17,13 @@ import {
 import {
   cityAmbientLines,
   createPlayerCharacter,
+  getDynamicNpcConversations,
   getMerchantIdentity,
   merchantCityCitizens,
   merchantCityDiscoveryMoments,
+  townCivilianNpcs,
 } from "../lib/living-world";
+import { ambientStoryCards } from "../lib/merchant-soul";
 import type { WorldShop } from "../lib/api";
 import { useMerchantMemory } from "../lib/social-state";
 import { MerchantBuildingFacade } from "./merchant-building-facade";
@@ -283,6 +286,7 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
   }
 
   const character = getBuyerCharacter(avatarId);
+  const conversations = getDynamicNpcConversations("Merchant City");
   const player = createPlayerCharacter(
     avatarId,
     {
@@ -457,6 +461,36 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
           <WorldCitizen citizen={citizen} index={index} key={citizen.id} />
         ))}
 
+        {townCivilianNpcs.map((npc, index) => (
+          <div
+            className={`civilian-npc civilian-${index + 1}`}
+            key={npc.id}
+            style={{
+              left: `${npc.location.positionX}%`,
+              top: `${npc.location.positionY}%`,
+            }}
+          >
+            <WorldCharacter
+              character={{
+                name: npc.name,
+                class: npc.role,
+                sprite:
+                  index % 3 === 0
+                    ? "rosepath-guide"
+                    : index % 3 === 1
+                      ? "sunbasket-shopkeeper"
+                      : "sparkgear-inventor",
+              }}
+              compact
+            />
+            <span className="civilian-nameplate">
+              <strong>{npc.name}</strong>
+              <small>{npc.role}</small>
+            </span>
+            <em>{npc.dialoguePool[index % npc.dialoguePool.length]}</em>
+          </div>
+        ))}
+
         <div
           className="player-character"
           data-player-id={player.id}
@@ -494,6 +528,27 @@ export function WalkableCity({ shops }: { shops: WorldShop[] }) {
             >
               <span>{moment.source}</span>
               <strong>{moment.message}</strong>
+            </article>
+          ))}
+        </div>
+
+        <div className="town-conversation-board" aria-label="Citizen rumors">
+          {conversations.slice(0, 3).map((conversation) => (
+            <article key={conversation.id}>
+              <span>
+                {conversation.topic} · {conversation.speaker}
+              </span>
+              <strong>{conversation.line}</strong>
+            </article>
+          ))}
+        </div>
+
+        <div className="ambient-story-board" aria-label="Town story objects">
+          {ambientStoryCards.slice(0, 4).map((card) => (
+            <article key={card.id}>
+              <span>{card.type}</span>
+              <strong>{card.title}</strong>
+              <small>{card.body}</small>
             </article>
           ))}
         </div>

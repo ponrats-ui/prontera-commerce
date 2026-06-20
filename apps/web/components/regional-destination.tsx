@@ -68,6 +68,20 @@ export function RegionalDestination({ region }: { region: CommerceRegion }) {
           <h2>{story.epithet}</h2>
           <p>{story.lore}</p>
           <blockquote>{story.localSaying}</blockquote>
+          <dl className="regional-lore-list">
+            <div>
+              <dt>History</dt>
+              <dd>{story.history}</dd>
+            </div>
+            <div>
+              <dt>Identity</dt>
+              <dd>{story.identity}</dd>
+            </div>
+            <div>
+              <dt>Trade specialty</dt>
+              <dd>{story.tradeSpecialty}</dd>
+            </div>
+          </dl>
         </article>
         <article>
           <p className="world-kicker">Regional economy</p>
@@ -83,6 +97,12 @@ export function RegionalDestination({ region }: { region: CommerceRegion }) {
           <h2>{region.architecture}</h2>
           <p>{region.climate}</p>
           <p>{story.memory}</p>
+          <p>{story.culture}</p>
+          <div className="region-token-row">
+            {story.importantNPCs.map((npc) => (
+              <span key={npc}>{npc}</span>
+            ))}
+          </div>
         </article>
         <article>
           <p className="world-kicker">Your reputation</p>

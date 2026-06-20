@@ -68,6 +68,37 @@ export type DiscoveryMoment = {
   tone: "merchant" | "notice" | "travel" | "founder";
 };
 
+export type CivilianNpcProfile = {
+  id: string;
+  name: string;
+  role:
+    | "Student"
+    | "Traveler"
+    | "Tourist"
+    | "Creator"
+    | "Guild Member"
+    | "Port Worker"
+    | "Merchant Assistant"
+    | "Citizen";
+  personality: string;
+  favoriteRegion: string;
+  dialoguePool: string[];
+  location: WorldPosition;
+};
+
+export type DynamicNpcConversation = {
+  id: string;
+  topic:
+    | "Region"
+    | "Event"
+    | "Merchant Activity"
+    | "Featured Store"
+    | "World News"
+    | "Founder Event";
+  speaker: string;
+  line: string;
+};
+
 export const merchantCityCitizens: CitizenProfile[] = [
   {
     id: "citizen-mira",
@@ -177,12 +208,180 @@ export const merchantCityDiscoveryMoments: DiscoveryMoment[] = [
   },
 ];
 
+export const townCivilianNpcs: CivilianNpcProfile[] = [
+  {
+    id: "civilian-nia",
+    name: "Nia",
+    role: "Student",
+    personality: "bright, curious, and easily distracted by shop signs",
+    favoriteRegion: "Tech Republic",
+    dialoguePool: [
+      "Have you visited Harbor Kingdom?",
+      "Professor Byte says every invention starts with a question.",
+      "I am saving notes for my first merchant project.",
+    ],
+    location: { positionX: 58, positionY: 43 },
+  },
+  {
+    id: "civilian-toma",
+    name: "Toma",
+    role: "Traveler",
+    personality: "gentle, observant, and fond of regional stories",
+    favoriteRegion: "Artisan Valley",
+    dialoguePool: [
+      "Artisan Valley is beautiful this season.",
+      "I heard Luna introduced a new coffee blend.",
+      "The Warp Gate makes every road feel possible.",
+    ],
+    location: { positionX: 36, positionY: 62 },
+  },
+  {
+    id: "civilian-pip",
+    name: "Pip",
+    role: "Tourist",
+    personality: "cheerful and always pointing at landmarks",
+    favoriteRegion: "Merchant City",
+    dialoguePool: [
+      "The fountain is smaller than the stories, but warmer somehow.",
+      "I want to remember every signboard before sunset.",
+      "This city talks like it knows you are new.",
+    ],
+    location: { positionX: 51, positionY: 54 },
+  },
+  {
+    id: "civilian-sol",
+    name: "Sol",
+    role: "Creator",
+    personality: "hopeful, artistic, and full of half-finished ideas",
+    favoriteRegion: "Creator Island",
+    dialoguePool: [
+      "Creator Island keeps sending tiny sparks across the sea.",
+      "A good merchant story is a design material too.",
+      "I am sketching a poster for the next festival.",
+    ],
+    location: { positionX: 67, positionY: 59 },
+  },
+  {
+    id: "civilian-bram",
+    name: "Bram",
+    role: "Guild Member",
+    personality: "steady, formal, and secretly sentimental",
+    favoriteRegion: "Merchant City",
+    dialoguePool: [
+      "Cedric says a guild is just a promise with chairs.",
+      "Founder Hall is quiet today. That makes it easier to remember.",
+      "A trusted merchant changes the whole street.",
+    ],
+    location: { positionX: 25, positionY: 31 },
+  },
+  {
+    id: "civilian-kai",
+    name: "Kai",
+    role: "Port Worker",
+    personality: "direct, good-humored, and weather-aware",
+    favoriteRegion: "Harbor Kingdom",
+    dialoguePool: [
+      "Harbor shipments have arrived.",
+      "Captain Arlo checked the rope twice. That means rain might visit.",
+      "Trade keeps the world moving, but dry boots help.",
+    ],
+    location: { positionX: 29, positionY: 79 },
+  },
+  {
+    id: "civilian-emi",
+    name: "Emi",
+    role: "Merchant Assistant",
+    personality: "attentive, kind, and proud of tidy shelves",
+    favoriteRegion: "Artisan Valley",
+    dialoguePool: [
+      "Luna saves tasting cards for regulars and shy newcomers.",
+      "Mae taught me that useful things can still feel magical.",
+      "A good greeting is part of the shelf.",
+    ],
+    location: { positionX: 82, positionY: 49 },
+  },
+  {
+    id: "civilian-oro",
+    name: "Oro",
+    role: "Citizen",
+    personality: "warm, nostalgic, and fond of benches",
+    favoriteRegion: "Industrial District",
+    dialoguePool: [
+      "The old whistle from Industrial District sounds like a promise kept.",
+      "I sit here because every merchant passes this road eventually.",
+      "The city feels different when you know the people behind the doors.",
+    ],
+    location: { positionX: 43, positionY: 76 },
+  },
+];
+
 export const cityAmbientLines = [
   "A bell rings softly from the guild hall.",
   "Someone laughs near the flower stall.",
   "Lanterns flicker as shop signs sway.",
   "A courier waves before crossing Market Bridge.",
 ] as const;
+
+export const dynamicNpcConversations: DynamicNpcConversation[] = [
+  {
+    id: "conversation-coffee-festival",
+    topic: "Event",
+    speaker: "Toma",
+    line:
+      "Coffee Festival preparations are starting. Artisan Valley smells like toasted cocoa already.",
+  },
+  {
+    id: "conversation-harbor-shipment",
+    topic: "Merchant Activity",
+    speaker: "Kai",
+    line:
+      "Harbor shipment arrived early. Captain Arlo says the careful crates survived best.",
+  },
+  {
+    id: "conversation-founder-hall",
+    topic: "Founder Event",
+    speaker: "Bram",
+    line:
+      "Founder Hall is lighting the milestone wall today. Good day to remember who built the first roads.",
+  },
+  {
+    id: "conversation-featured-store",
+    topic: "Featured Store",
+    speaker: "Emi",
+    line:
+      "Luna has new tasting cards, and Mae keeps telling people not to forget batteries.",
+  },
+  {
+    id: "conversation-world-news",
+    topic: "World News",
+    speaker: "Nia",
+    line:
+      "Professor Byte's tiny automaton bowed to a flower pot. Tech Republic is never boring.",
+  },
+  {
+    id: "conversation-region-tip",
+    topic: "Region",
+    speaker: "Sol",
+    line:
+      "If the Warp Gate hums, pick a region by feeling first and product second.",
+  },
+];
+
+export function getDynamicNpcConversations(region = "Merchant City") {
+  if (region.toLowerCase().includes("harbor")) {
+    return dynamicNpcConversations.filter((conversation) =>
+      ["Merchant Activity", "Region", "World News"].includes(
+        conversation.topic,
+      ),
+    );
+  }
+  if (region.toLowerCase().includes("artisan")) {
+    return dynamicNpcConversations.filter((conversation) =>
+      ["Event", "Featured Store", "Region"].includes(conversation.topic),
+    );
+  }
+  return dynamicNpcConversations;
+}
 
 const merchantIdentities: Record<string, MerchantIdentity> = {
   "artisan-coffee-house": {

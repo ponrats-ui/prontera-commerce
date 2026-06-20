@@ -65,6 +65,12 @@ pseudo-isometric 2.5D treatment with layered buildings and shopkeeper NPCs,
 while storefronts gain a real AI shopkeeper architecture with optional OpenAI
 provider support and contextual mock fallback.
 
+Sprint 18A deepens the emotional layer: MerchantSoul profiles give merchants a
+class, personality, communication style, background story, personal goal,
+favorite product, catch phrase, region, and reputation level; AI shopkeepers use
+that soul context; civilian NPCs talk about merchants, events, Founder Hall, and
+regional rumors; regions gain lore; and Founder Museum preserves alpha memory.
+
 ## Regional Experience Principles
 
 - Every region must be visually identifiable before reading its name.
@@ -103,5 +109,6 @@ Avoid:
 - Sprint 17A: Make the world feel alive through ambience and character presence
 - Sprint 17B: Give merchants, places, and buyer memories emotional weight
 - Sprint 17C: Upgrade the town to 2.5D and make shopkeepers conversational
-- Sprint 18: Earn regional belonging
+- Sprint 18A: Make merchants, citizens, and regions emotionally memorable
+- Sprint 18B: Earn regional belonging
 - Sprint 19: Participate in world events

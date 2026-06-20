@@ -109,6 +109,34 @@ export default function TownShopPage() {
                 <p>{soul.memoryHook}</p>
               </div>
               <div className="merchant-soul-grid">
+                <article className="merchant-soul-signature-card">
+                  <span>Merchant class</span>
+                  <p>
+                    <strong>{soul.merchantClass}</strong>
+                    <br />
+                    {soul.personalityType} · {soul.communicationStyle}
+                  </p>
+                </article>
+                <article className="merchant-soul-signature-card">
+                  <span>Favorite product</span>
+                  <p>{soul.favoriteProduct}</p>
+                </article>
+                <article className="merchant-soul-signature-card">
+                  <span>Catch phrase</span>
+                  <p>“{soul.catchPhrase}”</p>
+                </article>
+                <article>
+                  <span>Personal goal</span>
+                  <p>{soul.personalGoal}</p>
+                </article>
+                <article>
+                  <span>Why they started</span>
+                  <p>{soul.whyTheyStarted}</p>
+                </article>
+                <article>
+                  <span>Founder history</span>
+                  <p>{soul.founderHistory}</p>
+                </article>
                 <article>
                   <span>Journey</span>
                   <p>{soul.journey}</p>
@@ -139,6 +167,28 @@ export default function TownShopPage() {
                         } time(s).`}
                   </p>
                 </article>
+              </div>
+              <div className="merchant-milestone-grid">
+                <div>
+                  <p className="world-kicker">Milestones</p>
+                  {soul.milestones.map((milestone) => (
+                    <article key={`${milestone.date}-${milestone.title}`}>
+                      <span>{milestone.date}</span>
+                      <h3>{milestone.title}</h3>
+                      <p>{milestone.body}</p>
+                    </article>
+                  ))}
+                </div>
+                <div>
+                  <p className="world-kicker">Community contributions</p>
+                  {soul.communityContributions.map((contribution) => (
+                    <article key={contribution.title}>
+                      <span>Contribution</span>
+                      <h3>{contribution.title}</h3>
+                      <p>{contribution.body}</p>
+                    </article>
+                  ))}
+                </div>
               </div>
             </section>
           ) : null}

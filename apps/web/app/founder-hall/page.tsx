@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { SocialShell } from "../../components/social-shell";
 import { WorldCharacter } from "../../components/world-character";
-import { alphaContributors, founderTimeline } from "../../lib/merchant-soul";
+import {
+  alphaContributors,
+  founderMuseumExhibits,
+  founderTimeline,
+} from "../../lib/merchant-soul";
 import {
   aiFounderCouncil,
   founderContributors,
@@ -71,6 +75,31 @@ export default function FounderHallPage() {
                 <span>{entry.year}</span>
                 <h3>{entry.title}</h3>
                 <p>{entry.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="founder-exhibit-section">
+          <div className="section-heading">
+            <p className="world-kicker">Historical screenshots</p>
+            <h2>Scenes the museum preserves</h2>
+            <p>
+              Styled exhibit frames stand in for the alpha memories until real
+              historical screenshots are curated.
+            </p>
+          </div>
+          <div className="founder-exhibit-grid">
+            {founderMuseumExhibits.map((exhibit) => (
+              <article key={exhibit.id}>
+                <div className={`founder-exhibit-frame exhibit-${exhibit.id}`}>
+                  <span />
+                  <i />
+                  <b />
+                </div>
+                <small>{exhibit.era}</small>
+                <h3>{exhibit.title}</h3>
+                <p>{exhibit.caption}</p>
               </article>
             ))}
           </div>

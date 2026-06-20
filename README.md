@@ -22,9 +22,9 @@ Status: Internal Alpha
 
 Current release: `v1.0.0-commerce-civilization-alpha`
 
-Latest completed sprint: Sprint 17C Real AI Shopkeeper & 2.5D Town Upgrade
+Latest completed sprint: Sprint 18A Merchant Soul System
 
-Next planned release: Sprint 18 Regional Belonging Foundation
+Next planned release: Sprint 18B Regional Belonging Foundation
 
 ## Completed Modules
 
@@ -67,6 +67,7 @@ Next planned release: Sprint 18 Regional Belonging Foundation
 - [x] Immersion & Living World Enhancement
 - [x] Merchant Soul & Emotional Attachment System
 - [x] Real AI Shopkeeper & 2.5D Town Upgrade
+- [x] Merchant Soul System & Emotional World Layer
 - [x] Global Commerce Foundation
 - [x] Human-in-the-Loop Governance
 - [x] AI Executive Board Documentation
@@ -218,6 +219,18 @@ Start locally at `/play`.
 The living world foundation adds playable characters, smooth town movement,
 populated city citizens, memorable merchant owners, shop interior scenes, and a
 governed mock AI shopkeeper built for future provider integration.
+
+Sprint 18A deepens the soul layer with MerchantSoul profiles, personality-aware
+AI shopkeeper responses, civilian NPC dialogue, regional lore, ambient
+storytelling objects, and Founder Museum exhibits.
+
+Reference:
+
+- [Merchant Soul System](docs/world/merchant-soul-system.md)
+- [Regional Lore System](docs/world/regional-lore-system.md)
+- [Merchant Personality Engine](docs/ai/merchant-personality-engine.md)
+- [Founder Museum](docs/social/founder-museum.md)
+- [Prontera Art Bible](docs/design/prontera-art-bible.md)
 
 Sprint 16 expands Merchant City into a connected regional commerce network.
 Buyers can open `/world-map`, travel through animated Warp Gates, meet regional
